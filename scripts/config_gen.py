@@ -1,1 +1,0 @@
-/home/zhoush/Downloads/github/YCM-Generator/config_gen.py
