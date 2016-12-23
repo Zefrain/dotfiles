@@ -1,0 +1,6 @@
+* 目录结构
+** 配置
+   [[./conf][conf]]
+
+** 脚本
+   [[./scripts][scripts]]
