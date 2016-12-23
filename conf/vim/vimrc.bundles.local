@@ -1,0 +1,15 @@
+Bundle "christoomey/vim-tmux-navigator"
+Bundle "rdnetto/YCM-Generator"
+Bundle "vim-scripts/fcitx.vim"
+Bundle "othree/xml.vim"
+Bundle "Valloric/MatchTagAlways"
+Bundle "kshenoy/vim-signature"
+Bundle "bogado/file-line"
+Bundle "junegunn/vim-easy-align"
+Bundle "wsdjeg/vim-chat"
+
+
+UnBundle "Shougo/vimproc.vim"
+UnBundle "Shougo/unite.vim"
+UnBundle 'bling/vim-bufferline'
+

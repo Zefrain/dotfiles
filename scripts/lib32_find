@@ -1,0 +1,5 @@
+#!/bin/sh
+
+for file in $@; do 
+    find / -name $file 2>/dev/null | xargs file {} | grep 32-bit
+done
