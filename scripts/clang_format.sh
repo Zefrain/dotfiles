@@ -1,13 +1,17 @@
-#!/ usr/bin/sh
-# flist=$(find . -name '*.h' -o -name '*.c' -o -name '*.cpp' -o -name '*.sh')
-OLD=$IFS
-IFS=$'\n'
+#!/bin/bash
 
+
+err() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')]: $@" >&2
+}
+fmt() {
+    OLD=$IFS
+    IFS=$'\n'
+    for fname in $@; do
+        clang-format -i -style=google $fname
+    done;
+    IFS=$OLD
+}
 flist=$(find ! -name '.*' | egrep -v '\.\w+\/' | egrep '\.(c|cpp|h)$')
 
-for fname in $flist;
-do
-    clang-format -i -style=google $fname
-done;
-
-IFS=$OLD
+fmt $flist
