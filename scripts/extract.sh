@@ -20,7 +20,7 @@ do
     outdir="$(dirname "$file")/$dname"
     echo "outdir=$outdir"
     rm -rf $outdir && mkdir $outdir
-    7z -aoa x $fname -o$outdir && rm $fname
+    7za -aoa x $fname -o$outdir && rm $fname
 done
 
 IFS=$OLD
