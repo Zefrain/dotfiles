@@ -73,7 +73,8 @@ restart(){
 	sleep 3	
 	start
 }
-case "$1" in  
+action=${1:-"start"}
+case "$action" in  
 start)  
         start  
         ;;  
