@@ -10,38 +10,38 @@
 
 
 function change_file_encoing(){
-        OLD=$IFS
-        IFS=$'\n'
-        for file in $(ls -l|awk '{print $9}')
-        do
-                if [[ -d "$file" && $1 = y ]];then
-                        cd "$file"
-                        echo "$file"
-                        change_file_encoing "$1"
-                        cd ..
-                elif [[ -f "$file" ]];then
-                        echo "$file"
-                        enca -L zh_CN -x utf8 "$file"
-                fi;
-        done;
-        #ecna -L zh_CN file UTF-8
-        IFS=$OLD
+    OLD=$IFS
+    IFS=$'\n'
+    for file in $(find . -name '*.cue')
+    do
+        if [[ -d "$file" && $1 = y ]];then
+            cd "$file"
+            echo "$file"
+            change_file_encoing "$1"
+            cd ..
+        elif [[ -f "$file" ]];then
+            echo "$file"
+            enca -L zh_CN -x utf8 "$file"
+        fi;
+    done;
+    #ecna -L zh_CN file UTF-8
+    IFS=$OLD
 }
 
 read -p "please enter the dir path:" path #读取目录路径
 if [ ! -x "$path" ];    #判断目录是否存在且是否具有执行权限
 then 
-        echo "dir path not exists"
+    echo "dir path not exists"
 else
-        read -p "please enter if you want to recursive?y/n:" recur  #是否递归
+    read -p "please enter if you want to recursive?y/n:" recur  #是否递归
 fi
 
 if [ $recur = "y" ];
 then
-        cd "$path"
-        change_file_encoing "y"     #递归修改文件编码
+    cd "$path"
+    change_file_encoing "y"     #递归修改文件编码
 else
-        cd "$path"
-        change_file_encoing "n"     #非递归修改
+    cd "$path"
+    change_file_encoing "n"     #非递归修改
 fi
 
