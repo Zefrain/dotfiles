@@ -14,13 +14,13 @@ do
     mv $oldname $fname
     echo "fname=$fname"
 
-    dname=${fname#*\ }
-    dname=${dname%\.*}
+    # dname=${fname#*\ }
+    dname=${fname%\.*}
     echo "dname=$dname"
     outdir="$(dirname "$file")/$dname"
     echo "outdir=$outdir"
     rm -rf $outdir && mkdir $outdir
-    7za -aoa x $fname -o$outdir && rm $fname
+    7z -aoa x $fname -o$outdir #&& rm $fname
 done
 
 IFS=$OLD
