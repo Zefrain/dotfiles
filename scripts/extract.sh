@@ -1,7 +1,7 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 
-flist=$(find . -iname '*.rar' -o -iname '*.zip');
+flist=$(find . -iname '*.rar' -o -iname '*.zip' -o -iname '*.7z');
 
 OLD=$IFS
 IFS=$'\n'
@@ -20,7 +20,7 @@ do
     outdir="$(dirname "$file")/$dname"
     echo "outdir=$outdir"
     rm -rf $outdir && mkdir $outdir
-    7z -aoa x $fname -o$outdir #&& rm $fname
+    7z -aoa x $fname -o$outdir && rm $fname
 done
 
 IFS=$OLD
