@@ -1,12 +1,7 @@
-;;; package --- graphviz-dot-mode, company-c-headers, company-ycmd, flycheck-ycmd,
-;; helm-gtags, helm-c-yasnippet, edit-server ecb
-
-;;; Commentary:
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
-;;; Code:
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
@@ -36,8 +31,6 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     go
-     sql
      python
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -45,32 +38,31 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      helm
-     imenu-list
      auto-completion
      better-defaults
      emacs-lisp
-     ;; git
+     git
      markdown
      org
-     (shell :variables
-            shell-default-height 30
-            shell-default-position 'bottom)
+     ;; (shell :variables
+     ;;        shell-default-height 30
+     ;;        shell-default-position 'bottom)
      ;; spell-checking
-     ;; syntax-checking
+     syntax-checking
      ;; version-control
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(graphviz-dot-mode
-                                      company-c-headers
-                                      company-ycmd
-                                      flycheck-ycmd
-                                      helm-gtags
+   dotspacemacs-additional-packages '(google-c-style
+                                      clang-format
+                                      protobuf-mode
+                                      helm-rtags
                                       helm-c-yasnippet
-                                      edit-server
-                                      ecb)
+                                      flycheck-ycmd
+                                      company-ycmd
+                                      ycmd)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -149,7 +141,7 @@ values."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 20
+                               :size 13
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -175,7 +167,7 @@ values."
    ;; and TAB or <C-m> and RET.
    ;; In the terminal, these pairs are generally indistinguishable, so this only
    ;; works in the GUI. (default nil)
-   dotspacemacs-distinguish-gui-tab t
+   dotspacemacs-distinguish-gui-tab nil
    ;; If non nil `Y' is remapped to `y$' in Evil states. (default nil)
    dotspacemacs-remap-Y-to-y$ nil
    ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
@@ -262,10 +254,20 @@ values."
    ;; scrolling overrides the default behavior of Emacs which recenters point
    ;; when it reaches the top or bottom of the screen. (default t)
    dotspacemacs-smooth-scrolling t
-   ;; If non nil line numbers are turned on in all `prog-mode' and `text-mode'
-   ;; derivatives. If set to `relative', also turns on relative line numbers.
+   ;; Control line numbers activation.
+   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
+   ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
+   ;; This variable can also be set to a property list for finer control:
+   ;; '(:relative nil
+   ;;   :disabled-for-modes dired-mode
+   ;;                       doc-view-mode
+   ;;                       markdown-mode
+   ;;                       org-mode
+   ;;                       pdf-view-mode
+   ;;                       text-mode
+   ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers t
+   dotspacemacs-line-numbers `t
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
    dotspacemacs-folding-method 'evil
@@ -296,123 +298,55 @@ values."
    ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup 'all
-   )
-  )
+   dotspacemacs-whitespace-cleanup t
+   ))
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
 It is called immediately after `dotspacemacs/init', before layer configuration
 executes.
-  This function is mostly useful for variables
- that need to be set before packages are loaded.
-  If you are unsure, you should try in setting them in
+ This function is mostly useful for variables that need to be set
+before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-
-  (defvar configuration-layer--elpa-archives
-    '(("popkit" . "elpa.popkit.org/packages/")))
-
-
   )
-
-
-
-(defun ycmd-setup-completion-at-point-function ()
-  "Setup `completion-at-point-functions' for `ycmd-mode'."
-  (add-hook 'completion-at-point-functions
-            #'ycmd-complete-at-point nil :local))
-
-
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration.
-  This is the place where most of your configurations should be done.
-  Unless it is explicitly specified
-that a variable should be set before a package is loaded,
+This is the place where most of your configurations should be done. Unless it is
+explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-
-  ;; flycheck
-  (require 'flycheck)
-  (global-flycheck-mode)
-
-
-  ;; company
-  (global-company-mode)
-  ;; (setq company-backends '(company-c-headers))
-  (add-hook 'c-mode-hook
-            (lambda ()
-              (set (make-local-variable 'company-backends) '(company-ycmd))))
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (set (make-local-variable 'company-backends) '(company-ycmd))))
-  (add-hook 'c-mode-hook 'company-mode)
-  (add-hook 'c++-mode-hook 'company-mode)
-
-
-  ;; gtags Enable helm-gtags-mode
-  (add-hook 'c-mode-hook 'helm-gtags-mode)
-  (add-hook 'c++-mode-hook 'helm-gtags-mode)
-  (add-hook 'asm-mode-hook 'helm-gtags-mode)
-
-  ;; gtags customise
-  (setq-default
-   helm-gtags-auto-update t
-   helm-gtags-use-input-at-cursor t
-   helm-gtags-pulse-at-cursor t
-   helm-gtags-prefix-key "\C-cg"
-   helm-gtags-suggested-key-mapping t
-   )
-
-  ;; gtags shortcut
-  (defvar helm-gtags-mode-map)
-  (with-eval-after-load "helm-gtags"
-       (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
-       (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
-       (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-       (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
-       (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
-       (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))
-
-
-  ;; emacs-ycmd
+  ;; ycmd
   (require 'ycmd)
   (add-hook 'after-init-hook #'global-ycmd-mode)
-  (add-hook 'c-mode-hook 'ycmd-mode)
-  (add-hook 'c++-mode-hook 'ycmd-mode)
+  (set-variable 'ycmd-server-command '("python" "/Users/zhoush/.vim/bundle/YouCompleteMe/third_party/ycmd/ycmd"))
+  (set-variable 'ycmd-global-config "/Users/zhoush/Templates/.ycm_extra_conf.py")
 
-  (set-variable 'ycmd-server-command '("python" "/home/zhoush/.vim/bundle/YouCompleteMe/third_party/ycmd/ycmd"))
-  (set-variable 'ycmd-global-config '"/home/zhoush/.vim/bundle/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py")
-  (set-variable 'ycmd-extra-conf-whitelist '("/home/zhoush/Projects"))
-  (set-variable 'request-message-level '-1)
-  (set-variable 'url-show-status nil)
-  (add-hook 'ycmd-mode #'ycmd-setup-completion-at-point-function)
-
-
-  (require 'company-ycmd)
-  (company-ycmd-setup)
+  ;; flycheck-ycmd
   (require 'flycheck-ycmd)
   (flycheck-ycmd-setup)
-  (when (not (display-graphic-p))
-    (setq flycheck-indication-mode nil))
 
-  ;; yasnippet
-  (yas-global-mode)
+  ;; company-ycmd
+  (require 'company-ycmd)
+  (company-ycmd-setup)
 
-  ;; autocomplete
-  ;; (add-hook 'after-init-hook 'auto-complete-mode)
+  ;; ycmd-eldoc
+  (require 'ycmd-eldoc)
+  (add-hook 'ycmd-mode-hook 'ycmd-eldoc-setup)
+
+  ;; clang-format
+  (require 'clang-format)
+  (global-set-key [C-M-tab] 'clang-format-region)
+
+  ;; google-c-style
+  (add-hook 'c-mode-common-hook 'google-make-newline-indent)
+
+  ;; c-eldoc
+  ;; (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
 
 
-  (require 'color)
-  (let ((bg (face-attribute 'default :background)))
-    (custom-set-faces
-     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-     `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -422,61 +356,17 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ac-auto-start t t)
- '(c-default-style
-   (quote
-    ((c-mode . "k&r")
-     (c++-mode . "k&r")
-     (java-mode . "java")
-     (awk-mode . "awk")
-     (other . "gnu"))))
- '(company-auto-complete t)
- '(company-backends
-   (quote
-    (company-ycmd company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf company-files
-                  (company-dabbrev-code company-gtags company-etags company-keywords)
-                  company-oddmuse company-dabbrev company-abbrev company-c-headers)))
- '(company-c-headers-path-system
-   (quote
-    ("/usr/include/" "/usr/local/include/" "/usr/include/libxml2" "/usr/include/hiredis" "/usr/include/mysql")))
- '(company-c-headers-path-user
-   (quote
-    ("." "../include" "../includes" "./include" "./includes")))
- '(ecb-options-version "2.50")
- '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (graphviz-dot-mode comment-dwim-2 ac-c-headers jedi jedi-core python-environment epc ctable concurrent autopair company-c-headers go-guru go-eldoc company-go go-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed f s aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line avy async popup quelpa evil-matchit evil-mc dumb-jump smartparens helm helm-core dash ecb edit-server xterm-color shell-pop org-projectile pcache org-present org org-pomodoro alert log4e gntp org-download mwim multi-term mmm-mode markdown-toc markdown-mode imenu-list htmlize helm-company gnuplot gh-md eshell-z eshell-prompt-extras esh-help company-statistics company-anaconda auto-yasnippet ac-ispell auto-complete idomenu sql-indent yasnippet flymake-cppcheck helm-c-yasnippet yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode anaconda-mode pythonic helm-gtags flycheck-ycmd flycheck company-ycmd company ycmd request-deferred deferred ws-butler window-numbering which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide ido-vertical-mode hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired package-build spacemacs-theme)))
- '(which-function-mode t)
+    (google-c-style clang-format flycheck-ycmd yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic unfill smeargle protobuf-mode orgit org-projectile org-present org-pomodoro alert log4e gntp org-download mwim mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-rtags rtags helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flycheck-pos-tip pos-tip flycheck evil-unimpaired evil-magit magit magit-popup git-commit with-editor company-ycmd ycmd request-deferred deferred company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+ '(paradox-github-token "d6aeab79ab66173c50358af478f30b1c522ab44d")
+ '(yas-snippet-dirs
+   (quote
+    ("/Users/zhoush/.spacemacs.d/snippets" "/Users/zhoush/.emacs.d/private/snippets/" yas-installed-snippets-dir "/Users/zhoush/.spacemacs.d/layers/+completion/auto-completion/local/snippets")) t)
  '(ycmd-force-semantic-completion t))
-
-
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(company-scrollbar-bg ((t (:background "#414448"))))
- '(company-scrollbar-fg ((t (:background "#35373b"))))
- '(company-tooltip ((t (:inherit default :background "#2d3033"))))
- '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
- '(company-tooltip-selection ((t (:inherit font-lock-function-name-face)))))
-
-
-
-(global-set-key [(f11)] 'loop-alpha)  ;;注意这行中的F8 , 可以改成你想要的按键
-
-(defvar alpha-list '((100 100) (95 65) (85 55) (75 45) (65 35)))
-
-(defun loop-alpha ()
-  (interactive)
-  (let ((h (car alpha-list)))
-    ((lambda (a ab)
-       (set-frame-parameter (selected-frame) 'alpha (list a ab))
-       (add-to-list 'default-frame-alist (cons 'alpha (list a ab)))
-       ) (car h) (car (cdr h)))
-    (setq alpha-list (cdr (append alpha-list (list h))))
-    )
-  ;; loop-alpha
-  )
+ )
