@@ -31,6 +31,9 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     markdown
+     markdown
+     html
      python
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -38,6 +41,7 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      helm
+     ycmd
      auto-completion
      better-defaults
      emacs-lisp
@@ -55,7 +59,10 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(google-c-style
+   dotspacemacs-additional-packages '(
+                                      py-autopep8
+                                      company-quickhelp
+                                      google-c-style
                                       clang-format
                                       protobuf-mode
                                       helm-rtags
@@ -308,7 +315,8 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  )
+
+)
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
@@ -318,23 +326,41 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; company
+  (require 'company)
+  (global-company-mode)
+
+  ;; yasnippet
+  (yas-global-mode)
+
+  ;; py-autope8
+  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
+  (setq py-autopep8-options '("--max-line-length=100"))
+
   ;; ycmd
   (require 'ycmd)
-  (add-hook 'after-init-hook #'global-ycmd-mode)
-  (set-variable 'ycmd-server-command '("python" "/Users/zhoush/.vim/bundle/YouCompleteMe/third_party/ycmd/ycmd"))
+  ;; (add-hook 'after-init-hook 'global-ycmd-mode)
+  (global-ycmd-mode)
+  (set-variable 'ycmd-server-command (list "python" (file-truename "~/.vim/bundle/YouCompleteMe/third_party/ycmd/ycmd")))
   (set-variable 'ycmd-global-config "/Users/zhoush/Templates/.ycm_extra_conf.py")
+  (setq ycmd-extra-conf-whitelist '("~/Documents/*"))
+  (setq ycmd-force-semantic-completion t)
 
-  ;; flycheck-ycmd
-  (require 'flycheck-ycmd)
-  (flycheck-ycmd-setup)
+  ;; ;; ycmd-eldoc
+  (require 'ycmd-eldoc)
+  (add-hook 'ycmd-mode-hook 'ycmd-eldoc-setup)
 
   ;; company-ycmd
   (require 'company-ycmd)
   (company-ycmd-setup)
 
-  ;; ycmd-eldoc
-  (require 'ycmd-eldoc)
-  (add-hook 'ycmd-mode-hook 'ycmd-eldoc-setup)
+  ;; ;; flycheck-ycmd
+  (require 'flycheck-ycmd)
+  (flycheck-ycmd-setup)
+  ;; (global-flycheck-mode)
+  (add-hook 'c-mode-hook 'flycheck-mode)
+  (when (not (display-graphic-p))
+    (setq flycheck-indication-mode nil))
 
   ;; clang-format
   (require 'clang-format)
@@ -342,10 +368,6 @@ you should place your code here."
 
   ;; google-c-style
   (add-hook 'c-mode-common-hook 'google-make-newline-indent)
-
-  ;; c-eldoc
-  ;; (add-hook 'c-mode-hook 'c-turn-on-eldoc-mode)
-
 
   )
 
@@ -356,14 +378,15 @@ you should place your code here."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(company-auto-complete t)
+ '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (google-c-style clang-format flycheck-ycmd yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic unfill smeargle protobuf-mode orgit org-projectile org-present org-pomodoro alert log4e gntp org-download mwim mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-rtags rtags helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flycheck-pos-tip pos-tip flycheck evil-unimpaired evil-magit magit magit-popup git-commit with-editor company-ycmd ycmd request-deferred deferred company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (py-autopep8 web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data company-quickhelp google-c-style clang-format flycheck-ycmd yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic unfill smeargle protobuf-mode orgit org-projectile org-present org-pomodoro alert log4e gntp org-download mwim mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-rtags rtags helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flycheck-pos-tip pos-tip flycheck evil-unimpaired evil-magit magit magit-popup git-commit with-editor company-ycmd ycmd request-deferred deferred company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(paradox-github-token "d6aeab79ab66173c50358af478f30b1c522ab44d")
  '(yas-snippet-dirs
    (quote
-    ("/Users/zhoush/.spacemacs.d/snippets" "/Users/zhoush/.emacs.d/private/snippets/" yas-installed-snippets-dir "/Users/zhoush/.spacemacs.d/layers/+completion/auto-completion/local/snippets")) t)
- '(ycmd-force-semantic-completion t))
+    ("/Users/zhoush/.spacemacs.d/snippets" "/Users/zhoush/.emacs.d/private/snippets/" yas-installed-snippets-dir "/Users/zhoush/.spacemacs.d/layers/+completion/auto-completion/local/snippets"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
