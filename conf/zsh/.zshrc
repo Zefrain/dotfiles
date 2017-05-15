@@ -51,7 +51,7 @@ ZSH_THEME="jispwoso"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git emacs extrqct z command-not-found man)
+plugins=(git emacs extrqct z command-not-found man tmuxinator)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -63,8 +63,8 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
+# if [[ -n $ssh_connection ]]; then
+  export editor='vim'
 # else
 #   export EDITOR='mvim'
 # fi
@@ -83,4 +83,5 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-export PATH="/Users/zhoush/Git/sync/scripts:$PATH"
+export PATH='$HOME/.cargo/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/zhoush/Git/sync/scripts:$PATH'
+
