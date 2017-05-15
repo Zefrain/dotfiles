@@ -341,7 +341,7 @@ you should place your code here."
   (require 'ycmd)
   ;; (add-hook 'after-init-hook 'global-ycmd-mode)
   (global-ycmd-mode)
-  (set-variable 'ycmd-server-command (list "python" (file-truename "~/.vim/bundle/YouCompleteMe/third_party/ycmd/ycmd")))
+  (set-variable 'ycmd-server-command (list "python" (file-truename "~/Git/YouCompleteMe/third_party/ycmd/ycmd")))
   (set-variable 'ycmd-global-config "/Users/zhoush/Templates/.ycm_extra_conf.py")
   (setq ycmd-extra-conf-whitelist '("~/Documents/*"))
   (setq ycmd-force-semantic-completion t)
