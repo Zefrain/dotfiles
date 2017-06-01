@@ -1,3 +1,0 @@
-[submodule "conf/vimrc"]
-	path = conf/vimrc
-	url = https://github.com/amix/vimrc.git
