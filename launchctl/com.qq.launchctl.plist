@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.qq.launchctl.plist</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>sh</string>
+      <string>/Users/zhoush/Git/sync/scripts/do_qq.sh</string>
+    </array>
+    <key>StartCalendarInterval</key>
+    <array>
+      <dict>
+        <key>Minute</key>
+        <integer>30</integer>
+        <key>Hour</key>
+        <integer>9</integer>
+      </dict>
+      <dict>
+        <key>Minute</key>
+        <integer>30</integer>
+        <key>Hour</key>
+        <integer>19</integer>
+      </dict>
+    </array>
+    <key>RunAtLoad</key>
+    <false/>
+    <key>StandardOutPath</key>
+    <string>/tmp/do_qq.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/do_qq.err</string>
+  </dict>
+</plist>
