@@ -51,7 +51,7 @@ ZSH_THEME="jispwoso"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git emacs extract z command-not-found man tmux)
+plugins=(git extract emacs z command-not-found man tmux osx)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -83,3 +83,9 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
+#
+#
+source /Users/zhoush/Downloads/zxpay/pts/etc/ptsenv.sh
+
+export C_INCLUDE_PATH=:/usr/local/Cellar/openssl/1.0.2k/include:/usr/local/Cellar/openssl/1.0.2k/include
+export C_INCLUDE_PAth=$C_INCLUDE_PATH:/usr/local/Cellar/openssl/1.0.2k/include
