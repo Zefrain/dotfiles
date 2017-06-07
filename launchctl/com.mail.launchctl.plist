@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.qq.launchctl.plist</string>
+    <string>com.mail.launchctl.plist</string>
     <key>ProgramArguments</key>
     <array>
       <string>sh</string>
@@ -13,9 +13,9 @@
     <array>
       <dict>
         <key>Minute</key>
-        <integer>00</integer>
+        <integer>45</integer>
         <key>Hour</key>
-        <integer>10</integer>
+        <integer>9</integer>
       </dict>
       <dict>
         <key>Hour</key>
@@ -23,7 +23,7 @@
       </dict>
     </array>
     <key>RunAtLoad</key>
-    <false/>
+    <true/>
     <key>StandardOutPath</key>
     <string>/tmp/do_mail.log</string>
     <key>StandardErrorPath</key>
