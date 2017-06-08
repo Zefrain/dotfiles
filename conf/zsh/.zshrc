@@ -89,3 +89,5 @@ source /Users/zhoush/Downloads/zxpay/pts/etc/ptsenv.sh
 
 export C_INCLUDE_PATH=:/usr/local/Cellar/openssl/1.0.2k/include:/usr/local/Cellar/openssl/1.0.2k/include
 export C_INCLUDE_PAth=$C_INCLUDE_PATH:/usr/local/Cellar/openssl/1.0.2k/include
+export LIBRARY_PATH=/usr/local/Cellar/ncurses/6.0_3/lib:
+alias rm="rmtrash"
