@@ -30,7 +30,7 @@ def main(argv):
         elif opt in ("-o", "--ofile"):
             outputfile = arg
     print("s.aria2.addUri(['" + inputfile + "'], dict(dir='" + outputfile + "'))")
-    # s.aria2.addUri([inputfile], dict(dir=outputfile)) #
+    s.aria2.addUri([inputfile], dict(dir=outputfile)) #
 
 
 if __name__ == "__main__":

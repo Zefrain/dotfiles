@@ -85,9 +85,13 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 #
-source /Users/zhoush/Downloads/zxpay/pts/etc/ptsenv.sh
+source /Users/zhoush/Working/zxpay/pts/etc/ptsenv.sh
 
-export C_INCLUDE_PATH=:/usr/local/Cellar/openssl/1.0.2k/include:/usr/local/Cellar/openssl/1.0.2k/include
-export C_INCLUDE_PAth=$C_INCLUDE_PATH:/usr/local/Cellar/openssl/1.0.2k/include
-export LIBRARY_PATH=/usr/local/Cellar/ncurses/6.0_3/lib:
+export C_INCLUDE_PATH=/usr/local/Cellar/openssl/1.0.2k/include:~/include/:$C_INCLUDE_PATH
+export LIBRARY_PATH=/usr/local/Cellar/ncurses/6.0_3/lib:~/lib:$LIBRARY_PATH
 alias rm="rmtrash"
+
+if [ -z "$(pgrep tmux)" ]
+then
+    tmux -2
+fi
