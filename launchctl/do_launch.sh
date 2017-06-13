@@ -5,8 +5,8 @@ files=$(realpath *.plist)
 
 for file in $files
 do
-    echo "start $file..."
+    echo "do '$file' ..."
     launchctl unload $file
     launchctl load $file
-    echo "done... "
+    echo "done "
 done
