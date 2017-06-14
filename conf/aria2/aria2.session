@@ -1,0 +1,10 @@
+<<<<<<< HEAD
+=======
+https://pcs.baidu.com/rest/2.0/pcs/file?method=download&app_id=250528&path=%2FDocuments%2FLibrary%2Fc%2FPointers%20on%20C%2FPointers%20on%20C.pdf	
+ gid=2744acb818304ef7
+ out=Pointers on C.pdf
+ continue=true
+ header=User-Agent: netdisk;5.3.4.5;PC;PC-Windows;5.1.2600;WindowsBaiduYunGuanJia
+ header=Referer: http://pan.baidu.com/disk/home
+ header=Cookie: BDUSS=0JBclNocVRrRzRqTmZ3NWtkZkdrZy1nNndvWnd4N2ZHYnNDMzE1TVZ2OTBkajVaSVFBQUFBJCQAAAAAAAAAAAEAAADAZJIf1r3YvOnkuOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHTpFll06RZZb; pcsett=1496729380-b21a15d451bb658b6e0d9b77642a0ba8
+>>>>>>> parent of 99f90f5... Add aria2 download
