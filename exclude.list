@@ -1,0 +1,14 @@
+makefile
+*.out
+*.o
+*.sh
+*.log
+*.tar
+*bak*
+*back*
+bin*
+lib*
+obj*
+GTAGS
+GPATH
+GRTAGS
