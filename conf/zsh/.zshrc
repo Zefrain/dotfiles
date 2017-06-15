@@ -87,8 +87,7 @@ source $ZSH/oh-my-zsh.sh
 #
 source /Users/zhoush/Working/zxpay/pts/etc/ptsenv.sh
 
-export C_INCLUDE_PATH=/usr/local/Cellar/openssl/1.0.2k/include:~/include/:$C_INCLUDE_PATH
-export LIBRARY_PATH=/usr/local/Cellar/ncurses/6.0_3/lib:~/lib:$LIBRARY_PATH
+
 alias rm="rmtrash"
 
 if [ -z "$(pgrep tmux)" ]

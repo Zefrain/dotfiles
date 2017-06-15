@@ -1,12 +1,11 @@
-#!/bin/sh
-src=/var/abs
-des=/home/zhoush/Downloads
-/usr/bin/inotifywait -mrq --timefmt '%Y%m%d-%H:%M' --format  '%T %e %w%f' \
- -e CLOSE_WRITE,delete,create,attrib \
-${src} \
-| while read  file
-        do
-                rsync -avz --delete --progress ${src} ${des} &&
-                echo "${src} was rsynced"
-                echo "---------------------------------------------------------------------------"
-        done
+#!/bin/bash
+
+
+remote="zhoushang@192.168.254.58"
+
+for file in $@
+do
+    src=$(realpath $file)
+    dst=$(echo "${remote}:~/$(dirname ${src/\/Users\/zhoush\/Working\/zxpay/})")
+    rsync -avz --exclude-from="/Users/zhoush/Git/sync/exclude.list" $src $dst
+done
