@@ -2,6 +2,8 @@
 
 
 remote="zhoushang@192.168.254.58"
+local_proj=/Users/zhoush/Working/zxpay/
+remote_proj=~
 
 for file in $@
 do
