@@ -30,37 +30,82 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
-     chrome
-     sql
-     ycmd
-     chinese-fonts-setup
-     osx
-     c-c++
-     gtags
-     markdown
-     html
-     python
-     syntax-checking
-     auto-completion
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-     ;; <M-m f e R> (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
-     helm
-     better-defaults
-     emacs-lisp
-     git
-     markdown
-     pandoc
-     org
-     (shell :variables
-            shell-default-height 30
-            shell-default-position 'bottom)
-     ;; spell-checking
-     ;; version-control
-     )
+
+   (let ((layers
+          '(
+            sql
+            (ycmd :variables
+                  ycmd-server-command (list "python" (file-truename "~/Git/YouCompleteMe/third_party/ycmd/ycmd"))
+                  ycmd-global-config (file-truename "~/Templates/.ycm_extra_conf.py")
+                  ycmd-extra-conf-whitelist '("~/Working/*")
+                  ycmd-force-semantic-completion t)
+            chinese-fonts-setup
+            (gtags :variables
+                   gtags-enable-by-default t)
+            markdown
+            html
+            python
+            syntax-checking
+            (c-c++ :variables
+                   c-c++-default-mode-for-headers 'c++-mode
+                   c-c++-enable-clang-support t
+                   )
+            colors
+            imenu-list
+            ;; games
+            ;; xkcd
+            ;; pdf-tools
+            ;; dash
+            ;; search-engine
+            ;; ----------------------------------------------------------------
+            ;; Example of useful layers you may want to use right away.
+            ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
+            ;; <M-m f e R> (Emacs style) to install them.
+            ;; ----------------------------------------------------------------
+            ;; ivy
+            helm
+            (auto-completion :variables
+                             auto-completion-enable-sort-by-usage t
+                             auto-completion-enable-snippets-in-popup t
+                             auto-completion-enable-help-tooltip t)
+            better-defaul
+            emacs-lisp
+            git
+            (org :variables
+                 org-enable-github-support t
+                 org-capture-templates
+                   (quote
+                    (("n" "Note" entry
+                      (file "~/Documents/org/notes.org")
+                      "" :prepend t :jump-to-captured t :empty-lines 1)
+                     ("t" "Todo" entry
+                      (file "~/Documents/org/todo.org")
+                      "" :empty-lines 1)
+                     ("a" "Agenda" entry
+                      (file "~/Documents/org/agenda.org")
+                      "" :empty-lines 1)
+                     ("z" "zxpay/CHANGELOG" entry
+                      (file+headline "~/Working/zxpay/CHANGELOG.org" "Release 0.x.x")
+                      "* %? %t" :prepend t))))
+
+            (markdown :variables markdown-live-preview-engine 'vmd)
+            (ibuffer :variables ibuffer-group-buffers-by 'projects)
+            (shell :variables
+                   shell-default-shell 'eshell
+                   shell-default-height 30
+                   shell-default-position 'bottom)
+            (spell-checking :variables spell-checking-enable-by-default nil)
+            (syntax-checking :variables syntax-checking-enable-by-default nil
+                             syntax-checking-enable-tooltips nil)
+            (spacemacs-layouts :variables layouts-enable-autosave nil
+                               layouts-autosave-delay 300)
+            version-control
+            twitter
+            )))
+         (if (eq system-type 'darwin)
+             (append layers '(osx))
+           layers
+           ))
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -342,32 +387,9 @@ you should place your code here."
   ;; 让 spacemacs mode-line 中的 Unicode 图标正确显示
   (cfs-set-spacemacs-fallback-fonts)
 
-  ;; auto-completion
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-snippets-in-popup t)))
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-sort-by-usage t)))
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-help-tooltip t)))
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                     auto-completion-enable-help-tooltip 'manual)))
-  (setq-default dotspacemacs-configuration-layers
-                '((auto-completion :variables
-                                   auto-completion-enable-sort-by-usage t)))
-
   ;; company
   (global-company-mode)
 
-  ;; c-c++ layer
-  (setq-default dotspacemacs-configuration-layers
-                '((c-c++ :variables
-                         c-c++-default-mode-for-headers 'c++-mode)))
-  (setq-default dotspacemacs-configuration-layers
-                '((c-c++ :variables c-c++-enable-clang-support t)))
   ;; Bind clang-format-region to C-M-tab in all modes:
   (global-set-key [C-M-tab] 'clang-format-region)
   ;; Bind clang-format-buffer to tab on the c++-mode only:
@@ -378,24 +400,16 @@ you should place your code here."
   (global-set-key (kbd "C-t") 'pop-tag-mark)
   (global-set-key (kbd "C-]") 'ycmd-goto)
 
-
-
   ;; ycmd layer
   (global-ycmd-mode)
-  (setq ycmd-server-command (list "python" (file-truename "~/Git/YouCompleteMe/third_party/ycmd/ycmd")))
-  (setq ycmd-global-config (file-truename "~/Templates/.ycm_extra_conf.py"))
-  (setq ycmd-extra-conf-whitelist '("~/Working/*"))
-
-  (setq ycmd-force-semantic-completion t)
-
+  ;; (setq ycmd-server-command (list "python" (file-truename "~/Git/YouCompleteMe/third_party/ycmd/ycmd"))) ;;
+  ;; (setq ycmd-global-config (file-truename "~/Templates/.ycm_extra_conf.py"))                             ;;
+  ;; (setq ycmd-extra-conf-whitelist '("~/Working/*"))                                                      ;;
+  ;; (setq ycmd-force-semantic-completion t)                                                                ;;
 
   ;; ;; ycmd-eldoc
   ;; (require 'ycmd-eldoc)
   ;; (add-hook 'ycmd-mode-hook 'ycmd-eldoc-setup)
-
-  ;; gtags layer
-  (setq-default dotspacemacs-configuration-layers
-                '((gtags :variables gtags-enable-by-default t)))
 
   ;; yasnippet
   (yas-global-mode)
@@ -458,21 +472,10 @@ This function is called at the very end of Spacemacs initialization."
  '(org-agenda-files
    (quote
     ("~/Working/zxpay/UPDATELOG.org" "~/Working/zxpay/README.org" "~/Templates/org/agenda.org")))
- '(org-capture-templates
-   (quote
-    (("n" "Note" entry
-      (file "~/Templates/org/notes.org")
-      "" :prepend t :jump-to-captured t :empty-lines 1)
-     ("t" "Todo" entry
-      (file "~/Templates/org/todo.org")
-      "" :empty-lines 1)
-     ("a" "Agenda" entry
-      (file "~/Templates/org/agenda.org")
-      "" :empty-lines 1))))
  '(org-export-with-sub-superscripts (quote {}))
  '(package-selected-packages
    (quote
-    (xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help org-brain impatient-mode simple-httpd evil-org ox-pandoc ht helm-tramp ssh org-plus-contrib reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl osx-plist 2048-game chinese-fonts-setup super-save symon string-inflection realgud test-simple loc-changes load-relative password-generator helm-purpose window-purpose imenu-list evil-lion editorconfig srefactor pandoc-mode helm-gtags ggtags disaster company-c-headers cmake-mode py-autopep8 web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data company-quickhelp google-c-style clang-format flycheck-ycmd yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic unfill smeargle protobuf-mode orgit org-projectile org-present org-pomodoro alert log4e gntp org-download mwim mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-rtags rtags helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flycheck-pos-tip pos-tip flycheck evil-unimpaired evil-magit magit magit-popup git-commit with-editor company-ycmd ycmd request-deferred deferred company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (vmd-mode twittering-mode rainbow-mode rainbow-identifiers ox-gfm ibuffer-projectile git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter flyspell-correct-helm flyspell-correct diff-hl color-identifiers-mode browse-at-remote auto-dictionary xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help org-brain impatient-mode simple-httpd evil-org ox-pandoc ht helm-tramp ssh org-plus-contrib reveal-in-osx-finder pbcopy osx-trash osx-dictionary launchctl osx-plist 2048-game chinese-fonts-setup super-save symon string-inflection realgud test-simple loc-changes load-relative password-generator helm-purpose window-purpose imenu-list evil-lion editorconfig srefactor pandoc-mode helm-gtags ggtags disaster company-c-headers cmake-mode py-autopep8 web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data company-quickhelp google-c-style clang-format flycheck-ycmd yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic unfill smeargle protobuf-mode orgit org-projectile org-present org-pomodoro alert log4e gntp org-download mwim mmm-mode markdown-toc markdown-mode magit-gitflow htmlize helm-rtags rtags helm-gitignore helm-company helm-c-yasnippet gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md fuzzy flycheck-pos-tip pos-tip flycheck evil-unimpaired evil-magit magit magit-popup git-commit with-editor company-ycmd ycmd request-deferred deferred company-statistics company auto-yasnippet yasnippet ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed dash aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(pandoc-data-dir "/Users/zhoush/.emacs.d/.cache/pandoc/")
  '(paradox-automatically-star t)
  '(request-message-level -1)
