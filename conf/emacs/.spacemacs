@@ -100,9 +100,8 @@ values."
                     (file+datetree "~/Git/org/agenda.org")
                     "" :empty-lines 1)
                    ("z" "zxpay/CHANGELOG" entry
-                    (file+headline "~/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
+                    (file+headline "~/Working/zxpay/CHANGELOG.org" "Release 0.x.x")
                     "* %? %t\n** New\n** Fix" :prepend t))))
-            ;; journal
             (markdown :variables markdown-live-preview-engine 'vmd)
             (ibuffer :variables ibuffer-group-buffers-by 'projects)
             (shell :variablesp
