@@ -1,0 +1,37 @@
+_startx() {
+    if [ "$(uname -s)" = "Linux" ] && [ -z "$(echo $XDG_CURRENT_DESKTOP)" ]
+    then
+        startx
+    fi
+}
+
+_xmodmap() {
+    if [ -x "$(which xmodmap 2>/dev/null)" ] && [ -z "$(echo $XMODMAP_FLAG)" ]
+    then
+        export XMODMAP_FLAG=1
+        xmodmap ~zhoush/.xmodmap
+    fi
+}
+
+_tmux() {
+    if [ -z "$(echo $TMUX)" ]
+    then
+        tmux -2
+    fi
+}
+
+_alias() {
+    alias open="xdg-open"
+}
+
+
+
+_init_linux() {
+    _startx
+    _xmodmap
+    _tmux
+    _alias
+}
+
+
+_init_linux
