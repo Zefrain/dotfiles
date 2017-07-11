@@ -91,7 +91,7 @@ values."
                  org-capture-templates
                  (quote
                   (("n" "Note" entry
-                    (file "~/Git/org/notes.org")
+                    (file "~/Git/org/NOTEs.org")
                     "* %? %T\n" :prepend t :jump-to-captured t :empty-lines 1)
                    ("t" "Todo" entry
                     (file "~/Git/org/TODOs.org")
@@ -101,7 +101,7 @@ values."
                     "" :empty-lines 1)
                    ("z" "zxpay/CHANGELOG" entry
                     (file+headline "~/Working/zxpay/CHANGELOG.org" "Release 0.x.x")
-                    "* %? %t\n" :prepend t))))
+                    "* %? %t\n** New\n** Fix" :prepend t))))
             ;; journal
             (markdown :variables markdown-live-preview-engine 'vmd)
             (ibuffer :variables ibuffer-group-buffers-by 'projects)
