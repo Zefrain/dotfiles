@@ -28,7 +28,7 @@ values."
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layer")
-   ;; List of configuration layers to load.
+   ;; List of conanfiguration layers to load.
    dotspacemacs-configuration-layers
    (let ((layers
           '(
@@ -65,14 +65,18 @@ values."
             ;; ivy
             helm
             (auto-completion :variables
+                             auto-completion-return-key-behavior 'complete
+                             auto-completion-tab-key-behavior 'cycle
+                             auto-completion-complete-with-key-sequence nil
+                             auto-completion-complete-with-key-sequence-delay 0.1
+                             auto-completion-private-snippets-directory nil
                              auto-completion-enable-sort-by-usage t
-                             ;; (append spacemacs-default-company-backends '(company-ycmd))
-                             spacemacs-default-company-backends '(company-ycmd)
-                             auto-completion-enable-help-tooltip 'manual)
+                             auto-completion-enable-help-tooltip t)
             better-defaults
             emacs-lisp
             (git :variables
-                 magit-repository-directories '("~/Git/"))
+                 magit-repository-directories '("~/Git/"
+                                                "~/Documents/org/"))
             (org :variables
                  org-bullets-bullet-list '("■" "◆" "▲" "▶")
                  ;; org-enable-org-journal-support t
@@ -87,13 +91,13 @@ values."
                  org-capture-templates
                  (quote
                   (("n" "Note" entry
-                    (file "~/Documents/org/notes.org")
+                    (file "~/Git/org/notes.org")
                     "* %? %T\n" :prepend t :jump-to-captured t :empty-lines 1)
                    ("t" "Todo" entry
-                    (file "~/Documents/org/todo.org")
+                    (file "~/Git/org/TODOs.org")
                     "* TODO %?\n %t" :empty-lines 1)
                    ("a" "Agenda" entry
-                    (file+datetree "~/Documents/org/agenda.org")
+                    (file+datetree "~/Git/org/agenda.org")
                     "" :empty-lines 1)
                    ("z" "zxpay/CHANGELOG" entry
                     (file+headline "~/Working/zxpay/CHANGELOG.org" "Release 0.x.x")
@@ -489,6 +493,7 @@ This function is called at the very end of Spacemacs initialization."
  '(yas-snippet-dirs
    (quote
     ("/Users/zhoush/.spacemacs.d/snippets/" yas-installed-snippets-dir "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets")))
+ '(ycmd-confirm-fixit nil)
  '(ycmd-extra-conf-whitelist (quote ("~/Documents/*" "~/Downloads/*")))
  '(ycmd-startup-timeout 10))
 (custom-set-faces
