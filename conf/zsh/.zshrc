@@ -63,11 +63,11 @@ source $ZSH/oh-my-zsh.sh
 # export LANG=en_US.UTF-8
 
 # Preferred editor for local and remote sessions
-# if [[ -n $ssh_connection ]]; then
-  export editor='vim'
-# else
-#   export EDITOR='mvim'
-# fi
+if [[ -n $ssh_connection ]]; then
+    export editor='vim'
+else
+    export EDITOR='emacs'
+fi
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -85,14 +85,3 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 #
-source $HOME/Working/zxpay/pts/etc/ptsenv.sh
-
-
-alias rm="rmtrash"
-
-if [ -z "$(pgrep tmux)" ]
-then
-    tmux -2
-fi
-export PATH="/usr/local/opt/sphinx-doc/bin:$PATH"
-export PATH="/usr/local/opt/llvm/bin:$PATH"

@@ -1,0 +1,11 @@
+_alias()
+{
+    alias rm="rmtrash"
+}
+
+_init_osx() {
+    _alias
+}
+
+
+_init_osx
