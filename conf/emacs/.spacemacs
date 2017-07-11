@@ -87,11 +87,11 @@ values."
                  ;; org-journal-time-prefix "* "
                  ;; org-journal-time-format ""
                  org-enable-github-support t
-                 org-projectile-file "TODOs.org"
+                 org-projectile-file "org/TODOs.org"
                  org-capture-templates
                  (quote
                   (("n" "Note" entry
-                    (file "~/Git/org/notes.org")
+                    (file "~/Git/org/NOTEs.org")
                     "* %? %T\n" :prepend t :jump-to-captured t :empty-lines 1)
                    ("t" "Todo" entry
                     (file "~/Git/org/TODOs.org")
@@ -100,8 +100,8 @@ values."
                     (file+datetree "~/Git/org/agenda.org")
                     "" :empty-lines 1)
                    ("z" "zxpay/CHANGELOG" entry
-                    (file+headline "~/Working/zxpay/CHANGELOG.org" "Release 0.x.x")
-                    "* %? %t\n" :prepend t))))
+                    (file+headline "~/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
+                    "* %? %t\n** New\n** Fix" :prepend t))))
             ;; journal
             (markdown :variables markdown-live-preview-engine 'vmd)
             (ibuffer :variables ibuffer-group-buffers-by 'projects)
