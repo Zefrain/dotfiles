@@ -77,8 +77,10 @@ values."
             (git :variables
                  magit-repository-directories '("~/Git/"
                                                 "~/Documents/org/"))
+
+
             (org :variables
-                 org-bullets-bullet-list '("■" "◆" "▲" "▶")
+                 ;; org-bullets-bullet-list '("■" "◆" "▲" "▶")
                  ;; org-enable-org-journal-support t
                  ;; org-journal-dir "~/Documents/org/journal/"
                  ;; org-journal-file-format "%Y-%m-%d"
@@ -95,14 +97,13 @@ values."
                     "* %? %T\n" :prepend t :jump-to-captured t :empty-lines 1)
                    ("t" "Todo" entry
                     (file "~/Git/org/TODOs.org")
-                    "* TODO %?\n %t" :empty-lines 1)
+                    "* TODO %?\n %t" :empty-lines 1 :jump-to-captured t)
                    ("a" "Agenda" entry
                     (file+datetree "~/Git/org/agenda.org")
-                    "" :empty-lines 1)
+                    "" :empty-lines 1 :jump-to-captured t)
                    ("z" "zxpay/CHANGELOG" entry
                     (file+headline "~/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
-                    "* %? %t\n** New\n** Fix" :prepend t))))
-            ;; journal
+                    "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t))))
             (markdown :variables markdown-live-preview-engine 'vmd)
             (ibuffer :variables ibuffer-group-buffers-by 'projects)
             (shell :variablesp
@@ -464,7 +465,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(c-basic-offset 4)
+ '(c-basic-offset 2)
  '(c-default-style
    (quote
     ((c-mode . "bsd")
@@ -483,10 +484,11 @@ This function is called at the very end of Spacemacs initialization."
  '(org-export-with-sub-superscripts (quote {}))
  '(package-selected-packages
    (quote
-    (flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-fonts-setup browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+
+    (org-beautify-theme grab-mac-link flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-fonts-setup browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pandoc-data-dir "/Users/zhoush/.emacs.d/.cache/pandoc/")
  '(paradox-automatically-star t)
- '(paradox-github-token t t)
+ '(paradox-github-token t)
  '(request-message-level -1)
  '(tab-width 4)
  '(truncate-partial-width-windows 100)
@@ -495,9 +497,9 @@ This function is called at the very end of Spacemacs initialization."
  '(woman-locale "en_US.UTF-8")
  '(yas-snippet-dirs
    (quote
-    ("/Users/zhoush/.spacemacs.d/snippets/" yas-installed-snippets-dir "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets")) t)
+    ("/Users/zhoush/.spacemacs.d/snippets/" yas-installed-snippets-dir "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets")))
  '(ycmd-confirm-fixit nil)
- '(ycmd-extra-conf-whitelist (quote ("~/Documents/*" "~/Downloads/*")) t)
+ '(ycmd-extra-conf-whitelist (quote ("~/Documents/*" "~/Downloads/*")))
  '(ycmd-startup-timeout 10))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -507,21 +509,3 @@ This function is called at the very end of Spacemacs initialization."
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-fonts-setup browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
- '(yas-snippet-dirs
-   (quote
-    ("/Users/zhoush/.spacemacs.d/snippets/" yas-installed-snippets-dir "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
