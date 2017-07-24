@@ -6,7 +6,6 @@
     <string>com.mail.launchctl.plist</string>
     <key>ProgramArguments</key>
     <array>
-      <string>sh</string>
       <string>/Users/zhoush/Git/sync/launchctl/sh/do_mail.sh</string>
     </array>
     <key>StartCalendarInterval</key>
@@ -19,7 +18,7 @@
       </dict>
       <dict>
         <key>Hour</key>
-        <integer>20</integer>
+        <integer>19</integer>
       </dict>
     </array>
     <key>RunAtLoad</key>
