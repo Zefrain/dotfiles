@@ -8,5 +8,6 @@ do
     echo "do '$file' ..."
     launchctl unload $file
     launchctl load $file
+    sleep 1
     echo "done "
 done
