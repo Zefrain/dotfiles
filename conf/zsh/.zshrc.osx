@@ -7,11 +7,14 @@ _lib_path()
 {
     LD_LIBRARY_PATH=/usr/local/opt/openssl/lib:/usr/local/opt/curl/lib:$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH
+
+    LIBRARY_PATH=$HOME/lib
+    export LIBRARY_PATH
 }
 
 _incl_path()
 {
-    C_INCLUDE_PATH=/usr/local/opt/openssl/include:/usr/local/opt/curl/include
+    C_INCLUDE_PATH=/usr/local/opt/openssl/include:/usr/local/opt/curl/include:$HOME/include
     export C_INCLUDE_PATH
 }
 

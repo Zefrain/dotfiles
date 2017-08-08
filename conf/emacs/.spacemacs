@@ -30,13 +30,17 @@ values."
    dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layer")
    ;; List of conanfiguration layers to load.
    dotspacemacs-configuration-layers
-   (let ((layers
+   (
+    let ((
+          layers
           '(
-            graphviz
+            csv
+            ;; graphviz
+            plantuml
             sql
             (ycmd :variables
                   ycmd-force-semantic-completion t
-                  ycmd-server-command (list "python" (file-truename "~/Git/YouCompleteMe/third_party/ycmd/ycmd"))
+                  ycmd-server-command (list "python" (file-truename "~/Public/Projects/YouCompleteMe/third_party/ycmd/ycmd"))
                   ycmd-global-config (file-truename "~/Templates/.ycm_extra_conf.py")
                   ycmd-extra-conf-whitelist '("~/*"))
             chinese-fonts-setup
@@ -44,7 +48,8 @@ values."
                    gtags-enable-by-default t)
             markdown
             html
-            python
+            (python :variables
+                    python-enable-yapf-format-on-save t)
             syntax-checking
             (c-c++ :variables
                    c-c++-default-mode-for-headers 'c++-mode
@@ -80,15 +85,17 @@ values."
                                                 "~/Documents/org/"))
             (org :variables
                  ;; org-bullets-bullet-list '("■" "◆" "▲" "▶")
-                 ;; org-enable-org-journal-support t
-                 ;; org-journal-dir "~/Documents/org/journal/"
-                 ;; org-journal-file-format "%Y-%m-%d"
-                 ;; org-journal-date-prefix "#+TITLE: "
-                 ;; org-journal-date-format "%A, %B %d %Y"
-                 ;; org-journal-time-prefix "* "
-                 ;; org-journal-time-format ""
+                 org-enable-org-journal-support t
+                 org-journal-dir "~/Git/org/journal/"
+                 org-journal-file-format "%Y-%m-%d.org"
+                 org-journal-date-prefix "#+TITLE: "
+                 org-journal-date-format "%A, %B %d %Y"
+                 org-journal-time-prefix "* "
+                 org-journal-time-format ""
+
+                 org-projectile-per-project "org/TODOs.org"
+
                  org-enable-github-support t
-                 org-projectile-file "org/TODOs.org"
                  org-capture-templates
                  (quote
                   (("n" "Note" entry
@@ -103,10 +110,11 @@ values."
                    ("z" "zxpay/CHANGELOG" entry
                     (file+headline "~/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
                     "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t))))
+
             (markdown :variables markdown-live-preview-engine 'vmd)
             (ibuffer :variables ibuffer-group-buffers-by 'projects)
             (shell :variablesp
-                   shell-default-shell 'multi-term
+                   shell-default-shell 'eshell
                    shell-default-height 30
                    shell-default-position 'bottom
                    shell-enable-smart-eshell t)
@@ -116,9 +124,7 @@ values."
             (spacemacs-layouts :variables layouts-enable-autosave nil
                                layouts-autosave-delay 300)
             version-control
-            (chrome :variables
-                    (if (eq system-type 'gnu/linux)
-                        (add-hook 'edit-server-done-hook (lambda () (shell-command "xdg-open")))))
+            chrome
             )))
          (if (eq system-type 'darwin)
              (append layers '(osx))
@@ -129,6 +135,7 @@ values."
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
    dotspacemacs-additional-packages '(org-mac-link
+                                      edit-server
                                       super-save)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -202,8 +209,8 @@ values."
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
    dotspacemacs-themes '(
-                         spacemacs-dark
                          spacemacs-light
+                         spacemacs-dark
                          )
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
@@ -353,7 +360,7 @@ values."
    dotspacemacs-highlight-delimiters 'all
    ;; If non nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server nil
+   dotspacemacs-persistent-server t
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
    ;; (default '("ag" "pt" "ack" "grep"))
@@ -388,6 +395,9 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; edit-server
+  (edit-server-start)
+
   (setq locale-coding-system 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
@@ -407,11 +417,6 @@ you should place your code here."
 
   ;; (setq-default configuration-layer-private-layer-directory '("~/.spacemacs.d/layer"))
 
-  ;; org-projectile
-  (with-eval-after-load 'org-agenda
-    (require 'org-projectile)
-    (push (org-projectile:todo-files) org-agenda-files))
-
   ;; company
   (global-company-mode)
 
@@ -423,10 +428,6 @@ you should place your code here."
 
   ;; yasnippet
   (yas-global-mode)
-
-  ;; py-autope8
-  (add-hook 'python-mode-hook 'py-autopep8-enable-on-save)
-  (setq py-autopep8-options '("--max-line-length=100"))
 
   ;; company-ycmd
   (require 'company-ycmd)
@@ -453,6 +454,7 @@ you should place your code here."
 
   )
 
+
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -477,20 +479,28 @@ This function is called at the very end of Spacemacs initialization."
  '(company-auto-complete t)
  '(ede-project-directories (quote ("/Users/zhoush/Working/zxpay")))
  '(evil-want-Y-yank-to-eol nil)
+ '(magit-diff-arguments
+   (quote
+    ("--ignore-space-change" "--ignore-all-space" "--no-ext-diff" "--stat")))
  '(org-agenda-files
    (quote
     ("~/Documents/org/agenda.org" "~/Working/zxpay/CHANGELOG.org" "~/Working/zxpay/README.org")))
  '(org-export-with-sub-superscripts (quote {}))
  '(package-selected-packages
    (quote
-    (smartparens evil yasnippet company helm helm-core avy org-plus-contrib powerline multi-line graphviz-dot-mode org-mac-link org-beautify-theme grab-mac-link flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-fonts-setup browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (plantuml-mode test-simple loc-changes load-relative simple-httpd window-purpose csv-mode smartparens evil yasnippet company helm helm-core avy org-plus-contrib powerline multi-line graphviz-dot-mode org-mac-link org-beautify-theme grab-mac-link flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-fonts-setup browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pandoc-data-dir "/Users/zhoush/.emacs.d/.cache/pandoc/")
  '(paradox-automatically-star t)
  '(paradox-github-token t t)
+ '(projectile-project-root-files
+   (quote
+    ("rebar.config" "project.clj" "build.boot" "SConstruct" "pom.xml" "build.sbt" "gradlew" "build.gradle" ".ensime" "Gemfile" "requirements.txt" "setup.py" "tox.ini" "gulpfile.js" "Gruntfile.js" "bower.json" "composer.json" "Cargo.toml" "mix.exs" "stack.yaml" "info.rkt" "DESCRIPTION" "TAGS" "GTAGS" ".ycm_extra_conf.py")))
+ '(python-shell-completion-native-enable nil)
  '(request-message-level -1)
  '(tab-width 2)
  '(truncate-partial-width-windows 100)
  '(url-show-status nil)
+ '(vc-follow-symlinks t)
  '(which-function-mode t)
  '(woman-locale "en_US.UTF-8")
  '(yas-snippet-dirs
