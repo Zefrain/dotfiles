@@ -1,1 +1,1 @@
-/Users/zhoush/Git/sync/scripts/YCM-Generator/config_gen.py
+/Users/zhoush/Private/Projects/sync/conf/YCM-Generator/config_gen.py
