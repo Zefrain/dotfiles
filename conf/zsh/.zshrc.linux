@@ -9,7 +9,7 @@ _xmodmap() {
     if [ -x "$(which xmodmap 2>/dev/null)" ] && [ -z "$(echo $XMODMAP_FLAG)" ]
     then
         export XMODMAP_FLAG=1
-        xmodmap ~zhoush/.xmodmap
+        xmodmap ~/.xmodmap
     fi
 }
 
