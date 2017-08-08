@@ -10,21 +10,21 @@ tmux_dir="$conf_dir/tmux"
 zsh_dir="$conf_dir/zsh"
 aria_dir="$conf_dir/aria2"
 
-scripts_dir="$sync_dir/conf"
+scripts_dir="$sync_dir/scripts"
 
 
 _init_conf_zsh() {
-    ln -sf "$zsh_dir/.zshrc" ~
-    ln -sf "$zsh_dir/.zshenv" ~
+    ln -snf "$zsh_dir/.zshrc" ~
+    ln -snf "$zsh_dir/.zshenv" ~
 }
 
 _init_conf_emacs() {
-    ln -sf "$emacs_dir/.spacemacs" ~
-    ln -sf "$emacs_dir/.spacemacs.d" ~
+    ln -snf "$emacs_dir/.spacemacs" ~
+    ln -snf "$emacs_dir/.spacemacs.d" ~
 }
 
 _init_conf_aria2() {
-    ln -sf "$aria_dir" ~/.aria2
+    ln -snf "$aria_dir" ~/.aria2
 }
 
 _init_conf() {
@@ -34,14 +34,13 @@ _init_conf() {
 }
 
 
-
 _init_script() {
     export PATH=$PATH:$pwd
-    ln -sf $scripts_dir/YCM-Generator/config_gen.py .
+    sudo ln -sf $scripts_dir/YCM-Generator/config_gen.py /usr/local/bin
 }
 
 _init_sync() {
-    find -L $HOME -type l -exec rm -- {} +
+    symlinks -d -r ~
 
     _init_conf
     _init_script

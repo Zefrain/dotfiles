@@ -81,8 +81,9 @@ values."
             better-defaults
             emacs-lisp
             (git :variables
-                 magit-repository-directories '("~/Git/"
-                                                "~/Documents/org/"))
+                 magit-repository-directories '("~/Private/Projects"
+                                                "~/Public/Projects"
+                                                "~/Documents/"))
             (org :variables
                  ;; org-bullets-bullet-list '("■" "◆" "▲" "▶")
                  org-enable-org-journal-support t
