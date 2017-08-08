@@ -1,16 +1,17 @@
-dir=$(dirname $(readlink ~/.zshrc))
+zsh_dir=$(dirname $(readlink ~/.zshrc))
 
 _init() {
     case "$(uname -s)" in
         "Linux")
-            source "$dir/.zshrc.linux"
+            source "$zsh_dir/.zshrc.linux"
             ;;
         "Darwin")
-            source "$dir/.zshrc.osx"
+            source "$zsh_dir/.zshrc.osx"
 
-            export PATH="/usr/local/opt/llvm/bin:$PATH"
+      export PATH="/usr/local/opt/llvm/bin:$PATH"
             ;;
     esac
+
 }
 
 _init

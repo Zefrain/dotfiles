@@ -2,7 +2,7 @@
 	path = conf/zsh/.oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh.git
 [submodule "scripts/YCM-Generator"]
-	path = scripts/YCM-Generator
+	path = exec/YCM-Generator
 	url = https://github.com/rdnetto/YCM-Generator.git
 [submodule "conf/tmux"]
 	path = conf/tmux
