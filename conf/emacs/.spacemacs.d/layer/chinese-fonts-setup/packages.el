@@ -59,10 +59,11 @@ Each entry is either:
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
 (defun chinese-fonts-setup/init-chinese-fonts-setup ()
-  (require 'chinese-fonts-setup)
-  ;; 让 chinese-fonts-setup 随着 emacs 自动生效。
-  (chinese-fonts-setup-enable)
-  ;; 让 spacemacs mode-line 中的 Unicode 图标正确显示
-  (cfs-set-spacemacs-fallback-fonts)
+
+  (require 'cnfonts)
+  ;; 让 cnfonts 随着 Emacs 自动生效。
+  (cnfonts-enable)
+  ;; 让 spacemacs mode-line 中的 Unicode 图标正确显示。
+  (cnfonts-set-spacemacs-fallback-fonts)
   )
 ;;; packages.el ends here
