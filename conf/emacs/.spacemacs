@@ -396,6 +396,12 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+
+  ;; cnfonts
+  '(cnfonts-profiles-directory "~/.spacemacs.d/chinese-fonts-setup")
+  (setq cnfonts-profiles '("Darwin" "Linux"))
+
+
   ;; edit-server
   (edit-server-start)
 
@@ -474,7 +480,6 @@ This function is called at the very end of Spacemacs initialization."
      (java-mode . "java")
      (awk-mode . "awk")
      (other . "gnu"))))
- '(cfs-directory "~/.spacemacs.d/chinese-fonts-setup")
  '(clang-format-executable "/usr/local/opt/llvm/bin/clang-format")
  '(comment-style (quote indent))
  '(company-auto-complete t)
