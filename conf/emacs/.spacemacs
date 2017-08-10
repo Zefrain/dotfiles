@@ -43,7 +43,7 @@ values."
                   ycmd-server-command (list "python" (file-truename "~/Public/Projects/YouCompleteMe/third_party/ycmd/ycmd"))
                   ycmd-global-config (file-truename "~/Templates/.ycm_extra_conf.py")
                   ycmd-extra-conf-whitelist '("~/*"))
-            chinese-fonts-setup
+            cnfonts
             (gtags :variables
                    gtags-enable-by-default t)
             markdown
@@ -166,7 +166,7 @@ values."
    ;; This variable has no effect if Emacs is launched with the parameter
    ;; `--insecure' which forces the value of this variable to nil.
    ;; (default t)
-   dotspacemacs-elpa-https t
+   dotspacemacs-elpa-https nil
    ;; Maximum allowed time in seconds to contact an ELPA repository.
    dotspacemacs-elpa-timeout 5
    ;; If non nil then spacemacs will check for updates at startup
@@ -361,7 +361,7 @@ values."
    dotspacemacs-highlight-delimiters 'all
    ;; If non nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server t
+   dotspacemacs-persistent-server nil
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
    ;; (default '("ag" "pt" "ack" "grep"))
@@ -398,7 +398,7 @@ you should place your code here."
 
 
   ;; cnfonts
-  '(cnfonts-profiles-directory "~/.spacemacs.d/chinese-fonts-setup")
+  '(cnfonts-profiles-directory "~/.spacemacs.d/confonts")
   (setq cnfonts-profiles '("Darwin" "Linux"))
 
 
@@ -440,7 +440,7 @@ you should place your code here."
   (require 'company-ycmd)
   (company-ycmd-setup)
 
-  ;; ;; flycheck-ycmd
+  ;; flycheck-ycmd
   (require 'flycheck-ycmd)
   (flycheck-ycmd-setup)
   ;; (global-flycheck-mode)
@@ -494,10 +494,10 @@ This function is called at the very end of Spacemacs initialization."
  '(org-export-with-sub-superscripts (quote {}))
  '(package-selected-packages
    (quote
-    (plantuml-mode test-simple loc-changes load-relative simple-httpd window-purpose csv-mode smartparens evil yasnippet company helm helm-core avy org-plus-contrib powerline multi-line graphviz-dot-mode org-mac-link org-beautify-theme grab-mac-link flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format chinese-fonts-setup browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (spinner org-projectile org-category-capture alert log4e gntp hydra htmlize parent-mode imenu-list projectile haml-mode gitignore-mode fringe-helper git-gutter flyspell-correct flx iedit anzu goto-chg undo-tree highlight diminish pkg-info let-alist request epl web-completion-data pos-tip cnfonts bind-map bind-key packed anaconda-mode pythonic f dash s async auto-complete popup plantuml-mode test-simple loc-changes load-relative simple-httpd window-purpose csv-mode smartparens evil yasnippet company helm helm-core avy org-plus-contrib powerline multi-line graphviz-dot-mode org-mac-link org-beautify-theme grab-mac-link flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format cnfonts browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pandoc-data-dir "/Users/zhoush/.emacs.d/.cache/pandoc/")
  '(paradox-automatically-star t)
- '(paradox-github-token t t)
+ '(paradox-github-token t)
  '(projectile-project-root-files
    (quote
     ("rebar.config" "project.clj" "build.boot" "SConstruct" "pom.xml" "build.sbt" "gradlew" "build.gradle" ".ensime" "Gemfile" "requirements.txt" "setup.py" "tox.ini" "gulpfile.js" "Gruntfile.js" "bower.json" "composer.json" "Cargo.toml" "mix.exs" "stack.yaml" "info.rkt" "DESCRIPTION" "TAGS" "GTAGS" ".ycm_extra_conf.py")))

@@ -1,4 +1,4 @@
-;;; packages.el --- chinese-fonts-setup layer packages file for Spacemacs.
+;;; packages.el --- cnfonts layer packages file for Spacemacs.
 ;;
 ;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
 ;;
@@ -18,20 +18,20 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `chinese-fonts-setup-packages'. Then, for each package PACKAGE:
+;; added to `cnfonts-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `chinese-fonts-setup/init-PACKAGE' to load and initialize the package.
+;;   function `cnfonts/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `chinese-fonts-setup/pre-init-PACKAGE' and/or
-;;   `chinese-fonts-setup/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `cnfonts/pre-init-PACKAGE' and/or
+;;   `cnfonts/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
-(defconst chinese-fonts-setup-packages
-  '(chinese-fonts-setup)
-  "The list of Lisp packages required by the chinese-fonts-setup layer.
+(defconst cnfonts-packages
+  '(cnfonts)
+  "The list of Lisp packages required by the cnfonts layer.
 
 Each entry is either:
 
@@ -58,7 +58,7 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun chinese-fonts-setup/init-chinese-fonts-setup ()
+(defun cnfonts/init-cnfonts ()
 
   (require 'cnfonts)
   ;; 让 cnfonts 随着 Emacs 自动生效。
