@@ -88,7 +88,7 @@ values."
             (org :variables
                  org-bullets-bullet-list '("♥" "■" "◆" "▲" "▶")
                  org-enable-org-journal-support t
-                 org-journal-dir "~/Private/org/journal/"
+                 org-journal-dir "~/Private/Notes/journal/"
                  org-journal-file-format "%Y-%m-%d.org"
                  org-journal-date-prefix "#+TITLE: "
                  org-journal-date-format "%A, %B %d %Y"
@@ -357,7 +357,7 @@ values."
    dotspacemacs-highlight-delimiters 'all
    ;; If non nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server nil
+   dotspacemacs-persistent-server t
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `ag', `pt', `ack' and `grep'.
    ;; (default '("ag" "pt" "ack" "grep"))
