@@ -34,6 +34,7 @@ values."
     let ((
           layers
           '(
+            protobuf
             csv
             ;; graphviz
             plantuml
@@ -87,7 +88,7 @@ values."
             (org :variables
                  org-bullets-bullet-list '("♥" "■" "◆" "▲" "▶")
                  org-enable-org-journal-support t
-                 org-journal-dir "~/Documents/Notes/journal/"
+                 org-journal-dir "~/Private/org/journal/"
                  org-journal-file-format "%Y-%m-%d.org"
                  org-journal-date-prefix "#+TITLE: "
                  org-journal-date-format "%A, %B %d %Y"
@@ -99,10 +100,7 @@ values."
                  org-enable-github-support t
                  org-capture-templates
                  (quote
-                  (("n" "Note" entry
-                    (file "~/Git/org/NOTEs.org")
-                    "* %? %T\n" :prepend t :jump-to-captured t :empty-lines 1)
-                   ("t" "Todo" entry
+                   (("t" "Todo" entry
                     (file "~/Git/org/TODOs.org")
                     "* TODO %?\n %t" :empty-lines 1 :jump-to-captured t)
                    ("z" "zxpay/CHANGELOG" entry
@@ -147,6 +145,7 @@ values."
    ;; them if they become unused. `all' installs *all* packages supported by
    ;; Spacemacs and never uninstall them. (default is `used-only')
    dotspacemacs-install-packages 'used-only))
+
 
 (defun dotspacemacs/init ()
   "Initialization function.
@@ -405,7 +404,7 @@ you should place your code here."
   (setq locale-coding-system 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
-  ;;(set-selection-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
   (prefer-coding-system 'utf-8)
   (setq default-buffer-file-coding-system 'utf-8)
 
@@ -480,21 +479,18 @@ This function is called at the very end of Spacemacs initialization."
  '(clang-format-executable "/usr/local/opt/llvm/bin/clang-format")
  '(comment-style (quote indent))
  '(company-auto-complete t)
- '(ede-project-directories (quote ("/Users/zhoush/Working/zxpay")))
+ '(ede-project-directories (quote ("/Users/zhoush/Private/Working/zxpay")))
  '(evil-want-Y-yank-to-eol nil)
  '(magit-diff-arguments
    (quote
     ("--ignore-space-change" "--ignore-all-space" "--no-ext-diff" "--stat")))
- '(org-agenda-files
-   (quote
-    ("~/Documents/org/agenda.org" "~/Working/zxpay/CHANGELOG.org" "~/Working/zxpay/README.org")))
  '(org-export-with-sub-superscripts (quote {}))
  '(package-selected-packages
    (quote
-    (define-word spinner org-projectile org-category-capture alert log4e gntp hydra htmlize parent-mode imenu-list projectile haml-mode gitignore-mode fringe-helper git-gutter flyspell-correct flx iedit anzu goto-chg undo-tree highlight diminish pkg-info let-alist request epl web-completion-data pos-tip cnfonts bind-map bind-key packed anaconda-mode pythonic f dash s async auto-complete popup plantuml-mode test-simple loc-changes load-relative simple-httpd window-purpose csv-mode smartparens evil yasnippet company helm helm-core avy org-plus-contrib powerline multi-line graphviz-dot-mode org-mac-link org-beautify-theme grab-mac-link flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format cnfonts browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
+    (protobuf-mode define-word spinner org-projectile org-category-capture alert log4e gntp hydra htmlize parent-mode imenu-list projectile haml-mode gitignore-mode fringe-helper git-gutter flyspell-correct flx iedit anzu goto-chg undo-tree highlight diminish pkg-info let-alist request epl web-completion-data pos-tip cnfonts bind-map bind-key packed anaconda-mode pythonic f dash s async auto-complete popup plantuml-mode test-simple loc-changes load-relative simple-httpd window-purpose csv-mode smartparens evil yasnippet company helm helm-core avy org-plus-contrib powerline multi-line graphviz-dot-mode org-mac-link org-beautify-theme grab-mac-link flymd edit-server html-to-markdown request-deferred deferred gmail-message-mode ham-mode markdown-mode git-gutter+ flycheck magit magit-popup git-commit with-editor ycmd org-journal yapfify xterm-color ws-butler winum which-key web-mode volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon super-save string-inflection sql-indent spaceline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-mode rainbow-identifiers rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin pip-requirements persp-mode pcre2el pbcopy password-generator paradox ox-gfm osx-trash osx-dictionary orgit org-present org-pomodoro org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum live-py-mode linum-relative link-hint less-css-mode launchctl info+ indent-guide impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy flyspell-correct-helm flycheck-ycmd flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode elisp-slime-nav editorconfig dumb-jump disaster diff-hl cython-mode company-ycmd company-web company-statistics company-quickhelp company-c-headers company-anaconda column-enforce-mode color-identifiers-mode cmake-mode clean-aindent-mode clang-format cnfonts browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell)))
  '(pandoc-data-dir "/Users/zhoush/.emacs.d/.cache/pandoc/")
  '(paradox-automatically-star t)
- '(paradox-github-token t t)
+ '(paradox-github-token t)
  '(projectile-project-root-files
    (quote
     ("rebar.config" "project.clj" "build.boot" "SConstruct" "pom.xml" "build.sbt" "gradlew" "build.gradle" ".ensime" "Gemfile" "requirements.txt" "setup.py" "tox.ini" "gulpfile.js" "Gruntfile.js" "bower.json" "composer.json" "Cargo.toml" "mix.exs" "stack.yaml" "info.rkt" "DESCRIPTION" "TAGS" "GTAGS" ".ycm_extra_conf.py")))
@@ -508,7 +504,7 @@ This function is called at the very end of Spacemacs initialization."
  '(woman-locale "en_US.UTF-8")
  '(yas-snippet-dirs
    (quote
-    ("/Users/zhoush/.spacemacs.d/snippets/" yas-installed-snippets-dir "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets")))
+    ("/Users/zhoush/.spacemacs.d/snippets/" yas-installed-snippets-dir "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets")) t)
  '(ycmd-confirm-fixit nil)
  '(ycmd-startup-timeout 10))
 (custom-set-faces
