@@ -69,7 +69,7 @@ source $ZSH/oh-my-zsh.sh
 if [[ -n $ssh_connection ]]; then
     export editor='vim'
 else
-    export EDITOR='emacs'
+    export EDITOR='emacsclient'
 fi
 
 # Compilation flags
