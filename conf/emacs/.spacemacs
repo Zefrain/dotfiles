@@ -85,7 +85,7 @@ values."
                                                 "~/Public/"
                                                 "~/Documents/"))
             (org :variables
-                 org-bullets-bullet-list '("■" "◆" "▲" "▶")
+                 org-bullets-bullet-list '("♥" "■" "◆" "▲" "▶")
                  org-enable-org-journal-support t
                  org-journal-dir "~/Documents/Notes/journal/"
                  org-journal-file-format "%Y-%m-%d.org"
@@ -105,18 +105,15 @@ values."
                    ("t" "Todo" entry
                     (file "~/Git/org/TODOs.org")
                     "* TODO %?\n %t" :empty-lines 1 :jump-to-captured t)
-                   ("a" "Agenda" entry
-                    (file+datetree "~/Git/org/agenda.org")
-                    "" :empty-lines 1 :jump-to-captured t)
                    ("z" "zxpay/CHANGELOG" entry
-                    (file+headline "~/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
+                    (file+headline "~/Private/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
                     "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t))))
 
             (markdown :variables markdown-live-preview-engine 'vmd)
             (ibuffer :variables ibuffer-group-buffers-by 'projects)
-            (shell :variablesp
+            (shell :variables
                    shell-default-shell 'eshell
-                   shell-default-height 30
+                   shell-default-height 20
                    shell-default-position 'bottom
                    shell-enable-smart-eshell t)
             (spell-checking :variables spell-checking-enable-by-default nil)
