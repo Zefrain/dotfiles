@@ -3,9 +3,9 @@
 
 # Path to your oh-my-zsh installation.
 # export ZSH="$HOME/Git/sync/conf/zsh/.oh-my-zsh"
-export ZSH="$(dirname $(realpath ~/.zshrc))/.oh-my-zsh"
+export ZSH="$(dirname $(readlink ~/.zshrc))/.oh-my-zsh"
 exec_dir="${ZSH%%conf*}/exec"
-export PATH=$PATH:$exec_dir
+export PATH=$PATH:$exec_dir:/Library/TeX/texbin
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -53,8 +53,9 @@ ZSH_THEME="jispwoso"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git extract emacs z command-not-found man tmux osx)
+# Add wisely, as too many plugins slow down shell startup..
+plugins=(extract emacs z command-not-found man osx zsh-syntax-highlighting zsh-autosuggestions
+         web-search tmux colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh
 

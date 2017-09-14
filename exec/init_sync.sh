@@ -26,6 +26,7 @@ _init_conf_emacs() {
 _init_conf_aria2() {
     ln -snf "$aria_dir" ~/.aria2
 }
+
 _init_conf_tmux() {
     ln -snf "$tmux_dir/.tmux.conf" ~/
 }
