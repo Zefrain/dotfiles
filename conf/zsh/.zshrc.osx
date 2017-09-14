@@ -18,10 +18,17 @@ _incl_path()
     export C_INCLUDE_PATH
 }
 
+_path()
+{
+    PATH=$PATH:/usr/local/Homebrew/bin
+}
+
 _init_osx() {
     _alias
     _lib_path
     _incl_path
+
+    source /Users/zhoush/Private/Working/zxpay/pts/etc/ptsenv.sh
 }
 
 
