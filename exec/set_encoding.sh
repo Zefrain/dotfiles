@@ -12,9 +12,9 @@
 function change_file_encoing(){
     OLD=$IFS
     IFS=$'\n'
-    for file in $(ls)
+    for file in $(find . -depth 1 -type f -exec grep -Il "" {} \;)
     do
-        if [[ -d "$file" && $1 = y && "$file" != "." && "$file" != ".." ]];then
+        if [[ -d "$file" && $1 = y && "$file" != "." && "$file" != ".." ]]; then
             cd "$file"
             echo "$file"
             change_file_encoing "$1"

@@ -10,7 +10,7 @@
       <string>/Users/zhoush/Git/sync/launchctl/sh/do_rm.sh</string>
     </array>
     <key>StartInterval</key>
-    <integer>1</integer>
+    <integer>30</integer>
     <key>RunAtLoad</key>
     <true/>
     <key>StandardOutPath</key>

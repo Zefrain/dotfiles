@@ -54,7 +54,7 @@ ZSH_THEME="jispwoso"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup..
-plugins=(extract emacs z command-not-found man osx zsh-syntax-highlighting zsh-autosuggestions
+plugins=(extract emacs z command-not-found man osx zsh-syntax-highlighting zsh-autosuggestions colored-man-pages osx
          web-search tmux colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh

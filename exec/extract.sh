@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-flist=$(find . -iname '*.rar' -o -iname '*.zip' -o -iname '*.7z');
+flist=$(find . -iname '*.rar' -o -iname '*.7z');
 
 OLD=$IFS
 IFS=$'\n'
