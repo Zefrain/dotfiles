@@ -5,7 +5,8 @@
 # export ZSH="$HOME/Git/sync/conf/zsh/.oh-my-zsh"
 export ZSH="$(dirname $(readlink ~/.zshrc))/.oh-my-zsh"
 exec_dir="${ZSH%%conf*}/exec"
-export PATH=$PATH:$exec_dir:/Library/TeX/texbin
+export GOPATH=/Users/zhoush/Documents/Practice/go
+export PATH=$PATH:$exec_dir:/Library/TeX/texbin:$GOPATH/bin:$HOME/go/bin
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -54,8 +55,8 @@ ZSH_THEME="jispwoso"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup..
-plugins=(extract emacs z command-not-found man osx zsh-syntax-highlighting zsh-autosuggestions colored-man-pages osx
-         web-search tmux colored-man-pages)
+plugins=(extract emacs z command-not-found osx zsh-syntax-highlighting zsh-autosuggestions
+         web-search colored-man-pages)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -91,3 +92,7 @@ fi
 #
 
 set colored-stats on
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
