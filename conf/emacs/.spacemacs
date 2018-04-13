@@ -33,41 +33,21 @@ This function should only modify configuration layer settings."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(javascript
-     html
      go
-     rust
-     nginx
      pandoc
-     csv
-     sql
-     (ycmd :variables
-           ycmd-force-semantic-completion t
-           ycmd-server-command (list "python3" (file-truename "~/Documents/Public/Projects/ycmd/ycmd/"))
-           ycmd-global-config (file-truename "~/Templates/.ycm_extra_conf.py")
-           ycmd-extra-conf-whitelist '("~/*"))
-     (auto-completion :variables
-                      auto-completion-return-key-behavior 'complete
-                      auto-completion-tab-key-behavior 'cycle
-                      auto-completion-complete-with-key-sequence nil
-                      auto-completion-complete-with-key-sequence-delay 0.1
-                      auto-completion-private-snippets-directory nil
-                      auto-completion-enable-sort-by-usage t
-                      auto-completion-enable-help-tooltip 'manual
-                      auto-completion-enable-snippets-in-popup t
-                      )
+     auto-completion
      syntax-checking
      cnfonts
      (gtags :variables
             gtags-enable-by-default t)
-     markdown
-     ;; html
      (python :variables
              python-backend 'anaconda
              python-enable-yapf-format-on-save t)
+     lsp
      (c-c++ :variables
+            c-c++-enable-rtags-support t
             c-c++-default-mode-for-headers 'c++-mode
-            c-c++-enable-clang-support t
-            )
+            c-c++-enable-clang-support t)
      ;; colors
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -89,9 +69,7 @@ This function should only modify configuration layer settings."
           org-journal-date-format "%A, %B %d %Y"
           org-journal-time-prefix "* "
           org-journal-time-format ""
-
           org-projectile-file "org/TODOs.org"
-
           org-enable-github-support t
           org-capture-templates
           (quote
@@ -109,11 +87,9 @@ This function should only modify configuration layer settings."
             shell-default-height 20
             shell-default-position 'bottom
             shell-enable-smart-eshell t)
-     (spell-checking :variables spell-checking-enable-by-default nil)
-     (spacemacs-layouts :variables layouts-enable-autosave nil
+     (spacemacs-layouts :variables
+                        layouts-enable-autosave nil
                         layouts-autosave-delay 300)
-     version-control
-     chrome
      (osx :variables
           osx-command-as       'hyper
           osx-option-as        'meta
@@ -126,12 +102,9 @@ This function should only modify configuration layer settings."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(ox-bibtex-chinese
-                                      grab-mac-link
-                                      ;; org-mac-link
-                                      (org-mac-link :location built-in)
-                                      edit-server
-                                      super-save)
+   dotspacemacs-additional-packages '(
+                                      cquery
+                                      grab-mac-link)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
 
@@ -161,7 +134,7 @@ It should only modify the values of Spacemacs settings."
    ;; This variable has no effect if Emacs is launched with the parameter
    ;; `--insecure' which forces the value of this variable to nil.
    ;; (default t)
-   dotspacemacs-elpa-https nil
+   dotspacemacs-elpa-https t
 
    ;; Maximum allowed time in seconds to contact an ELPA repository.
    ;; (default 5)
@@ -234,8 +207,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-light
-                         spacemacs-dark)
+   dotspacemacs-themes '(spacemacs-dark
+                         spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `vim-powerline' and `vanilla'. The first three
@@ -512,6 +485,74 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
   )
 
+(defun my-xref/find-definitions ()
+  (interactive)
+  (if lsp-mode (lsp-ui-peek-find-definitions) (spacemacs/jump-to-definition)))
+
+(defun my-xref/find-references ()
+  (interactive)
+  (if lsp-mode (lsp-ui-peek-find-references) (spacemacs/jump-to-reference)))
+
+;; rtags
+(defun my-rtags-load-compile-commands-command ()
+  "rtags load compile_commands.json command"
+  ;; compile_commands.json generate by https://github.com/vincent-picaud/Bazel_and_CompileCommands
+  ;; will refer source code from bazel's sandbox, must use "--project-root" to fix it.
+  (let ((project-root default-directory)
+        (tmp-project-root ""))
+    (while (and project-root (not (file-exists-p (concat project-root "compile_commands.json"))))
+      (setq tmp-project-root (file-name-directory (directory-file-name project-root)))
+      (message "tmp-project-root: %s, project-root: %s" tmp-project-root project-root)
+      (if (equal tmp-project-root project-root)
+          (setq project-root nil)
+        (setq project-root tmp-project-root)))
+    (unless project-root
+      (message "RTags: compile_commands.json not exists")
+      (setq project-root default-directory))
+    (message "RTags: %s" (concat project-root "compile_commands.json"))
+    (format "rc -J %s --project-root %s" project-root project-root)))
+
+(defun my-rtags-run ()
+  "rtags startup with generated compile_commands.json"
+  (interactive)
+  (rtags-start-process-unless-running)
+  (shell-command (my-rtags-load-compile-commands-command)))
+
+(defun my-rtags-build ()
+  "rtags startup use compile_commands.json generate from build tool"
+  (interactive)
+  (cond ((file-exists-p "BUILD") (my-rtags-bazel))
+        ((file-exists-p "CMakeLists.txt") (my-rtags-cmake))
+        ((file-exists-p "Makefile") (my-rtags-make))
+        (t (error "No build tool detected"))))
+
+(defun my-rtags-bazel ()
+  "rtags startup use compile_commands.json generate from bazel"
+  (interactive)
+  (let ((tool_dir "~/Opensource/Bazel_and_CompileCommands")
+        (command ""))
+    (setq command (format "%s/setup_compile_commands.sh; %s/create_compile_commands.sh //..." tool_dir tool_dir))
+    (setq command (read-string "Build bazel compile_commands.json: " command nil nil))
+    (unless command
+      (error "Build compile_commands.json for bazel failed"))
+    (rtags-start-process-unless-running)
+    (async-shell-command (concat command " && " (my-rtags-load-compile-commands-command)))))
+
+(defun my-rtags-make ()
+  "build compile_commands.json for make"
+  (interactive)
+  (let ((command (read-string "Build make compile_commands.json: " "bear make" nil nil)))
+    (unless command
+      (error "Build compile_commands.json for make failed"))
+    (rtags-start-process-unless-running)
+    (async-shell-command (concat command " && " (my-rtags-load-compile-commands-command)))))
+
+(defun my-rtags-cmake ()
+  "build compile_commands.json for cmake"
+  (interactive)
+  (let ((command (read-string "Build cmake compile_commands.json: " "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ." nil nil)))
+    (rtags-start-process-unless-running)
+    (async-shell-command (concat command " && " (my-rtags-load-compile-commands-command)))))
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
@@ -520,10 +561,31 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  ;; lsp
+  (add-hook 'c-mode-hook #'lsp-cquery-enable)
+  (add-hook 'c++-mode-hook #'lsp-cquery-enable)
+  (add-hook 'python-mode-hook #'lsp-python-enable)
+
+  (use-package company-lsp
+    :defer t
+    :init
+    (setq company-quickhelp-delay 0)
+    ;; Language servers have better idea filtering and sorting,
+    ;; don't filter results on the client side.
+    (setq company-transformers nil
+          company-lsp-async t
+          company-lsp-cache-candidates nil)
+    (spacemacs|add-company-backends :backends company-lsp :modes c-mode c++-mode python-mode go-mode)
+    ) ;; lsp
+
+
   ;; cquery
   (setq cquery-executable "/usr/local/bin/cquery")
-
+  (define-key evil-motion-state-map (kbd "C-c c ,") #'my-xref/find-references)
+  (define-key evil-motion-state-map (kbd "C-c c .") #'my-xref/find-definitions)
   ;; Make C-c C-c behave like C-u C-c C-c in Python mode
+
+  (global-company-mode)
   (require 'python)
   (define-key python-mode-map (kbd "C-c C-c")
     (lambda () (interactive) (python-shell-send-buffer t)))
@@ -539,7 +601,6 @@ you should place your code here."
 
   ;; google-c-style
   (add-hook 'c-mode-common-hook 'google-set-c-style)
-  (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
   ;; cnfonts
   (require 'cnfonts)
@@ -550,17 +611,16 @@ you should place your code here."
   ;; 让 spacemacs mode-line 中的 Unicode 图标正确显示。
   (cnfonts-set-spacemacs-fallback-fonts)
 
-  ;; edit-server
-  (edit-server-start)
-
   (setq locale-coding-system 'utf-8)
   (set-terminal-coding-system 'utf-8)
   (set-keyboard-coding-system 'utf-8)
   (set-selection-coding-system 'utf-8)
-  ;; (prefer-coding-system 'utf-8)
-  ;; (setq default-buffer-file-coding-system 'utf-8)
-  (prefer-coding-system 'gb2312-dos)
-  (setq default-buffer-file-coding-system 'gb2312-dos)
+
+  (prefer-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8)
+
+  ;; (prefer-coding-system 'gb2312-dos)
+  ;; (setq default-buffer-file-coding-system 'gb2312-dos)
 
   ;; grab-mac-link
   (add-hook 'org-mode-hook (lambda ()
@@ -569,35 +629,13 @@ you should place your code here."
   ;; git
   (global-git-commit-mode t)
 
-  ;; company
-  ;; (global-company-mode)
-  (global-set-key (kbd "<C-tab>") 'ycmd/manual-semantic-company-completer)
-  (global-set-key (kbd "C-t") 'pop-tag-mark)
-  (global-set-key (kbd "C-]") 'ycmd-goto)
-
-  ;; ycmd layer
-  ;; (global-ycmd-mode)
-  (add-hook 'c++-mode-hook 'ycmd-mode)
-  (add-hook 'c-mode-hook 'ycmd-mode)
-  (add-hook 'python-mode-hook 'ycmd-mode)
-  (add-hook 'go-mode-hook 'ycmd-mode)
-
   ;; yasnippet
   (yas-global-mode)
 
-  ;; company-ycmd
-  (require 'company-ycmd)
-  (company-ycmd-setup)
-
-  ;; flycheck-ycmd
-  (require 'flycheck-ycmd)
-  (flycheck-ycmd-setup)
-  (global-flycheck-mode)
-
-  (add-hook 'c-mode-hook 'flycheck-mode)
-  (add-hook 'c++-mode-hook 'flycheck-mode)
-  (when (not (display-graphic-p))
-    (setq flycheck-indication-mode nil))
+  ;; (add-hook 'c-mode-hook 'flycheck-mode)
+  ;; (add-hook 'c++-mode-hook 'flycheck-mode)
+  ;; (when (not (display-graphic-p))
+  ;;   (setq flycheck-indication-mode nil))
 
   ;; auto-comletion
   (custom-set-faces
@@ -613,6 +651,25 @@ you should place your code here."
 
   ;; winum
   (setq winum-scope (quote frame-local))
+
+  ;; rtags
+  (use-package company-rtags
+    :defer t
+    :init
+    (setq rtags-completions-enabled t)
+    (eval-after-load 'company
+      '(add-to-list
+        'company-backends 'company-rtags))
+    (setq rtags-autostart-diagnostics t)
+    (rtags-enable-standard-keybindings)
+    (spacemacs|add-company-backends :backends company-lsp :modes c-mode c++-mode)
+    )
+  ;; (define-key c-mode-map (kbd "C-c C-j") 'rtags-find-symbol)
+  ;; (define-key c++-mode-map (kbd "C-c C-j") 'rtags-find-symbol)
+  ;; (define-key c-mode-map (kbd "C-c C-b") 'rtags-location-stack-back)
+  ;; (define-key c++-mode-map (kbd "C-c C-b") 'rtags-location-stack-back)
+  ;; (define-key c-mode-map (kbd "C-c C-r") 'rtags-find-references)
+  ;; (define-key c++-mode-map (kbd "C-c C-r") 'rtags-find-references)
   )
 
 
@@ -630,7 +687,6 @@ If the directory for the backup doesn't exist, it is created."
                     (and (string-match "\\`[^.]+\\.\\(..?\\)?" fn)
                          (concat (match-string 0 fn) (format-time-string ".%Y%m%d%H%M%S"))))))
     (concat (make-backup-file-name-1 file) (format-time-string ".%Y%m%d%H%M%S"))))
-
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -641,13 +697,15 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(exec-path-from-shell-check-startup-files nil)
  '(package-selected-packages
    (quote
-    (flycheck-ycmd company-ycmd ycmd request-deferred yasnippet-snippets yapfify xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toml-mode toc-org tagedit symon super-save string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs realgud rainbow-delimiters racer pyvenv pytest pyenv-mode py-isort pug-mode popwin pippel pipenv pip-requirements persp-mode pcre2el pbcopy password-generator paradox pandoc-mode ox-pandoc ox-gfm ox-bibtex-chinese osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file nginx-mode neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode launchctl json-mode js2-refactor js-doc indent-guide importmagic impatient-mode ibuffer-projectile hy-mode hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-css-scss helm-company helm-c-yasnippet helm-ag grab-mac-link google-translate google-c-style golden-ratio godoctor go-tag go-rename go-guru go-eldoc gnuplot gmail-message-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md ggtags fuzzy font-lock+ flyspell-correct-helm flymd flycheck-rust flycheck-rtags flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode editorconfig edit-server dumb-jump disaster diminish diff-hl cython-mode csv-mode counsel-projectile company-web company-tern company-statistics company-rtags company-quickhelp company-go company-c-headers company-anaconda column-enforce-mode coffee-mode cnfonts clean-aindent-mode clang-format centered-cursor-mode cargo browse-at-remote auto-yasnippet auto-highlight-symbol auto-dictionary aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
+    (cquery yasnippet-snippets yapfify xterm-color ws-butler winum which-key web-beautify volatile-highlights vmd-mode vi-tilde-fringe uuidgen use-package unfill toc-org symon string-inflection spaceline-all-the-icons smeargle shell-pop reveal-in-osx-finder restart-emacs realgud rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pippel pipenv pip-requirements persp-mode pcre2el pbcopy password-generator paradox pandoc-mode ox-pandoc ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-gitflow lsp-ui lsp-python lorem-ipsum livid-mode live-py-mode linum-relative link-hint launchctl json-mode js2-refactor js-doc indent-guide importmagic ibuffer-projectile hy-mode hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag grab-mac-link google-translate google-c-style golden-ratio godoctor go-tag go-rename go-guru go-eldoc gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help editorconfig dumb-jump disaster diminish cython-mode counsel-projectile company-tern company-statistics company-rtags company-lsp company-go company-c-headers company-anaconda column-enforce-mode coffee-mode cnfonts clean-aindent-mode clang-format centered-cursor-mode auto-yasnippet auto-highlight-symbol aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
