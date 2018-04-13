@@ -16,6 +16,7 @@ exec_dir="$sync_dir/exec"
 _init_conf_zsh() {
     ln -snf "$zsh_dir/.zshrc" ~
     ln -snf "$zsh_dir/.zshenv" ~
+    ln -snf "$zsh_dir/.oh-my-zsh/plugins/emacs/emacsclient.sh" /usr/local/bin
 }
 
 _init_conf_emacs() {

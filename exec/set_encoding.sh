@@ -12,7 +12,7 @@
 function change_file_encoing(){
     OLD=$IFS
     IFS=$'\n'
-    for file in $(find . -depth 1 -type f -exec grep -Il "" {} \;)
+    for file in $(find . -type f -exec grep -Il "" {} \;)
     do
         if [[ -d "$file" && $1 = y && "$file" != "." && "$file" != ".." ]]; then
             cd "$file"
@@ -32,21 +32,23 @@ read -p "please enter the dir path:" path # 读取目录路径
 if [ ! -x "$path" ];    # 判断目录是否存在且是否具有执行权限
 then
     echo "dir path not exists"
-else
-    read -p "please enter if you want to recursive? y/n: " recur  #是否递归
+# else
+#     read -p "please enter if you want to recursive? y/n: " recur  #是否递归
 fi
 
-if [ $recur = "y" ];
-then
-    cd "$path"
-    if [ $? = 0 ];
-    then
-        change_file_encoing "y"     #递归修改文件编码
-    fi
-else
-    cd "$path"
-    if [ $? = 0 ];
-    then
-        change_file_encoing "n"     #非递归修改
-    fi
-fi
+# if [ $recur = "y" ];
+# then
+#     cd "$path"
+#     if [ $? = 0 ];
+#     then
+#         change_file_encoing "y"     #递归修改文件编码
+#     fi
+# else
+#     cd "$path"
+#     if [ $? = 0 ];
+#     then
+#         change_file_encoing "n"     #非递归修改
+#     fi
+# fi
+
+change_file_encoing "y"
