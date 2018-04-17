@@ -1,6 +1,6 @@
-;;; packages.el --- cnfonts layer packages file for Spacemacs.
+;;; packages.el --- my-rtags layer packages file for Spacemacs.
 ;;
-;; Copyright (c) 2012-2017 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
 ;;
 ;; Author: zhoushang <zhoush@zhoushangs-MacBook-Pro.local>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -18,20 +18,20 @@
 ;;
 ;;
 ;; Briefly, each package to be installed or configured by this layer should be
-;; added to `cnfonts-packages'. Then, for each package PACKAGE:
+;; added to `my-rtags-packages'. Then, for each package PACKAGE:
 ;;
 ;; - If PACKAGE is not referenced by any other Spacemacs layer, define a
-;;   function `cnfonts/init-PACKAGE' to load and initialize the package.
+;;   function `my-rtags/init-PACKAGE' to load and initialize the package.
 
 ;; - Otherwise, PACKAGE is already referenced by another Spacemacs layer, so
-;;   define the functions `cnfonts/pre-init-PACKAGE' and/or
-;;   `cnfonts/post-init-PACKAGE' to customize the package as it is loaded.
+;;   define the functions `my-rtags/pre-init-PACKAGE' and/or
+;;   `my-rtags/post-init-PACKAGE' to customize the package as it is loaded.
 
 ;;; Code:
 
-(defconst cnfonts-packages
-  '(cnfonts)
-  "The list of Lisp packages required by the cnfonts layer.
+(defconst my-rtags-packages
+  '(company-rtags)
+  "The list of Lisp packages required by the my-rtags layer.
 
 Each entry is either:
 
@@ -58,11 +58,17 @@ Each entry is either:
       - A list beginning with the symbol `recipe' is a melpa
         recipe.  See: https://github.com/milkypostman/melpa#recipe-format")
 
-(defun cnfonts/init-cnfonts ()
-  (use-package cnfonts
+(defun my-rtags/post-init-company-rtags()
+  (use-package company-rtags
+    :defer t
     :init
-    (cnfonts-enable)
-    ;; 让 spacemacs mode-line 中的 Unicode 图标正确显示。
-    (cnfonts-set-spacemacs-fallback-fonts))
+    (setq rtags-completions-enabled t)
+    (eval-after-load 'company
+      '(add-to-list
+        'company-backends 'company-rtags))
+    (setq rtags-autostart-diagnostics t)
+    (rtags-enable-standard-keybindings)
+    (spacemacs|add-company-backends :backends company-lsp :modes c-mode c++-mode))
   )
+
 ;;; packages.el ends here
