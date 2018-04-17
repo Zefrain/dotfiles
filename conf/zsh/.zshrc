@@ -5,8 +5,6 @@
 # export ZSH="$HOME/Git/sync/conf/zsh/.oh-my-zsh"
 export ZSH="$(dirname $(readlink ~/.zshrc))/.oh-my-zsh"
 exec_dir="${ZSH%%conf*}/exec"
-export GOPATH=/Users/zhoush/Documents/Practice/go
-export PATH=$PATH:$exec_dir:/Library/TeX/texbin:$GOPATH/bin:$HOME/go/bin
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
