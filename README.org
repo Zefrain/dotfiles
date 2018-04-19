@@ -3,4 +3,21 @@
    [[./conf][conf]]
 
 ** 脚本
-   [[./scripts][scripts]]
+   [[./exec][exec]]
+
+** Pre-installation
+*** Mac OS
+    #+BEGIN_SRC sh
+      brew install zsh
+      brew cask install emacs
+    #+END_SRC
+** Usage
+  1. git finish
+       #+BEGIN_SRC sh
+         git submodule update --recursive
+       #+END_SRC
+  2. env init
+     #+BEGIN_SRC sh
+       cd exec
+       ./init_sync.sh
+     #+END_SRC
