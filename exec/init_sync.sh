@@ -22,6 +22,7 @@ _init_conf_zsh() {
 _init_conf_emacs() {
     ln -snf "$emacs_dir/.spacemacs" ~
     ln -snf "$emacs_dir/.spacemacs.d" ~
+    ln -snf "$emacs_dir/.emacs.d" ~
 }
 
 _init_conf_aria2() {
@@ -49,6 +50,7 @@ _init_sync() {
 
     _init_conf
     _init_exec
+    _init_conf_emacs
 }
 
 _init_sync
