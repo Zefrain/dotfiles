@@ -33,7 +33,6 @@ This function should only modify configuration layer settings."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     scheme
      markdown
      html
      cmake
@@ -63,14 +62,12 @@ This function should only modify configuration layer settings."
      helm
      better-defaults
      (git :variables
-          magit-repository-directories '("~/Private/"
-                                         "~/Public/"
-                                         "~/Documents/"))
+          magit-repository-directories '("~/Documents/"))
      (org :variables
           org-bullets-bullet-list '("♥" "■" "◆" "▲" "▶")
           org-enable-org-journal-support t
-          org-journal-dir "~/Private/Notes/journal/"
-          org-journal-file-format "%Y-%m-%d.org"
+          org-journal-dir "~/Documents/Private/Notes/journal/"
+          org-journal-file-format "%Y%m/%Y-%m-%d.org"
           org-journal-date-prefix "#+TITLE: "
           org-journal-date-format "%A, %B %d %Y"
           org-journal-time-prefix "* "
@@ -80,10 +77,10 @@ This function should only modify configuration layer settings."
           org-capture-templates
           (quote
            (("t" "Todo" entry
-             (file "~/Private/org/TODOs.org")
+             (file "~/Documents/Private/org/TODOs.org")
              "* TODO %? %t \n %? \n" :empty-lines 1 :jump-to-captured t)
             ("z" "zxpay/CHANGELOG" entry
-             (file+headline "~/Private/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
+             (file+headline "~/Documents/Private/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
              "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t))))
 
      (ibuffer :variables ibuffer-group-buffers-by 'projects)
@@ -92,6 +89,9 @@ This function should only modify configuration layer settings."
             shell-default-height 20
             shell-default-position 'bottom
             shell-enable-smart-eshell t)
+     (plantuml :variables
+               plantuml-jar-path "~/Templates/plantuml.jar"
+               org-plantuml-jar-path "~/Templates/plantuml.jar")
      (osx :variables
           osx-command-as       'hyper
           osx-option-as        'meta
@@ -502,11 +502,6 @@ you should place your code here."
   (define-key python-mode-map (kbd "C-c C-c")
     (lambda () (interactive) (python-shell-send-buffer t)))
 
-  ;; wb input method
-  (register-input-method
-   "chinese-wbim" "euc-cn" 'chinese-wbim-use-package
-   "五笔" "汉字五笔输入法" "wb.txt")
-
   ;; orgmode pdf
   (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
                                 "xelatex -interaction nonstopmode %f"))
@@ -578,15 +573,18 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
+ '(org-todo-keywords (quote ((sequence "TODO" "DOING(!)" "DONE(!)"))))
  '(package-selected-packages
    (quote
-    (geiser company-lsp yapfify xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org spaceline powerline smeargle shell-pop reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el pbcopy paradox spinner ox-gfm osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text magit-gitflow lorem-ipsum live-py-mode linum-relative link-hint launchctl indent-guide ibuffer-projectile hydra hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag grab-mac-link google-translate golden-ratio go-guru go-eldoc gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-pos-tip pos-tip flycheck pkg-info epl flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit ghub let-alist with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight eshell-z eshell-prompt-extras esh-help dumb-jump disaster diminish cython-mode cquery lsp-mode company-statistics company-go go-mode company-c-headers company-anaconda company column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol anaconda-mode pythonic f dash s aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup))))
+    (plantuml-mode company-lsp yapfify xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org spaceline powerline smeargle shell-pop reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el pbcopy paradox spinner ox-gfm osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text magit-gitflow lorem-ipsum live-py-mode linum-relative link-hint launchctl indent-guide ibuffer-projectile hydra hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag grab-mac-link google-translate golden-ratio go-guru go-eldoc gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-pos-tip pos-tip flycheck pkg-info epl flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit ghub let-alist with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight eshell-z eshell-prompt-extras esh-help dumb-jump disaster diminish cython-mode cquery lsp-mode company-statistics company-go go-mode company-c-headers company-anaconda company column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol anaconda-mode pythonic f dash s aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
