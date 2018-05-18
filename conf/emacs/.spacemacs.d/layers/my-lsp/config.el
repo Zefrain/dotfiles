@@ -3,3 +3,4 @@
 (add-hook 'c-mode-hook #'lsp-cquery-enable)
 (add-hook 'c++-mode-hook #'lsp-cquery-enable)
 (add-hook 'python-mode-hook #'lsp-python-enable)
+(add-hook 'go-mode-hook #'lsp-go-enable)

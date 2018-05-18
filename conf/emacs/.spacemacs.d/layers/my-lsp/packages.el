@@ -30,7 +30,7 @@
 ;;; Code:
 
 (defconst my-lsp-packages
-          '(cquery company-lsp ))
+          '(cquery company-lsp lsp-go))
 ;;; packages.el ends here
 (defun my-lsp/init-cquery()
   (use-package cquery
@@ -50,5 +50,9 @@
           company-lsp-cache-candidates nil)
     (spacemacs|add-company-backends :backends company-lsp :modes c-mode c++-mode python-mode go-mode)
     ) ;; lsp
-
   )
+
+(defun my-lsp/init-lsp-go()
+  (use-package lsp-go
+    :defer t
+    :init))

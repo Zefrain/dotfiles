@@ -30,6 +30,9 @@ file.
 |-------------+------------------------------|
 | ~C-c c ,~   | lsp-ui-peek-find-references  |
 | ~C-c c .~   | lsp-ui-peek-find-definitions |
+| ~C-c c [~   | lsp-ui-peek-jump-backward    |
+| ~C-c c ]~   | lsp-ui-peek-jump-forward     |
+| ~C-c c I~   | lsp-ui-iemnu                 |
 
 # Use GitHub URLs if you wish to link a Spacemacs documentation file or its heading.
 # Examples:

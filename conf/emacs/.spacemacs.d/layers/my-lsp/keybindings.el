@@ -1,2 +1,5 @@
 (define-key evil-motion-state-map (kbd "C-c c ,") #'my-lsp/find-references)
 (define-key evil-motion-state-map (kbd "C-c c .") #'my-lsp/find-definitions)
+(define-key evil-motion-state-map (kbd "C-c c [") #'my-lsp/jump-backward)
+(define-key evil-motion-state-map (kbd "C-c c ]") #'my-lsp/jump-forward)
+(define-key evil-motion-state-map (kbd "C-c c I") #'my-lsp/imenu)
