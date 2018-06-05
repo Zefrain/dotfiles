@@ -1,6 +1,5 @@
-(setq cquery-executable "/usr/local/bin/cquery")
+(spacemacs|define-jump-handlers lsp-mode)
 
-(add-hook 'c-mode-hook #'lsp-cquery-enable)
-(add-hook 'c++-mode-hook #'lsp-cquery-enable)
-(add-hook 'python-mode-hook #'lsp-python-enable)
-(add-hook 'go-mode-hook #'lsp-go-enable)
+(defvar company-backend 'company-lsp
+  "The backend to use for IDE features. Possible values are `anaconda'
+and `lsp'.")
