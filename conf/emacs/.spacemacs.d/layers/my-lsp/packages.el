@@ -30,13 +30,22 @@
 ;;; Code:
 
 (defconst my-lsp-packages
-          '(cquery company-lsp lsp-go))
+          '(cquery company-lsp lsp-go (lsp-python :require lsp-mode)))
 ;;; packages.el ends here
 (defun my-lsp/init-cquery()
   (use-package cquery
     :defer t
     :init
-    (setq cquery-executable "/usr/local/bin/cquery")))
+    (setq cquery-executable "/usr/local/bin/cquery"))
+  (add-hook 'c-mode-hook #'lsp-cquery-enable)
+  (add-hook 'c++-mode-hook #'lsp-cquery-enable))
+
+(defun my-lsp/init-lsp-go()
+  (use-package lsp-go)
+  (add-hook 'go-mode-hook #'lsp-go-enable))
+
+(defun my-lsp/post-init-lsp-python()
+  (add-hook 'python-mode-hook #'lsp-python-enable))
 
 (defun my-lsp/post-init-company-lsp()
   (use-package company-lsp
@@ -51,8 +60,3 @@
     (spacemacs|add-company-backends :backends company-lsp :modes c-mode c++-mode python-mode go-mode)
     ) ;; lsp
   )
-
-(defun my-lsp/init-lsp-go()
-  (use-package lsp-go
-    :defer t
-    :init))

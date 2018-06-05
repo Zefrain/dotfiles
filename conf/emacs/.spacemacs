@@ -37,23 +37,31 @@ This function should only modify configuration layer settings."
      markdown
      html
      cmake
-     javascript
-     go
      pandoc
-     auto-completion
      syntax-checking
+     cnfonts
+     ;; auto completion
+     auto-completion
+     lsp
+     my-lsp
+     my-rtags
+     ;; Language
+     json
+     lua
+     (go :variables
+         go-tab-width 4)
      (c-c++ :variables
             c-c++-enable-rtags-support t
             c-c++-enable-clang-support t
             c-c++-default-mode-for-headers 'c++-mode
             c-c++-enable-c++11 t)
      (python :variables
-             python-backend 'anaconda
              python-enable-yapf-format-on-save t)
-     lsp
-     my-lsp
-     my-rtags
-     cnfonts
+     (shell :variables
+            shell-default-shell 'eshell
+            shell-default-height 20
+            shell-default-position 'bottom
+            shell-enable-smart-eshell t)
      ;; colors
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -85,11 +93,6 @@ This function should only modify configuration layer settings."
              "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t))))
 
      (ibuffer :variables ibuffer-group-buffers-by 'projects)
-     (shell :variables
-            shell-default-shell 'eshell
-            shell-default-height 20
-            shell-default-position 'bottom
-            shell-enable-smart-eshell t)
      (plantuml :variables
                plantuml-jar-path "~/Templates/plantuml.jar"
                org-plantuml-jar-path "~/Templates/plantuml.jar")
@@ -227,8 +230,8 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 13
+   dotspacemacs-default-font '("Source Code Variable"
+                               :size 14
                                :weight normal
                                :width normal)
 
@@ -481,12 +484,12 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   ;;         ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")
   ;;         ))
 
-  (setq configuration-layer-elpa-archives
-        '(
-          ("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
-          ("org-cn"   . "http://elpa.emacs-china.org/org/")
-          ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")
-          ))
+  ;;(setq configuration-layer-elpa-archives
+        ;;'(
+          ;;("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
+          ;;("org-cn"   . "http://elpa.emacs-china.org/org/")
+          ;;("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")
+          ;;))
 
   )
 
@@ -497,7 +500,6 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-
 
   ;; Make C-c C-c behave like C-u C-c C-c in Python mode
   (global-company-mode)
@@ -526,6 +528,9 @@ you should place your code here."
   ;; grab-mac-link
   (add-hook 'org-mode-hook (lambda ()
                              (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))
+
+  ;; (require 'lsp-go)
+  ;; (add-hook 'go-mode-hook #'lsp-go-enable)
 
   ;; yasnippet
   (yas-global-mode)
@@ -576,27 +581,18 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files
+   (quote
+    ("~/Documents/Private/Notes/journal/201805/2018-05-14.org" "~/Documents/Private/Notes/journal/201805/2018-05-23.org")))
  '(package-selected-packages
    (quote
-    (helm-gtags ggtags company-lsp yapfify xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org spaceline powerline smeargle shell-pop reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el pbcopy paradox spinner ox-gfm osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text magit-gitflow lorem-ipsum live-py-mode linum-relative link-hint launchctl indent-guide ibuffer-projectile hydra hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag grab-mac-link google-translate golden-ratio go-guru go-eldoc gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-pos-tip pos-tip flycheck pkg-info epl flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit ghub let-alist with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight eshell-z eshell-prompt-extras esh-help dumb-jump disaster diminish cython-mode cquery lsp-mode company-statistics company-go go-mode company-c-headers company-anaconda company column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol anaconda-mode pythonic f dash s aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup))))
+    (evil-goggles yasnippet-snippets yapfify xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon string-inflection spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pippel pipenv pip-requirements persp-mode pcre2el pbcopy password-generator paradox pandoc-mode ox-pandoc ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file neotree mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow lsp-ui lsp-python lsp-go lorem-ipsum live-py-mode link-hint launchctl json-navigator json-mode indent-guide importmagic impatient-mode ibuffer-projectile hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-mode-manager helm-make helm-gtags helm-gitignore helm-flx helm-descbinds helm-ctest helm-css-scss helm-company helm-c-yasnippet helm-ag grab-mac-link google-translate google-c-style golden-ratio godoctor go-tag go-rename go-guru go-eldoc gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode editorconfig dumb-jump disaster diminish cython-mode cquery counsel-projectile company-web company-statistics company-rtags company-lua company-lsp company-go company-c-headers company-anaconda column-enforce-mode cnfonts cmake-mode cmake-ide clean-aindent-mode clang-format centered-cursor-mode auto-yasnippet auto-highlight-symbol aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
+ '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (company-lsp yapfify xterm-color ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org spaceline powerline smeargle shell-pop reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort popwin pip-requirements persp-mode pcre2el pbcopy paradox spinner ox-gfm osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file neotree mwim multi-term move-text magit-gitflow lorem-ipsum live-py-mode linum-relative link-hint launchctl indent-guide ibuffer-projectile hydra hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile helm-mode-manager helm-make projectile helm-gitignore request helm-flx helm-descbinds helm-company helm-c-yasnippet helm-ag grab-mac-link google-translate golden-ratio go-guru go-eldoc gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flycheck-pos-tip pos-tip flycheck pkg-info epl flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit magit-popup git-commit ghub let-alist with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight eshell-z eshell-prompt-extras esh-help dumb-jump disaster diminish cython-mode cquery lsp-mode company-statistics company-go go-mode company-c-headers company-anaconda company column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol anaconda-mode pythonic f dash s aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core async ac-ispell auto-complete popup))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

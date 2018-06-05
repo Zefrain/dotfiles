@@ -94,4 +94,6 @@ set colored-stats on
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
+export GOPATH=/Users/zhoush/Documents/Practice/go
+export PATH=$PATH:$exec_dir:/Library/TeX/texbin:$GOPATH/bin:$HOME/go/bin
 export PATH="/usr/local/sbin:$PATH"
