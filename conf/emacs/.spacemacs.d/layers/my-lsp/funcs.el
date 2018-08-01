@@ -16,4 +16,4 @@
 
 (defun my-lsp/imenu ()
   (interactive)
-  (if lsp-mode (lsp-ui-imenu)))
+  (if lsp-mode (lsp-ui-imenu) (imenu-list)))

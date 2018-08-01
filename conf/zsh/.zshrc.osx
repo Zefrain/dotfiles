@@ -1,6 +1,7 @@
 _alias()
 {
     alias rm="rmtrash"
+    # alias emacs='open /Applications/Emacs.app --args '
 }
 
 _lib_path()
@@ -28,8 +29,5 @@ _init_osx() {
     _lib_path
     _incl_path
 
-    source /Users/zhoush/Private/Working/zxpay/pts/etc/ptsenv.sh
 }
-
-
 _init_osx
