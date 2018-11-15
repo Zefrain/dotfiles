@@ -3,7 +3,7 @@
 
 # Path to your oh-my-zsh installation.
 # export ZSH="$HOME/Git/sync/conf/zsh/.oh-my-zsh"
-export ZSH="$(dirname $(readlink ~/.zshrc))/.oh-my-zsh"
+export ZSH="$(dirname $(realpath ~/.zshrc))/.oh-my-zsh"
 exec_dir="${ZSH%%conf*}/exec"
 
 # Set name of the theme to load. Optionally, if you set this to "random"
@@ -103,3 +103,8 @@ export PATH
 export PATH="/usr/local/sbin":$PATH
 
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
+PLATFORM=$(/usr/local/bin/systype.sh)
+source .zshrc.$PLATFORM
+
+
