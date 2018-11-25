@@ -1,7 +1,6 @@
 _alias()
 {
     alias rm="rmtrash"
-    # alias emacs='open /Applications/Emacs.app --args '
 }
 
 _lib_path()

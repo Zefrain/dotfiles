@@ -3,12 +3,12 @@
    [[./conf][conf]]
 
 ** 脚本
-   [[./exec][exec]]
+   [[./sh][sh]]
 
 ** Pre-installation
 *** Mac OS
     #+BEGIN_SRC sh
-      brew install zsh
+      brew install zsh stow
       brew cask install emacs
     #+END_SRC
 ** Usage
@@ -18,6 +18,5 @@
        #+END_SRC
   2. env init
      #+BEGIN_SRC sh
-       cd exec
-       ./init_sync.sh
+       ./init.sh
      #+END_SRC

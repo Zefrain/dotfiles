@@ -104,7 +104,7 @@ export PATH="/usr/local/sbin":$PATH
 
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 
-PLATFORM=$(/usr/local/bin/systype.sh)
-source .zshrc.$PLATFORM
+PLATFORM=$(sh /usr/local/bin/systype.sh)
+source $HOME/.zshrc.$PLATFORM
 
 
