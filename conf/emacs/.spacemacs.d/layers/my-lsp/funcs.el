@@ -8,11 +8,11 @@
 
 (defun my-lsp/jump-backward ()
   (interactive)
-  (if lsp-mode (lsp-ui-peek-jump-backward)))
+  (if lsp-mode (lsp-ui-peek-jump-backward) (helm-gtags-previous-history)))
 
 (defun my-lsp/jump-forward ()
   (interactive)
-  (if lsp-mode (lsp-ui-peek-jump-forward)))
+  (if lsp-mode (lsp-ui-peek-jump-forward) (helm-gtags-next-history)))
 
 (defun my-lsp/imenu ()
   (interactive)

@@ -6,4 +6,4 @@
 	url = https://github.com/borgnix/spacemacs-journal.git
 [submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
-	url = https://github.com/syl20bnr/spacemacs.git
+	url = https://github.com/syl20bnr/spacemacs
