@@ -1,4 +1,4 @@
-;; -*- mode: emacs-lisp -*-
+;; -*- mode: emacs-lisp; lexical-binding: t -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -32,9 +32,8 @@ This function should only modify configuration layer settings."
    dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers")
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(javascript
+   '(
      csv
-     sql
      nginx
      gtags
      markdown
@@ -45,20 +44,22 @@ This function should only modify configuration layer settings."
      cnfonts
      ;; auto completion
      auto-completion
-     lsp
-     my-lsp
-     my-rtags
+     ;; lsp
+     ;; my-lsp
+     ;; my-rtags
      ;; Language
      json
      lua
-     (go :variables
-         go-tab-width 4)
+     sql
+     (go :variables go-backend 'lsp)
      (c-c++ :variables
-            c-c++-enable-rtags-support t
-            c-c++-enable-clang-support t
-            c-c++-default-mode-for-headers 'c++-mode
+            c-c++-backend 'lsp-cquery
+            c-c++-lsp-sem-highlight-method t
+            lsp-auto-guess-root t
+            lsp-ui-doc-enable t
             c-c++-enable-c++11 t)
      (python :variables
+             python-backend 'lsp
              python-enable-yapf-format-on-save t)
      (shell :variables
             shell-default-shell 'eshell
@@ -73,12 +74,11 @@ This function should only modify configuration layer settings."
      ;; ----------------------------------------------------------------
      helm
      better-defaults
-     (git :variables
-          magit-repository-directories '("~/Documents/"))
+     git
      (org :variables
-          org-bullets-bullet-list '("♥" "■" "◆" "▲" "▶")
+          org-bullets-bullet-list '("❤︎" "❡" "❦" "❧" "☙")
           org-enable-org-journal-support t
-          org-journal-dir "~/Documents/Private/Notes/journal/"
+          org-journal-dir "/Users/zhoush/Documents/Notes/journal"
           org-journal-file-format "%Y%m/%Y-%m-%d.org"
           org-journal-date-prefix "#+TITLE: "
           org-journal-date-format "%A, %B %d %Y"
@@ -89,11 +89,12 @@ This function should only modify configuration layer settings."
           org-capture-templates
           (quote
            (("t" "Todo" entry
-             (file "~/Documents/Private/org/TODOs.org")
+             (file "~/Documents/TODOs.org")
              "* TODO %? %t \n %? \n" :empty-lines 1 :jump-to-captured t)
-            ("z" "zxpay/CHANGELOG" entry
-             (file+headline "~/Documents/Private/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
-             "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t))))
+            ;; ("z" "zxpay/CHANGELOG" entry
+            ;;  (file+headline "~/Documents/Private/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
+            ;;  "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t)
+            )))
 
      (ibuffer :variables ibuffer-group-buffers-by 'projects)
      (plantuml :variables
@@ -111,9 +112,11 @@ This function should only modify configuration layer settings."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(company-solidity
-                                      edit-server
-                                      grab-mac-link)
+   ;; To use a local version of a package, use the `:location' property:
+   ;; '(your-package :location "~/path/to/your-package/")
+   ;; Also include the dependencies as they will not be resolved automatically.
+   dotspacemacs-additional-packages '()
+
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
 
@@ -137,6 +140,25 @@ It should only modify the values of Spacemacs settings."
   ;; This setq-default sexp is an exhaustive list of all the supported
   ;; spacemacs settings.
   (setq-default
+   ;; If non-nil then enable support for the portable dumper. You'll need
+   ;; to compile Emacs 27 from source following the instructions in file
+   ;; EXPERIMENTAL.org at to root of the git repository.
+   ;; (default nil)
+   dotspacemacs-enable-emacs-pdumper nil
+
+   ;; File path pointing to emacs 27.1 executable compiled with support
+   ;; for the portable dumper (this is currently the branch pdumper).
+   ;; (default "emacs-27.0.50")
+   dotspacemacs-emacs-pdumper-executable-file "emacs-27.0.50"
+
+   ;; Name of the Spacemacs dump file. This is the file will be created by the
+   ;; portable dumper in the cache directory under dumps sub-directory.
+   ;; To load it when starting Emacs add the parameter `--dump-file'
+   ;; when invoking Emacs 27.1 executable on the command line, for instance:
+   ;;   ./emacs --dump-file=~/.emacs.d/.cache/dumps/spacemacs.pdmp
+   ;; (default spacemacs.pdmp)
+   dotspacemacs-emacs-dumper-dump-file "spacemacs.pdmp"
+
    ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
    ;; possible. Set it to nil if you have no way to use HTTPS in your
    ;; environment, otherwise it is strongly recommended to let it set to t.
@@ -220,11 +242,11 @@ It should only modify the values of Spacemacs settings."
                          spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
-   ;; `all-the-icons', `custom', `vim-powerline' and `vanilla'. The first three
-   ;; are spaceline themes. `vanilla' is default Emacs mode-line. `custom' is a
-   ;; user defined themes, refer to the DOCUMENTATION.org for more info on how
-   ;; to create your own spaceline theme. Value can be a symbol or list with\
-   ;; additional properties.
+   ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
+   ;; first three are spaceline themes. `doom' is the doom-emacs mode-line.
+   ;; `vanilla' is default Emacs mode-line. `custom' is a user defined themes,
+   ;; refer to the DOCUMENTATION.org for more info on how to create your own
+   ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
    dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
 
@@ -234,8 +256,8 @@ It should only modify the values of Spacemacs settings."
 
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Source Code Variable"
-                               :size 14
+   dotspacemacs-default-font '("Source Code Pro for Powerline"
+                               :size 13
                                :weight normal
                                :width normal)
 
@@ -269,21 +291,6 @@ It should only modify the values of Spacemacs settings."
    ;; works in the GUI. (default nil)
    dotspacemacs-distinguish-gui-tab nil
 
-   ;; If non-nil `Y' is remapped to `y$' in Evil states. (default nil)
-   dotspacemacs-remap-Y-to-y$ nil
-
-   ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
-   ;; there. (default t)
-   dotspacemacs-retain-visual-state-on-shift t
-
-   ;; If non-nil, `J' and `K' move lines up and down when in visual mode.
-   ;; (default nil)
-   dotspacemacs-visual-line-move-text nil
-
-   ;; If non-nil, inverse the meaning of `g' in `:substitute' Evil ex-command.
-   ;; (default nil)
-   dotspacemacs-ex-substitute-global nil
-
    ;; Name of the default layout (default "Default")
    dotspacemacs-default-layout-name "Default"
 
@@ -313,26 +320,9 @@ It should only modify the values of Spacemacs settings."
    ;; Maximum number of rollback slots to keep in the cache. (default 5)
    dotspacemacs-max-rollback-slots 5
 
-   ;; If non-nil, `helm' will try to minimize the space it uses. (default nil)
-   dotspacemacs-helm-resize nil
-
-   ;; if non-nil, the helm header is hidden when there is only one source.
-   ;; (default nil)
-   dotspacemacs-helm-no-header nil
-
-   ;; define the position to display `helm', options are `bottom', `top',
-   ;; `left', or `right'. (default 'bottom)
-   dotspacemacs-helm-position 'bottom
-
-   ;; Controls fuzzy matching in helm. If set to `always', force fuzzy matching
-   ;; in all non-asynchronous sources. If set to `source', preserve individual
-   ;; source settings. Else, disable fuzzy matching in all sources.
-   ;; (default 'always)
-   dotspacemacs-helm-use-fuzzy 'always
-
-   ;; If non-nil, the paste transient-state is enabled. While enabled, pressing
-   ;; `p' several times cycles through the elements in the `kill-ring'.
-   ;; (default nil)
+   ;; If non-nil, the paste transient-state is enabled. While enabled, after you
+   ;; paste something, pressing `C-j' and `C-k' several times cycles through the
+   ;; elements in the `kill-ring'. (default nil)
    dotspacemacs-enable-paste-transient-state nil
 
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
@@ -386,7 +376,9 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil show the color guide hint for transient state keys. (default t)
    dotspacemacs-show-transient-state-color-guide t
 
-   ;; If non-nil unicode symbols are displayed in the mode line. (default t)
+   ;; If non-nil unicode symbols are displayed in the mode line.
+   ;; If you use Emacs as a daemon and wants unicode characters only in GUI set
+   ;; the value to quoted `display-graphic-p'. (default t)
    dotspacemacs-mode-line-unicode-symbols t
 
    ;; If non-nil smooth scrolling (native-scrolling) is enabled. Smooth
@@ -426,6 +418,17 @@ It should only modify the values of Spacemacs settings."
    ;; `current', `all' or `nil'. Default is `all' (highlight any scope and
    ;; emphasis the current one). (default 'all)
    dotspacemacs-highlight-delimiters 'all
+
+   ;; If non-nil, start an Emacs server if one is not already running.
+   ;; (default nil)
+   dotspacemacs-enable-server nil
+
+   ;; Set the emacs server socket location.
+   ;; If nil, uses whatever the Emacs default is, otherwise a directory path
+   ;; like \"~/.emacs.d/server\". It has no effect if
+   ;; `dotspacemacs-enable-server' is nil.
+   ;; (default nil)
+   dotspacemacs-server-socket-dir nil
 
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
@@ -473,7 +476,15 @@ It should only modify the values of Spacemacs settings."
    ;; Run `spacemacs/prettify-org-buffer' when
    ;; visiting README.org files of Spacemacs.
    ;; (default nil)
-   dotspacemacs-pretty-docs nil))
+   dotspacemacs-pretty-docs t))
+
+(defun dotspacemacs/user-env ()
+  "Environment variables setup.
+This function defines the environment variables for your Emacs session. By
+default it calls `spacemacs/load-spacemacs-env' which loads the environment
+variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
+See the header of this file for more information."
+  (spacemacs/load-spacemacs-env))
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
@@ -481,20 +492,13 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
+  )
 
-  ;; (setq configuration-layer--elpa-archives
-  ;;       '(("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
-  ;;         ("org-cn"   . "http://elpa.emacs-china.org/org/")
-  ;;         ("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")
-  ;;         ))
-
-  ;;(setq configuration-layer-elpa-archives
-        ;;'(
-          ;;("melpa-cn" . "http://elpa.emacs-china.org/melpa/")
-          ;;("org-cn"   . "http://elpa.emacs-china.org/org/")
-          ;;("gnu-cn"   . "http://elpa.emacs-china.org/gnu/")
-          ;;))
-
+(defun dotspacemacs/user-load ()
+  "Library to load while dumping.
+This function is called only while dumping Spacemacs configuration. You can
+`require' or `load' the libraries of your choice that will be included in the
+dump."
   )
 
 (defun dotspacemacs/user-config ()
@@ -504,18 +508,8 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
-  ;; server-start
-  (server-start)
-
-  ;; emacs-plus
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark))
-
   ;; Make C-c C-c behave like C-u C-c C-c in Python mode
   (global-company-mode)
-  (require 'python)
-  (define-key python-mode-map (kbd "C-c C-c")
-    (lambda () (interactive) (python-shell-send-buffer t)))
 
   ;; orgmode pdf
   (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
@@ -538,9 +532,6 @@ you should place your code here."
   ;; grab-mac-link
   (add-hook 'org-mode-hook (lambda ()
                              (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))
-
-  ;; (require 'lsp-go)
-  ;; (add-hook 'go-mode-hook #'lsp-go-enable)
 
   ;; yasnippet
   (yas-global-mode)
@@ -591,11 +582,10 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(projectile-globally-ignored-directories
-   '(".*" ".ccls-cache" ".cquery_cached_index" ".idea" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work"))
- '(projectile-project-root-files
-   '(".projectile" "rebar.config" "project.clj" "build.boot" "deps.edn" "SConstruct" "pom.xml" "build.sbt" "gradlew" "build.gradle" ".ensime" "Gemfile" "requirements.txt" "setup.py" "tox.ini" "composer.json" "Cargo.toml" "mix.exs" "stack.yaml" "info.rkt" "DESCRIPTION" "TAGS" "GTAGS" "configure.in" "configure.ac" "cscope.out" ".projectile"))
- '(projectile-project-root-files-top-down-recurring '(".projectile" ".svn" "CVS" "Makefile")))
+ '(evil-want-Y-yank-to-eol nil)
+ '(package-selected-packages
+   '(cnfonts yasnippet-snippets yapfify xterm-color ws-butler winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon string-inflection sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prettier-js popwin plantuml-mode pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox pandoc-mode ox-pandoc ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file nginx-mode neotree mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow lsp-ui lsp-python lsp-go lorem-ipsum live-py-mode link-hint launchctl json-navigator json-mode indent-guide importmagic impatient-mode ibuffer-projectile hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-ctest helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode editorconfig dumb-jump dotenv-mode doom-modeline disaster diminish cython-mode csv-mode cquery counsel-projectile company-web company-statistics company-rtags company-lua company-lsp company-go company-c-headers company-anaconda column-enforce-mode cmake-mode cmake-ide clean-aindent-mode clang-format centered-cursor-mode ccls auto-yasnippet auto-highlight-symbol aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell))
+ '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

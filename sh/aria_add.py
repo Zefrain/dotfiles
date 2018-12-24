@@ -5,7 +5,6 @@ import sys
 import getopt
 import xmlrpclib
 
-
 s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
 
 
@@ -29,8 +28,13 @@ def main(argv):
             inputfile = arg
         elif opt in ("-o", "--ofile"):
             outputfile = arg
-    print("s.aria2.addUri(['" + inputfile + "'], dict(dir='" + outputfile + "'))")
-    s.aria2.addUri([inputfile], dict(dir=outputfile)) #
+    print("s.aria2.addUri(['" + inputfile + "'], dict(dir='" + outputfile +
+          "'))")
+
+    try:
+        s.aria2.addUri([inputfile], dict(dir=outputfile))  #
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
