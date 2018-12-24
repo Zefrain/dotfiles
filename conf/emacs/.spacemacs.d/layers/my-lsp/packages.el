@@ -37,15 +37,15 @@
     :defer t
     :init
     (setq cquery-executable "/usr/local/bin/cquery"))
-  (add-hook 'c-mode-hook #'lsp-cquery-enable)
-  (add-hook 'c++-mode-hook #'lsp-cquery-enable))
+  (add-hook 'c-mode-hook #'lsp)
+  (add-hook 'c++-mode-hook #'lsp))
 
 (defun my-lsp/post-init-lsp-go()
   (use-package lsp-go)
-  (add-hook 'go-mode-hook #'lsp-go-enable))
+  (add-hook 'go-mode-hook #'lsp))
 
 (defun my-lsp/post-init-lsp-python()
-  (add-hook 'python-mode-hook #'lsp-python-enable))
+  (add-hook 'python-mode-hook #'lsp))
 
 (defun my-lsp/post-init-company-lsp()
   (use-package company-lsp

@@ -1,3 +1,6 @@
+PLATFORM=$(sh /usr/local/bin/systype.sh)
+source $HOME/.zshrc.$PLATFORM
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -54,8 +57,7 @@ ZSH_THEME="jispwoso"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup..
 plugins=(extract command-not-found osx zsh-syntax-highlighting zsh-autosuggestions
-         web-search colored-man-pages z
-         emacs)
+         web-search colored-man-pages z emacs git tmux )
 
 source $ZSH/oh-my-zsh.sh
 
@@ -95,16 +97,11 @@ set colored-stats on
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-export GOPATH="/Users/zhoush/Documents/Private/Notes/books/go/"
-export GOBIN=$GOPATH/bin
+# export GOPATH="/Users/zhoush/Documents/Private/Notes/books/go/"
+# export GOBIN=$GOPATH/bin
 PATH=$PATH:$GOBIN
 PATH=$PATH:$exec_dir:/Library/TeX/texbin:$HOME/go/bin
 export PATH
 export PATH="/usr/local/sbin":$PATH
 
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-PLATFORM=$(sh /usr/local/bin/systype.sh)
-source $HOME/.zshrc.$PLATFORM
-
-

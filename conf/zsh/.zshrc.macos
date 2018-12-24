@@ -10,6 +10,14 @@ _lib_path()
 
     LIBRARY_PATH=$HOME/lib
     export LIBRARY_PATH
+
+
+}
+
+_flag_env()
+{
+    export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
+    export CPPFLAGS="-I/usr/local/opt/llvm/include":$CPPFLAGS
 }
 
 _incl_path()
@@ -20,13 +28,17 @@ _incl_path()
 
 _path()
 {
-    PATH=$PATH:/usr/local/Homebrew/bin
+    export PATH=$PATH:/opt/local/bin
+    export PATH="/usr/local/opt/llvm/bin:$PATH"
 }
 
 _init_osx() {
     _alias
     _lib_path
     _incl_path
+    _flag_env
+    _path
 
 }
+
 _init_osx

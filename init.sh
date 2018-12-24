@@ -20,6 +20,8 @@ init_sh() {
 init_conf() {
     stow -d $conf_dir -t $HOME -R emacs
     stow -d $conf_dir -t $HOME -R zsh
+    stow -d $conf_dir -t $HOME -R aria2
+    stow -d $conf_dir -t $HOME -R tmux
 }
 
 
