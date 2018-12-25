@@ -7,3 +7,6 @@
 [submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs
+[submodule "conf/tmux/.tmux/plugins/tpm"]
+	path = conf/tmux/.tmux/plugins/tpm
+	url = https://github.com/tmux-plugins/tpm
