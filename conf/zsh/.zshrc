@@ -25,7 +25,7 @@ ZSH_THEME="jispwoso"
 # DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
-# export UPDATE_ZSH_DAYS=13
+export UPDATE_ZSH_DAYS=13
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -96,12 +96,5 @@ set colored-stats on
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-
-# export GOPATH="/Users/zhoush/Documents/Private/Notes/books/go/"
-# export GOBIN=$GOPATH/bin
-PATH=$PATH:$GOBIN
-PATH=$PATH:$exec_dir:/Library/TeX/texbin:$HOME/go/bin
-export PATH
-export PATH="/usr/local/sbin":$PATH
 
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
