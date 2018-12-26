@@ -38,7 +38,7 @@ _init_osx() {
     _incl_path
     _flag_env
     _path
-
+    export HOMEBREW_GITHUB_API_TOKEN=7ec134d90431e00a2efd13a5b45517605345394e
 }
 
 _init_osx
