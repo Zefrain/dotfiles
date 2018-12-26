@@ -42,11 +42,7 @@ This function should only modify configuration layer settings."
      pandoc
      syntax-checking
      cnfonts
-     ;; auto completion
      auto-completion
-     ;; lsp
-     ;; my-lsp
-     ;; my-rtags
      ;; Language
      json
      lua
@@ -84,9 +80,9 @@ This function should only modify configuration layer settings."
           org-bullets-bullet-list '("❤︎" "❡" "❦" "❧" "☙")
           org-enable-org-journal-support t
           org-journal-dir "/Users/zhoush/Documents/Notes/journal"
-          org-journal-file-format "%Y%m/%Y-%m-%d.org"
-          org-journal-date-prefix "#+TITLE: "
-          org-journal-date-format "%A, %B %d %Y"
+          org-journal-file-format "%Y/%Y%m%d.org"
+          org-journal-date-prefix "#+DATE: "
+          org-journal-date-format "<%Y-%m-%d %H:%M>"
           org-journal-time-prefix "* "
           org-journal-time-format ""
           org-projectile-file "org/TODOs.org"
@@ -102,9 +98,7 @@ This function should only modify configuration layer settings."
             )))
 
      (ibuffer :variables ibuffer-group-buffers-by 'projects)
-     (plantuml :variables
-               plantuml-jar-path "~/Templates/plantuml.jar"
-               org-plantuml-jar-path "~/Templates/plantuml.jar")
+     plantuml
      (osx :variables
           osx-command-as       'hyper
           osx-option-as        'meta
