@@ -25,3 +25,5 @@
 [submodule "conf/zsh/.oh-my-zsh"]
 	develop = develop
 	master = master
+[submodule "./conf/tmux/.tmux/plugins/tmux-sensible"]
+	HEAD = HEAD
