@@ -1,0 +1,1 @@
+pip3 freeze  | awk -F= 'NR>2 {print $1}' | xargs pip install -U
