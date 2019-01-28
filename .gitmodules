@@ -1,29 +1,25 @@
 [submodule "conf/zsh/oh-my-zsh"]
 	path = conf/zsh/.oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh.git
+	master = master
 [submodule "conf/emacs/.spacemacs.d/layer/journal"]
 	path = conf/emacs/.spacemacs.d/layer/journal
 	url = https://github.com/borgnix/spacemacs-journal.git
+	master = master
 [submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs
 	develop = develop
+	master = master
 [submodule "conf/tmux/.tmux/plugins/tpm"]
 	path = conf/tmux/.tmux/plugins/tpm
 	url = git@github.com:tmux-plugins/tpm.git
 	master = master
-	HEAD = HEAD
 [submodule "conf/tmux/.tmux/plugins/tmux-sensible"]
 	path = conf/tmux/.tmux/plugins/tmux-sensible
 	url = git@github.com:tmux-plugins/tmux-sensible.git
 	master = master
-	HEAD = HEAD
 [submodule "conf/tmux/.tmux/plugins/tmux-themepack"]
 	path = conf/tmux/.tmux/plugins/tmux-themepack
 	url = git@github.com:jimeh/tmux-themepack.git
-	HEAD = HEAD
-[submodule "conf/zsh/.oh-my-zsh"]
-	develop = develop
 	master = master
-[submodule "./conf/tmux/.tmux/plugins/tmux-sensible"]
-	HEAD = HEAD
