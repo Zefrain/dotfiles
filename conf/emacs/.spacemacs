@@ -76,7 +76,8 @@ This function should only modify configuration layer settings."
      helm
      better-defaults
      git
-     (org :variables
+     (org
+          :variables
           org-bullets-bullet-list '("❤︎" "❡" "❦" "❧" "☙")
           org-enable-org-journal-support t
           org-journal-dir "/Users/zhoush/Documents/Notes/journal"
