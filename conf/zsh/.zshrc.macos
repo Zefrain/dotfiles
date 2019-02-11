@@ -22,7 +22,7 @@ _flag_env()
 
 _incl_path()
 {
-    C_INCLUDE_PATH=/usr/local/opt/openssl/include:/usr/local/opt/curl/include:$HOME/include
+    C_INCLUDE_PATH=$C_INCLUDE_PATH:/usr/local/opt/openssl/include:/usr/local/opt/curl/include:$HOME/include:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
     export C_INCLUDE_PATH
 }
 
