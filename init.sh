@@ -28,6 +28,9 @@ init_conf() {
 init_dotfiles() {
     git submodule update --init --recursive
 
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        brew tap homebrew/command-not-found
+    fi
 
     symlinks -d $HOME
 

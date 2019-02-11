@@ -44,7 +44,7 @@ This function should only modify configuration layer settings."
      cnfonts
      auto-completion
      ;; Language
-     json
+     (json :variables json-fmt-tool 'prettier)
      lua
      (sql :variables sql-capitalize-keywords t)
      (go :variables go-backend 'lsp)
@@ -53,10 +53,13 @@ This function should only modify configuration layer settings."
       (add-hook 'c-mode-hook #'lsp)
       (add-hook 'c++-mode-hook #'lsp)
       :variables
-      c-c++-backend 'lsp-cquery
-      c-c++-lsp-sem-highlight-method t
+      ;; c-c++-backend 'lsp-cquery
+      c-c++-lsp-cache-dir ".lsp-cached"
+      c-c++-adopt-subprojects t
       lsp-auto-guess-root t
+      c-c++-backend 'lsp-ccls
       lsp-ui-doc-enable t
+      ;; c-c++-lsp-sem-highlight-method 'font-lock
       c-c++-enable-c++11 t)
      (python :variables
              python-backend 'lsp
@@ -509,8 +512,6 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
-  (if (member major-mode '(sql-mode))
-      (sql-set-product 'mysql))
 
   ;; Make C-c C-c behave like C-u C-c C-c in Python mode
   (global-company-mode)
@@ -518,9 +519,8 @@ you should place your code here."
   ;; orgmode pdf
   (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
                                 "xelatex -interaction nonstopmode %f"))
+  (require 'org-tempo)
 
-  ;; google-c-style
-  (add-hook 'c-mode-common-hook 'google-set-c-style)
 
   (setq locale-coding-system 'utf-8)
   (set-terminal-coding-system 'utf-8)
