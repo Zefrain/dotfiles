@@ -57,7 +57,7 @@ export UPDATE_ZSH_DAYS=13
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup..
 plugins=(extract command-not-found osx zsh-syntax-highlighting zsh-autosuggestions
-         web-search colored-man-pages z emacs git tmux )
+         web-search colored-man-pages z git tmux)
 
 source $ZSH/oh-my-zsh.sh
 

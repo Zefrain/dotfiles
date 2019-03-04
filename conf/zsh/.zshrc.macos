@@ -1,17 +1,13 @@
 _alias()
 {
     alias rm="rmtrash"
+    alias e="emacsclient -s ~/.spacemacs.d/server/server -n"
 }
 
 _lib_path()
 {
     LD_LIBRARY_PATH=/usr/local/opt/openssl/lib:/usr/local/opt/curl/lib:$LD_LIBRARY_PATH
     export LD_LIBRARY_PATH
-
-    LIBRARY_PATH=$HOME/lib
-    export LIBRARY_PATH
-
-
 }
 
 _flag_env()
@@ -22,7 +18,7 @@ _flag_env()
 
 _incl_path()
 {
-    C_INCLUDE_PATH=$C_INCLUDE_PATH:/usr/local/opt/openssl/include:/usr/local/opt/curl/include:$HOME/include:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include
+    C_INCLUDE_PATH=/usr/local/opt/openssl/include:/usr/local/opt/curl/include:$HOME/include:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include:$C_INCLUDE_PATH
     export C_INCLUDE_PATH
 }
 
