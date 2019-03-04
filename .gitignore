@@ -1,9 +1,9 @@
 .DS_Store
 conf/aria2/aria2.session
 *backup/
-*.cache/
+*cache/
 exec/ch_user.sh
+
 
 *.dat
 *.txt
-

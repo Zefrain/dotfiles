@@ -33,6 +33,8 @@ This function should only modify configuration layer settings."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     plantuml
+     dash
      csv
      nginx
      gtags
@@ -48,19 +50,17 @@ This function should only modify configuration layer settings."
      lua
      (sql :variables sql-capitalize-keywords t)
      (go :variables go-backend 'lsp)
-     (c-c++
-      :config
-      (add-hook 'c-mode-hook #'lsp)
-      (add-hook 'c++-mode-hook #'lsp)
-      :variables
-      ;; c-c++-backend 'lsp-cquery
-      c-c++-lsp-cache-dir ".lsp-cached"
-      c-c++-adopt-subprojects t
-      lsp-auto-guess-root t
-      c-c++-backend 'lsp-ccls
-      lsp-ui-doc-enable t
-      ;; c-c++-lsp-sem-highlight-method 'font-lock
-      c-c++-enable-c++11 t)
+     (c-c++ :config
+            (add-hook 'c-mode-hook #'lsp)
+            (add-hook 'c++-mode-hook #'lsp)
+            :variables lsp-ui-doc-enable t
+            ;; c-c++-backend 'lsp-cquery
+            c-c++-lsp-cache-dir ".lsp-cached"
+            c-c++-adopt-subprojects t
+            lsp-auto-guess-root t
+            c-c++-backend 'lsp-ccls
+            ;; c-c++-lsp-sem-highlight-method 'font-lock
+            c-c++-enable-c++11 t)
      (python :variables
              python-backend 'lsp
              python-enable-yapf-format-on-save t)
@@ -80,26 +80,23 @@ This function should only modify configuration layer settings."
      better-defaults
      git
      (org
-          :variables
-          org-bullets-bullet-list '("❤︎" "❡" "❦" "❧" "☙")
-          org-enable-org-journal-support t
-          org-journal-dir "/Users/zhoush/Documents/Notes/journal"
-          org-journal-file-format "%Y/%Y%m%d.org"
-          org-journal-date-prefix "#+DATE: "
-          org-journal-date-format "<%Y-%m-%d %H:%M>"
-          org-journal-time-prefix "* "
-          org-journal-time-format ""
-          org-projectile-file "org/TODOs.org"
-          org-enable-github-support t
-          org-capture-templates
-          (quote
-           (("t" "Todo" entry
-             (file "~/Documents/TODOs.org")
-             "* TODO %? %t \n %? \n" :empty-lines 1 :jump-to-captured t)
-            ;; ("z" "zxpay/CHANGELOG" entry
-            ;;  (file+headline "~/Documents/Private/Working/zxpay/org/CHANGELOG.org" "Release 0.x.x")
-            ;;  "* %? %t\n** New\n** Fix" :prepend t :jump-to-captured t)
-            )))
+      :variables
+      org-src-tab-acts-natively t
+      org-bullets-bullet-list '("❤︎" "❡" "❦" "❧" "☙" "❖" "➤")
+      org-enable-org-journal-support t
+      org-journal-dir "/Users/zhoush/Documents/Notes/journal"
+      org-journal-file-format "%Y/%Y%m%d.org"
+      org-journal-date-prefix "#+DATE: "
+      org-journal-date-format "<%Y-%m-%d %H:%M>"
+      org-journal-time-prefix "* "
+      org-journal-time-format ""
+      org-projectile-file "org/TODOs.org"
+      org-enable-github-support t
+      org-capture-templates
+      '(("t" "Todo" entry (file+headline "~/Documents/Notes/TODOs.org" "Tasks")
+         "* TODO %?\n %i\n  %a")
+        ("n" "Note" entry (file+headline "~/Documents/Notes/NOTEs.org" "NOTEs")
+         "* %?\n  %i\n") ))
 
      (ibuffer :variables ibuffer-group-buffers-by 'projects)
      plantuml
@@ -431,7 +428,7 @@ It should only modify the values of Spacemacs settings."
    ;; like \"~/.emacs.d/server\". It has no effect if
    ;; `dotspacemacs-enable-server' is nil.
    ;; (default nil)
-   dotspacemacs-server-socket-dir nil
+   dotspacemacs-server-socket-dir "~/.spacemacs.d/server"
 
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
@@ -512,6 +509,10 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+  (load-file (concat dotspacemacs-directory "/funcs.el"))
+  (load-file (concat dotspacemacs-directory "/keybindings.el"))
+  (load-file (concat dotspacemacs-directory "/variable.el"))
+
 
   ;; Make C-c C-c behave like C-u C-c C-c in Python mode
   (global-company-mode)
@@ -533,9 +534,6 @@ you should place your code here."
   ;; (prefer-coding-system 'gb2312-dos)
   ;; (setq default-buffer-file-coding-system 'gb2312-dos)
 
-  ;; grab-mac-link
-  (add-hook 'org-mode-hook (lambda ()
-                             (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))
 
   ;; yasnippet
   (yas-global-mode)
@@ -562,20 +560,6 @@ you should place your code here."
   )
 
 
-(defun backup-file-name-function-custom(file)
-  "Custom function for `make-backup-file-name'.
- Normally this just returns FILE's name with `.%Y%m%d%H%M%S' appended.
- It searches for a match for FILE in `backup-directory-alist'.
- If the directory for the backup doesn't exist, it is created."
-  (if (and (eq system-type 'ms-dos)
-           (not (msdos-long-file-names)))
-      (let ((fn (file-name-nondirectory file)))
-        (concat (file-name-directory file)
-                (or (and (string-match "\\`[^.]+\\'" fn)
-                         (concat (match-string 0 fn) (format-time-string ".%Y%m%d%H%M%S")))
-                    (and (string-match "\\`[^.]+\\.\\(..?\\)?" fn)
-                         (concat (match-string 0 fn) (format-time-string ".%Y%m%d%H%M%S"))))))
-    (concat (make-backup-file-name-1 file) (format-time-string ".%Y%m%d%H%M%S"))))
 (defun dotspacemacs/emacs-custom-settings ()
   "Emacs custom settings.
 This is an auto-generated function, do not modify its content directly, use
@@ -586,12 +570,15 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-confirm-babel-evaluate nil)
  '(package-selected-packages
-   '(treemacs-projectile treemacs-evil treemacs pfuture yasnippet-snippets yapfify xterm-color ws-butler writeroom-mode winum which-key web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit symon string-inflection sqlup-mode sql-indent spaceline-all-the-icons smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prettier-js popwin plantuml-mode pippel pipenv pip-requirements persp-mode pcre2el password-generator paradox pandoc-mode ox-pandoc ox-gfm osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-mime org-journal org-download org-bullets org-brain open-junk-file nginx-mode neotree mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow lsp-ui lsp-go lorem-ipsum live-py-mode link-hint launchctl json-navigator json-mode indent-guide importmagic impatient-mode ibuffer-projectile hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gtags helm-gitignore helm-git-grep helm-flx helm-descbinds helm-ctest helm-css-scss helm-company helm-c-yasnippet helm-ag google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags fuzzy font-lock+ flycheck-rtags flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens evil-args evil-anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode editorconfig dumb-jump dotenv-mode doom-modeline disaster diminish cython-mode csv-mode cquery counsel-projectile company-web company-statistics company-rtags company-lua company-lsp company-go company-c-headers company-anaconda column-enforce-mode cnfonts cmake-mode cmake-ide clean-aindent-mode clang-format centered-cursor-mode ccls auto-yasnippet auto-highlight-symbol aggressive-indent ace-window ace-link ace-jump-helm-line ac-ispell)))
+   (quote
+    (yasnippet-snippets yapfify xterm-color ws-butler writeroom-mode visual-fill-column winum web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen unfill treemacs-projectile treemacs-evil treemacs pfuture toc-org tagedit symon string-inflection sqlup-mode sql-indent spaceline-all-the-icons spaceline powerline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prettier-js popwin plantuml-mode pippel pipenv pip-requirements persp-mode password-generator paradox pandoc-mode ox-pandoc ox-gfm osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-journal org-download org-bullets org-brain open-junk-file nginx-mode mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magit-popup lsp-ui markdown-mode lorem-ipsum live-py-mode link-hint launchctl json-navigator hierarchy json-mode json-snatcher json-reformat indent-guide importmagic epc ctable concurrent deferred impatient-mode simple-httpd ibuffer-projectile hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose window-purpose imenu-list helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gtags helm-gitignore request helm-git-grep helm-flx helm-descbinds helm-dash helm-ctest helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags fuzzy flycheck-rtags flycheck-pos-tip pos-tip flycheck flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor lv evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode editorconfig dumb-jump doom-modeline eldoc-eval shrink-path all-the-icons memoize disaster dash-at-point cython-mode csv-mode cquery counsel-projectile counsel swiper ivy company-web web-completion-data company-statistics company-rtags rtags company-lua lua-mode company-lsp company-go go-mode company-c-headers company-anaconda company column-enforce-mode cnfonts cmake-mode cmake-ide levenshtein clean-aindent-mode clang-format centered-cursor-mode ccls projectile lsp-mode spinner ht dash-functional pkg-info epl auto-yasnippet yasnippet auto-highlight-symbol anaconda-mode pythonic f dash s aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core ac-ispell auto-complete popup which-key use-package pcre2el org-plus-contrib hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 )
