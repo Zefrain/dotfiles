@@ -1,7 +1,7 @@
 _alias()
 {
     alias rm="rmtrash"
-    alias e="emacsclient -s ~/.spacemacs.d/server/server -n"
+    alias e="emacsclient -s ~/.spacemacs.d/server/server -n "
 }
 
 _lib_path()
@@ -34,7 +34,7 @@ _init_osx() {
     _incl_path
     _flag_env
     _path
-    export HOMEBREW_GITHUB_API_TOKEN=7ec134d90431e00a2efd13a5b45517605345394e
+    export HOMEBREW_GITHUB_API_TOKEN=df26de212617b72c44745f56fd12d9224a6c7d24
 }
 
 _init_osx
