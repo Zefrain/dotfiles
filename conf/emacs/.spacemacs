@@ -60,7 +60,9 @@ This function should only modify configuration layer settings."
             lsp-auto-guess-root t
             c-c++-backend 'lsp-ccls
             ;; c-c++-lsp-sem-highlight-method 'font-lock
-            c-c++-enable-c++11 t)
+            c-c++-enable-c++11 t
+            lsp-ui-doc-enable t
+            lsp-navigation `peek)
      (python :variables
              python-backend 'lsp
              python-enable-yapf-format-on-save t)
@@ -522,19 +524,6 @@ you should place your code here."
                                 "xelatex -interaction nonstopmode %f"))
   (require 'org-tempo)
 
-
-  (setq locale-coding-system 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-selection-coding-system 'utf-8)
-
-  (prefer-coding-system 'utf-8)
-  (setq default-buffer-file-coding-system 'utf-8)
-
-  ;; (prefer-coding-system 'gb2312-dos)
-  ;; (setq default-buffer-file-coding-system 'gb2312-dos)
-
-
   ;; yasnippet
   (yas-global-mode)
 
@@ -550,13 +539,10 @@ you should place your code here."
    '(company-tooltip-common-selection
      ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
 
-  ;; backup-file
-  (setq backup-directory-alist (quote ((".*" . "~/.spacemacs.d/backup"))))
-  (setq make-backup-file-name-function (quote backup-file-name-function-custom))
-  (setq org-export-with-sub-superscripts (quote {}))
-
-  ;; winum
-  (setq winum-scope (quote frame-local))
+  ;; ;; backup-file
+  ;; (setq backup-directory-alist (quote ((".*" . "~/.spacemacs.d/backup"))))
+  ;; (setq make-backup-file-name-function (quote backup-file-name-function-custom))
+  ;; (setq org-export-with-sub-superscripts (quote {}))
   )
 
 
@@ -570,10 +556,22 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(flycheck-luacheck-standards '("ngx_lua"))
+ '(org-babel-load-languages
+   '((dot . t)
+     (shell . t)
+     (python . t)
+     (C . t)
+     (sql . t)
+     (plantuml . t)
+     (emacs-lisp . t)))
  '(org-confirm-babel-evaluate nil)
+ '(org-directory "~/Documents/Notes/org")
+ '(org-journal-dir "/Users/zhoush/Documents/Notes/org/journal/")
  '(package-selected-packages
-   (quote
-    (yasnippet-snippets yapfify xterm-color ws-butler writeroom-mode visual-fill-column winum web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen unfill treemacs-projectile treemacs-evil treemacs pfuture toc-org tagedit symon string-inflection sqlup-mode sql-indent spaceline-all-the-icons spaceline powerline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prettier-js popwin plantuml-mode pippel pipenv pip-requirements persp-mode password-generator paradox pandoc-mode ox-pandoc ox-gfm osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-journal org-download org-bullets org-brain open-junk-file nginx-mode mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magit-popup lsp-ui markdown-mode lorem-ipsum live-py-mode link-hint launchctl json-navigator hierarchy json-mode json-snatcher json-reformat indent-guide importmagic epc ctable concurrent deferred impatient-mode simple-httpd ibuffer-projectile hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose window-purpose imenu-list helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gtags helm-gitignore request helm-git-grep helm-flx helm-descbinds helm-dash helm-ctest helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags fuzzy flycheck-rtags flycheck-pos-tip pos-tip flycheck flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor lv evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode editorconfig dumb-jump doom-modeline eldoc-eval shrink-path all-the-icons memoize disaster dash-at-point cython-mode csv-mode cquery counsel-projectile counsel swiper ivy company-web web-completion-data company-statistics company-rtags rtags company-lua lua-mode company-lsp company-go go-mode company-c-headers company-anaconda company column-enforce-mode cnfonts cmake-mode cmake-ide levenshtein clean-aindent-mode clang-format centered-cursor-mode ccls projectile lsp-mode spinner ht dash-functional pkg-info epl auto-yasnippet yasnippet auto-highlight-symbol anaconda-mode pythonic f dash s aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core ac-ispell auto-complete popup which-key use-package pcre2el org-plus-contrib hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async))))
+   '(yasnippet-snippets yapfify xterm-color ws-butler writeroom-mode visual-fill-column winum web-mode web-beautify volatile-highlights vi-tilde-fringe uuidgen unfill treemacs-projectile treemacs-evil treemacs pfuture toc-org tagedit symon string-inflection sqlup-mode sql-indent spaceline-all-the-icons spaceline powerline smeargle slim-mode shell-pop scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode prettier-js popwin plantuml-mode pippel pipenv pip-requirements persp-mode password-generator paradox pandoc-mode ox-pandoc ox-gfm osx-trash osx-dictionary org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-journal org-download org-bullets open-junk-file nginx-mode mwim multi-term move-text mmm-mode markdown-toc magit-svn magit-gitflow magit-popup lsp-ui markdown-mode lorem-ipsum live-py-mode link-hint launchctl json-navigator hierarchy json-mode json-snatcher json-reformat indent-guide importmagic epc ctable concurrent deferred impatient-mode simple-httpd ibuffer-projectile hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-xref helm-themes helm-swoop helm-rtags helm-pydoc helm-purpose window-purpose imenu-list helm-projectile helm-org-rifle helm-mode-manager helm-make helm-gtags helm-gitignore request helm-git-grep helm-flx helm-descbinds helm-dash helm-ctest helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate google-c-style golden-ratio godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md ggtags fuzzy flycheck-rtags flycheck-pos-tip pos-tip flycheck flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-org evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor lv evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-escape evil-ediff evil-cleverparens smartparens paredit evil-args evil-anzu anzu eval-sexp-fu eshell-z eshell-prompt-extras esh-help emmet-mode editorconfig dumb-jump doom-modeline eldoc-eval shrink-path all-the-icons memoize disaster dash-at-point cython-mode csv-mode cquery counsel-projectile counsel swiper ivy company-web web-completion-data company-statistics company-rtags rtags company-lua lua-mode company-lsp company-go go-mode company-c-headers company-anaconda company column-enforce-mode cnfonts cmake-mode cmake-ide levenshtein clean-aindent-mode clang-format centered-cursor-mode ccls projectile lsp-mode spinner ht dash-functional pkg-info epl auto-yasnippet yasnippet auto-highlight-symbol anaconda-mode pythonic f dash s aggressive-indent ace-window ace-link ace-jump-helm-line helm avy helm-core ac-ispell auto-complete popup which-key use-package pcre2el hydra font-lock+ evil goto-chg undo-tree dotenv-mode diminish bind-map bind-key async))
+ '(paradox-github-token t)
+ '(sql-product 'mysql))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

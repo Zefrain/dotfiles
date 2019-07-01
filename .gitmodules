@@ -6,10 +6,6 @@
 	path = conf/emacs/.spacemacs.d/layer/journal
 	url = https://github.com/borgnix/spacemacs-journal.git
 	master = master
-[submodule "conf/emacs/.emacs.d"]
-	path = conf/emacs/.emacs.d
-	url = https://github.com/syl20bnr/spacemacs
-	develop = develop
 [submodule "conf/tmux/.tmux/plugins/tpm"]
 	path = conf/tmux/.tmux/plugins/tpm
 	url = git@github.com:tmux-plugins/tpm.git
@@ -22,3 +18,7 @@
 	path = conf/tmux/.tmux/plugins/tmux-themepack
 	url = git@github.com:jimeh/tmux-themepack.git
 	master = master
+[submodule "conf/emacs/spacemacs"]
+	path = conf/emacs/.emacs.d
+	url = https://github.com/Whiothes/spacemacs.git
+	develop = develop
