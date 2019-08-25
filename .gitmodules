@@ -18,7 +18,6 @@
 	path = conf/tmux/.tmux/plugins/tmux-themepack
 	url = git@github.com:jimeh/tmux-themepack.git
 	master = master
-[submodule "conf/emacs/spacemacs"]
+[submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
-	url = https://github.com/Whiothes/spacemacs.git
-	develop = develop
+	url = https://github.com/syl20bnr/spacemacs.git
