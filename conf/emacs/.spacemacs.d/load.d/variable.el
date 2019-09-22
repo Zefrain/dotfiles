@@ -23,3 +23,18 @@
 ;; (setq default-buffer-file-coding-system 'gb2312-dos)
 
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+
+(configuration-layer/remove-layer 'web-mode)
+
+(setq comment-style 'indent)
+(ignore 'defvaralias)
+
+
+(setq warning-minimum-level ':error)
+(setq dotspacemacs-mode-line-theme '(all-the-icons :separator 'arrow))
+
+
+;; line break
+(setq truncate-lines t)
+
+(setq vc-follow-symlinks nil)

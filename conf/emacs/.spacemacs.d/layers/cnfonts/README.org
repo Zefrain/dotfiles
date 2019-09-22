@@ -11,7 +11,7 @@
 
 * Description
 This layer does wonderful things:
-  - thing01
+  - align chinese and english font
 
 * Install
 To use this configuration layer, add it to your =~/.spacemacs=. You will need to
@@ -20,9 +20,10 @@ file.
 
 * Key bindings
 
-| Key Binding | Description    |
-|-------------+----------------|
-| ~SPC x x x~ | Does thing01   |
+| Key Binding | Description       |
+|-------------+-------------------|
+| ~H =~       | increase font size |
+| ~H -~       | decrease font size |
 # Use GitHub URLs if you wish to link a Spacemacs documentation file or its heading.
 # Examples:
 # [[https://github.com/syl20bnr/spacemacs/blob/master/doc/VIMUSERS.org#sessions]]
