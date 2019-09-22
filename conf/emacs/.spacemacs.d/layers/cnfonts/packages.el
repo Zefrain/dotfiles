@@ -63,6 +63,5 @@ Each entry is either:
     :init
     (cnfonts-enable)
     ;; 让 spacemacs mode-line 中的 Unicode 图标正确显示。
-    (cnfonts-set-spacemacs-fallback-fonts))
-  )
+    (cnfonts-set-spacemacs-fallback-fonts)))
 ;;; packages.el ends here
