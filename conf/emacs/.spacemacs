@@ -33,8 +33,10 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(epub
-     sql
+   '(yaml
+     epub
+     (sql :variables
+          sql-capitalize-keywords t)
      html
      gtags
      (go :variables
@@ -53,7 +55,7 @@ This function should only modify configuration layer settings."
       org-src-tab-acts-natively t
       org-enable-org-journal-support t
       org-journal-dir "/Users/zhoush/Documents/Notes/org/journal"
-      org-journal-file-format "%Y/%Y%m%d.org"
+      org-journal-file-format "%Y%m%d.org"
       org-journal-date-prefix "#+DATE: "
       org-journal-date-format "<%Y-%m-%d %H:%M>"
       org-journal-time-prefix "* "
@@ -76,7 +78,7 @@ This function should only modify configuration layer settings."
             lsp-enable-file-watchers t
             lsp-file-watch-threshold 4096
             lsp-auto-guess-root t
-            lsp-ui-sideline-enable nil)
+            )
      (python :variables
              python-backend 'lsp
              python-enable-yapf-format-on-save t)
@@ -569,12 +571,9 @@ This function is called at the very end of Spacemacs initialization."
  '(default-input-method nil)
  '(evil-want-Y-yank-to-eol nil)
  '(lsp-enable-file-watchers t)
- '(org-agenda-files
-   (quote
-    ("~/Documents/Notes/org/journal/2019/20190916.org" "~/Documents/Notes/org/journal/2019/20190906.org" "~/Documents/Working/proj/sunmi/doc/CHANGELOG.org")))
  '(package-selected-packages
    (quote
-    (nov esxml pyim helm-gtags ggtags ivy dap-mode bui tree-mode lsp-mode yapfify ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline powerline smeargle slim-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pcre2el pbcopy paradox spinner osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file nginx-mode neotree mwim move-text magit-gitflow magit-popup macrostep lua-mode lorem-ipsum load-dir live-py-mode linum-relative link-hint launchctl indent-guide hydra lv hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-gitignore request helm-flx helm-descbinds helm-dash dash-docs helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu emmet-mode elisp-slime-nav dumb-jump disaster diminish dash-at-point cython-mode company-web web-completion-data company-c-headers company-anaconda column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed anaconda-mode pythonic f dash s ace-link ace-jump-helm-line helm helm-core ac-ispell auto-complete popup company-statistics async aggressive-indent adaptive-wrap ace-window)))
+    (yaml-mode nov esxml pyim helm-gtags ggtags ivy dap-mode bui tree-mode lsp-mode yapfify ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline powerline smeargle slim-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pcre2el pbcopy paradox spinner osx-trash osx-dictionary orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-plus-contrib org-mime org-download org-bullets open-junk-file nginx-mode neotree mwim move-text magit-gitflow magit-popup macrostep lua-mode lorem-ipsum load-dir live-py-mode linum-relative link-hint launchctl indent-guide hydra lv hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-gitignore request helm-flx helm-descbinds helm-dash dash-docs helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu emmet-mode elisp-slime-nav dumb-jump disaster diminish dash-at-point cython-mode company-web web-completion-data company-c-headers company-anaconda column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed anaconda-mode pythonic f dash s ace-link ace-jump-helm-line helm helm-core ac-ispell auto-complete popup company-statistics async aggressive-indent adaptive-wrap ace-window)))
  '(paradox-github-token t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
