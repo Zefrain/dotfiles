@@ -2,6 +2,7 @@ _alias()
 {
     alias rm="rmtrash"
     alias e="emacsclient -s ~/.spacemacs.d/server/server -n "
+    alias mysql="mycli"
 }
 
 _lib_path()

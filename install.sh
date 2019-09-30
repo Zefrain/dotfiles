@@ -33,7 +33,7 @@ init_dotfiles() {
     init_conf
 
     if [[ "$(uname -s)" == "Darwin" ]]; then
-        proxy brew tap homebrew/command-not-found
+        proxy brew tap homebrew/command-not-found mycli
     fi
 }
 
