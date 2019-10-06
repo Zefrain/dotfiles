@@ -28,3 +28,4 @@
 
 
 (spacemacs/set-leader-keys "ps" 'projectile-save-project-buffers)
+(define-key evil-normal-state-map (kbd "K") 'manual-entry)
