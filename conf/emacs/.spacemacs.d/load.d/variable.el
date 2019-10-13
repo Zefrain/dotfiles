@@ -55,3 +55,5 @@
   (mapcar 'push-agenda (org-projectile-todo-files))
   (require 'org-journal)
   (push-agenda org-journal-dir))
+
+(setq vc-follow-symlinks t)
