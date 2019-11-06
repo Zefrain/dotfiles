@@ -27,14 +27,14 @@ init_conf() {
 init_dotfiles() {
     git submodule update --init --recursive
 
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        proxy brew tap homebrew/command-not-found mycli
+    fi
+
     symlinks -d $HOME
 
     init_sh
     init_conf
-
-    if [[ "$(uname -s)" == "Darwin" ]]; then
-        proxy brew tap homebrew/command-not-found mycli
-    fi
 }
 
 
