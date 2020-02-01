@@ -30,11 +30,11 @@
 
 ;; backup-file
 (setq backup-directory-alist (quote ((".*" . "~/.spacemacs.d/backup"))))
-;; (setq make-backup-file-name-function (quote backup-file-name-function-custom))
+(setq make-backup-file-name-function (quote backup-file-name-function-custom))
 
 (configuration-layer/remove-layer 'web-mode)
 
-(setq comment-style 'indent)
+;; (setq comment-style 'indent)
 
 ;; set warning level
 (ignore 'defvaralias)
@@ -73,3 +73,24 @@
 
 
 (setq org-bullets-bullet-list '("✙" "♱" "♰" "☥" "✞" "✟" "✝" "†" "✠" "✚" "✜" "✛" "✢" "✣" "✤" "✥"))
+
+
+;; cache
+(setq spacemacs-cache-directory (concat dotspacemacs-directory "cache/"))
+(setq spacemacs-auto-save-directory (concat dotspacemacs-directory "auto-save/"))
+(setq recentf-save-file (concat spacemacs-cache-directory "recentf"))
+(setq projectile-cache-file (concat spacemacs-cache-directory "projectile.cache"))
+(setq ccls-initialization-options:cache (concat spacemacs-cache-directory "ccls-cache"))
+
+;; c-style
+(setq c-basic-offset 4)
+
+;; tex
+(setq exec-path (append exec-path '("/Library/TeX/texbin")))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((latex . t)
+   (dot . t)))
+
+;; path
+(setq exec-path-from-shell-check-startup-files t)

@@ -23,9 +23,11 @@
 ;; goto project changelog
 (defun org-projectile/goto-changelog()
   "goto projectile changelog"
-    (interactive)
-    (org-projectile-goto-location-for-project (projectile-project-name)))
+  (interactive)
+  (org-projectile-goto-location-for-project (projectile-project-name)))
 
 
 (spacemacs/set-leader-keys "ps" 'projectile-save-project-buffers)
 (define-key evil-normal-state-map (kbd "K") 'manual-entry)
+
+(setq-default evil-escape-key-sequence nil)

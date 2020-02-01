@@ -13,6 +13,7 @@ exec_dir="${ZSH%%conf*}/exec"
 # it'll load a random theme each time that oh-my-zsh is loaded.
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="jispwoso"
+# ZSH_THEME="ys"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -57,7 +58,7 @@ export UPDATE_ZSH_DAYS=13
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup..
 plugins=(extract command-not-found osx zsh-syntax-highlighting zsh-autosuggestions
-         web-search colored-man-pages z git git-auto-fetch tmux)
+         emacs web-search colored-man-pages z git git-auto-fetch tmux)
 
 source $ZSH/oh-my-zsh.sh
 

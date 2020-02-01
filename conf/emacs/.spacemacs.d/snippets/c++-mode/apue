@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name : #include "apue.h
+# key: apue
+# --
+#include "apue.h"
