@@ -1,7 +1,6 @@
 _alias()
 {
     alias rm="rmtrash"
-    alias e="emacsclient -s ~/.spacemacs.d/server/server -n "
     alias mysql="mycli"
 }
 
@@ -25,8 +24,11 @@ _incl_path()
 
 _path()
 {
-    export PATH=$PATH:/opt/local/bin
-    export PATH="/usr/local/opt/llvm/bin:$PATH"
+    export GOPATH=$HOME/go
+    export GOBIN=$GOPATH/bin
+
+    export PATH=/opt/local/bin:/usr/local/sbin:/usr/local/opt/llvm/bin:$PATH
+    export PATH=$PATH:$GOBIN
 }
 
 _init_osx() {
