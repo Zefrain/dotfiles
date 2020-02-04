@@ -27,8 +27,8 @@ _path()
     export GOPATH=$HOME/go
     export GOBIN=$GOPATH/bin
 
-    export PATH=/opt/local/bin:/usr/local/sbin:/usr/local/opt/llvm/bin:$PATH
-    export PATH=$PATH:$GOBIN
+    export PATH=/opt/local/bin:/usr/local/sbin:$(brew --prefix llvm)/bin:$PATH:$GOBIN
+    export PATH=$(echo $PATH | gsed 's/:/\n/g' | sort | uniq | tr '\n' ':' | gsed 's/:$/\n/g')
 }
 
 _init_osx() {
