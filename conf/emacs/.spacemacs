@@ -113,9 +113,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(load-dir
-                                      molokai-theme
-                                      dracula-theme)
+   dotspacemacs-additional-packages '(load-dir)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -243,12 +241,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(
-                         molokai
-                         dracula
-                         spacemacs-dark
-                         spacemacs-light
-                         )
+   dotspacemacs-themes '(spacemacs-dark
+                         spacemacs-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -366,7 +360,7 @@ It should only modify the values of Spacemacs settings."
    ;; If non-nil the frame is maximized when Emacs starts up.
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
-   dotspacemacs-maximized-at-startup nil
+   dotspacemacs-maximized-at-startup t
 
    ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
    ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
@@ -439,7 +433,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
-   dotspacemacs-enable-server nil
+   dotspacemacs-enable-server t
 
    ;; Set the emacs server socket location.
    ;; If nil, uses whatever the Emacs default is, otherwise a directory path
@@ -543,8 +537,6 @@ before packages are loaded."
                                 "xelatex -interaction nonstopmode %f"))
   (require 'org-tempo)
 
-  ;; (add-hook 'c-mode-hook 'flycheck-mode)
-  ;; (add-hook 'c++-mode-hook 'flycheck-mode)
   ;; (when (not (display-graphic-p))
   ;;   (setq flycheck-indication-mode nil))
   )
