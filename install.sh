@@ -37,7 +37,6 @@ init_dotfiles() {
     init_conf
 
     PLATFORM=$(sh /usr/local/bin/systype.sh)
-    sudo cat $HOME/.zshrc.$PLATFORM >> /etc/.zshenv
 }
 
 
