@@ -52,9 +52,9 @@
 
 ;; org-todo
 (defun org-todo-return (&optional ARG INVISIBLE-OK TOP)
+  "Do org-todo before and after inerting org-heading"
   (interactive)
   (org-todo ARG)
   (org-insert-heading ARG INVISIBLE-OK TOP)
   (org-todo ARG))
 
-(define-key org-mode-map [remap org-insert-heading] 'org-todo-return)
