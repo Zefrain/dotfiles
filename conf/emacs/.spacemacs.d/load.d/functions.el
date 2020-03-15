@@ -48,3 +48,13 @@
   "de-urlencode the region between START and END in current buffer."
   (interactive "r")
   (func-region start end #'url-unhex-string))
+
+
+;; org-todo
+(defun org-todo-return (&optional ARG INVISIBLE-OK TOP)
+  (interactive)
+  (org-todo ARG)
+  (org-insert-heading ARG INVISIBLE-OK TOP)
+  (org-todo ARG))
+
+(define-key org-mode-map [remap org-insert-heading] 'org-todo-return)
