@@ -1,22 +1,27 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import os
 import sys
 import getopt
-import xmlrpclib
+import xmlrpc.client as XC
 
-s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+s = XC.ServerProxy('http://localhost:6800/rpc')
 
 
 def help():
-    print("{0} -i <iUri> -o <outDir>".format((sys.argv[0])))
+    print(
+        "Usage: {0} [-i torrent/Uri] [-o output directory (optional)]".format(
+            sys.argv[0]))
 
 
 def main(argv):
     iUrl = ""
     outDir = os.getcwd()
     mode = 0
+
+    if not argv:
+        help()
 
     try:
         opts, args = getopt.getopt(argv, "hi:o:", ["iurl=", "outDir="])
@@ -34,23 +39,24 @@ def main(argv):
             outDir = arg
 
     if iUrl:
+        # default
+        mode = 1
+
+        # torrent
         if os.path.isfile(iUrl):
             f, e = os.path.splitext(iUrl)
             if e == ".torrent":
-                mode = 1
-
-        else:
-            mode = 2
+                mode = 2
 
     try:
         print("intput: {}".format(iUrl))
         print("outDir: {}".format(outDir))
         if mode == 1:
-            s.aria2.addTorrent(
-                xmlrpclib.Binary(
-                    open(iUrl, mode='rb').read(), dict(dir=outDir)))
-        elif mode == 2:
+            print("addUri")
             s.aria2.addUri([iUrl], dict(dir=outDir), 0)
+        elif mode == 2:
+            print("addTorrent")
+            s.aria2.addTorrent(XC.Binary(open(iUrl, mode='rb').read()))
     except Exception as e:
         print(e)
 
