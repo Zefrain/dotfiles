@@ -1,0 +1,59 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+import getopt
+import xmlrpclib
+
+s = xmlrpclib.ServerProxy('http://localhost:6800/rpc')
+
+
+def help():
+    print("{0} -i <iUri> -o <outDir>".format((sys.argv[0])))
+
+
+def main(argv):
+    iUrl = ""
+    outDir = os.getcwd()
+    mode = 0
+
+    try:
+        opts, args = getopt.getopt(argv, "hi:o:", ["iurl=", "outDir="])
+    except getopt.GetoptError:
+        help()
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt == '-h':
+            help()
+            sys.exit()
+        elif opt in ("-i", "--iUrl"):
+            iUrl = arg
+        elif opt in ("-o", "--outDir"):
+            outDir = arg
+
+    if iUrl:
+        if os.path.isfile(iUrl):
+            f, e = os.path.splitext(iUrl)
+            if e == ".torrent":
+                mode = 1
+
+        else:
+            mode = 2
+
+    try:
+        print("intput: {}".format(iUrl))
+        print("outDir: {}".format(outDir))
+        if mode == 1:
+            s.aria2.addTorrent(
+                xmlrpclib.Binary(
+                    open(iUrl, mode='rb').read(), dict(dir=outDir)))
+        elif mode == 2:
+            s.aria2.addUri([iUrl], dict(dir=outDir), 0)
+    except Exception as e:
+        print(e)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
