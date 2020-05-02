@@ -21,3 +21,6 @@
 [submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs.git
+[submodule "workflows/Ariafred"]
+	path = workflows/Ariafred
+	url = https://github.com/Wildog/Ariafred
