@@ -12,14 +12,27 @@ s = XC.ServerProxy('http://localhost:6800/rpc')
 def help():
     print(
         "Usage: {0} [-i torrent/Uri] [-o output directory (optional)]".format(
-            sys.argv[0]))
+            __file__))
 
 
-def main(argv):
-    iUrl = ""
+def setMode(iUrl):
+    if iUrl:
+        # default
+        mode = 1
+
+        # torrent
+        if os.path.isfile(iUrl):
+            f, e = os.path.splitext(iUrl)
+            if e == ".torrent":
+                mode = 2
+    return mode
+
+
+def procArgs():
+
     outDir = os.getcwd()
-    mode = 0
 
+    argv = sys.argv[1:]
     if not argv:
         help()
 
@@ -28,6 +41,10 @@ def main(argv):
     except getopt.GetoptError:
         help()
         sys.exit(2)
+
+    if not opts:
+        help()
+        sys.exit()
 
     for opt, arg in opts:
         if opt == '-h':
@@ -38,19 +55,15 @@ def main(argv):
         elif opt in ("-o", "--outDir"):
             outDir = arg
 
-    if iUrl:
-        # default
-        mode = 1
+    mode = setMode(iUrl)
+    return mode, iUrl, outDir
 
-        # torrent
-        if os.path.isfile(iUrl):
-            f, e = os.path.splitext(iUrl)
-            if e == ".torrent":
-                mode = 2
 
+def addTask(mode, iUrl, outDir):
     try:
         print("intput: {}".format(iUrl))
         print("outDir: {}".format(outDir))
+        print("method: ", end="")
         if mode == 1:
             print("addUri")
             s.aria2.addUri([iUrl], dict(dir=outDir), 0)
@@ -61,5 +74,10 @@ def main(argv):
         print(e)
 
 
+def main():
+    mode, iUrl, outDir = procArgs()
+    addTask(mode, iUrl, outDir)
+
+
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main()
