@@ -557,20 +557,23 @@ This function is called at the very end of Spacemacs initialization."
    ["#bcbcbc" "#d70008" "#5faf00" "#875f00" "#268bd2" "#800080" "#008080" "#5f5f87"])
  '(c-basic-offset 4)
  '(c-doc-comment-style
-   '((c-mode . doxygen)
+   (quote
+    ((c-mode . doxygen)
      (c++-mode . gtkdoc)
      (java-mode . javadoc)
-     (pike-mode . autodoc)))
+     (pike-mode . autodoc))))
  '(custom-safe-themes
-   '("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default))
+   (quote
+    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" default)))
  '(dap-mode t nil (dap-mode))
  '(dap-python-executable "python3")
  '(default-input-method nil)
  '(evil-want-Y-yank-to-eol nil)
  '(exec-path-from-shell-check-startup-files nil)
- '(helm-completion-style 'emacs)
+ '(helm-completion-style (quote emacs))
  '(hl-todo-keyword-faces
-   '(("TODO" . "#dc752f")
+   (quote
+    (("TODO" . "#dc752f")
      ("XT" . "#dc752f")
      ("THEM" . "#2aa198")
      ("PROG" . "#268bd2")
@@ -584,22 +587,25 @@ This function is called at the very end of Spacemacs initialization."
      ("TEMP" . "#875f00")
      ("FIXME" . "#dc752f")
      ("XXX+" . "#dc752f")
-     ("\\?\\?\\?+" . "#dc752f")))
+     ("\\?\\?\\?+" . "#dc752f"))))
  '(lsp-enable-file-watchers t)
  '(org-babel-load-languages
-   '((shell . t)
+   (quote
+    ((shell . t)
      (python . t)
      (C . t)
      (plantuml . t)
      (sql . t)
-     (emacs-lisp . t)))
+     (emacs-lisp . t))))
  '(package-selected-packages
-   '(treemacs-persp molokai-theme dracula-theme flycheck-elsa ansi package-build shut-up git commander geben company-phpactor phpactor composer php-runtime phpunit phpcbf php-extras php-auto-yasnippets drupal-mode counsel-gtags counsel swiper company-php xcscope php-mode osx-clipboard flycheck-ycmd company-ycmd ycmd request-deferred treemacs-evil ox-pandoc helm-dictionary dockerfile-mode docker tablist docker-tramp sqlup-mode yaml-mode nov esxml pyim helm-gtags ggtags ivy bui tree-mode yapfify ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline powerline smeargle slim-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pcre2el pbcopy paradox spinner osx-trash osx-dictionary org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-bullets open-junk-file nginx-mode neotree mwim move-text magit-gitflow magit-popup macrostep lua-mode lorem-ipsum load-dir live-py-mode linum-relative link-hint launchctl indent-guide hydra lv hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-gitignore request helm-flx helm-descbinds helm-dash dash-docs helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flx-ido flx fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu emmet-mode elisp-slime-nav dumb-jump disaster diminish dash-at-point cython-mode company-web web-completion-data company-c-headers company-anaconda column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed anaconda-mode pythonic f dash s ace-link ace-jump-helm-line helm-core ac-ispell auto-complete popup company-statistics async aggressive-indent adaptive-wrap ace-window))
+   (quote
+    (utop tuareg caml tide typescript-mode seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake ocp-indent ob-elixir nodejs-repl mvn minitest meghanada maven-test-mode lsp-java livid-mode skewer-mode js2-refactor multiple-cursors js2-mode js-doc groovy-mode groovy-imports pcache gradle-mode git-gutter-fringe+ fringe-helper git-gutter+ flycheck-ocaml merlin flycheck-credo emojify emoji-cheat-sheet-plus dune company-emoji chruby bundler inf-ruby browse-at-remote alchemist elixir-mode smart-input-source names pyim-basedict xr pangu-spacing find-by-pinyin-dired chinese-conv ace-pinyin pinyinlib treemacs-persp molokai-theme dracula-theme flycheck-elsa ansi package-build shut-up git commander geben company-phpactor phpactor composer php-runtime phpunit phpcbf php-extras php-auto-yasnippets drupal-mode counsel-gtags counsel swiper company-php xcscope php-mode osx-clipboard flycheck-ycmd company-ycmd ycmd request-deferred treemacs-evil ox-pandoc helm-dictionary dockerfile-mode docker tablist docker-tramp sqlup-mode yaml-mode nov esxml pyim helm-gtags ggtags ivy bui tree-mode yapfify ws-butler winum which-key web-mode volatile-highlights vi-tilde-fringe uuidgen use-package unfill toc-org tagedit spaceline powerline smeargle slim-mode scss-mode sass-mode reveal-in-osx-finder restart-emacs rainbow-delimiters pyvenv pytest pyenv-mode py-isort pug-mode popwin plantuml-mode pip-requirements persp-mode pcre2el pbcopy paradox spinner osx-trash osx-dictionary org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-bullets open-junk-file nginx-mode neotree mwim move-text magit-gitflow magit-popup macrostep lua-mode lorem-ipsum load-dir live-py-mode linum-relative link-hint launchctl indent-guide hydra lv hy-mode dash-functional hungry-delete htmlize hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-pydoc helm-projectile projectile pkg-info epl helm-mode-manager helm-make helm-gitignore request helm-flx helm-descbinds helm-dash dash-docs helm-css-scss helm-company helm-c-yasnippet helm-ag haml-mode google-translate golden-ratio gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy flx-ido flx fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist highlight evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit magit transient git-commit with-editor evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu goto-chg undo-tree eval-sexp-fu emmet-mode elisp-slime-nav dumb-jump disaster diminish dash-at-point cython-mode company-web web-completion-data company-c-headers company-anaconda column-enforce-mode cnfonts cmake-mode clean-aindent-mode clang-format bind-map bind-key auto-yasnippet yasnippet auto-highlight-symbol auto-compile packed anaconda-mode pythonic f dash s ace-link ace-jump-helm-line helm-core ac-ispell auto-complete popup company-statistics async aggressive-indent adaptive-wrap ace-window)))
  '(paradox-github-token t)
- '(pdf-view-midnight-colors '("#5f5f87" . "#ffffff"))
- '(python-shell-interpreter "python3")
+ '(pdf-view-midnight-colors (quote ("#5f5f87" . "#ffffff")))
+ '(python-shell-interpreter "python3" t)
  '(yas-snippet-dirs
-   '("/Users/zhoush/.spacemacs.d/snippets" "/Users/zhoush/.emacs.d/private/snippets/" "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir)))
+   (quote
+    ("/Users/zhoush/.spacemacs.d/snippets" "/Users/zhoush/.emacs.d/private/snippets/" "/Users/zhoush/.emacs.d/layers/+completion/auto-completion/local/snippets" yasnippet-snippets-dir))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

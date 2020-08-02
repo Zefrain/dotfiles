@@ -13,13 +13,12 @@
 
 
 ;; set the default encoding system
-(set-language-environment 'utf-8)
 (setq locale-coding-system 'utf-8)
-(prefer-coding-system 'utf-8)
-(setq default-file-name-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
+;;(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 
 ;; backwards compatibility as default-buffer-file-coding-system
 ;; is deprecated in 23.2.
@@ -61,7 +60,7 @@
 ;; org
 (setq org-export-with-sub-superscripts nil)
 (setq org-export-with-sub-superscripts (quote {}))
-(setq org-bullets-bullet-list '("✙" "♱" "♰" "☥" "✞" "✟" "✝" "†" "✠" "✚" "✜" "✛" "✢" "✣" "✤" "✥"))
+(setq org-superstar-headline-bullets-list '("✙" "♱" "♰" "☥" "✞" "✟" "✝" "†" "✠" "✚" "✜" "✛" "✢" "✣" "✤" "✥"))
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((latex . t)
@@ -110,7 +109,15 @@
          :base-extension "org"
          :publishing-directory "/ssh:root@39.105.199.190:/usr/local/openresty/nginx/html/"
          :publishing-function org-html-publish-to-html
-         :section-numbers nil)))
+         :section-numbers nil)
+
+        ("journal"
+         :base-directory "/Users/zhoush/Documents/Notes/stock/2020"
+         :base-extension "org"
+         :publishing-directory "/Users/zhoush/Documents/Notes/stock/2020/html"
+         :publishing-function org-html-publish-to-html
+         :recursive t
+         )))
 
 
 ;; projectile
