@@ -1,8 +1,20 @@
+unique_path()
+{
+    ret=$(echo "$1" \
+                 | gsed 's/:/\n/g' \
+                 | sort \
+                 | uniq \
+                 | tr '\n' ':' \
+                 | gsed 's/:$/\n/g')
+
+    return $ret
+}
+
 _alias()
 {
     alias rm="rmtrash"
     alias mysql="mycli"
-    alias python="python3"
+    alias python="python2"
 }
 
 _lib_path()
@@ -19,7 +31,10 @@ _flag_env()
 
 _incl_path()
 {
-    export C_INCLUDE_PATH=/usr/local/opt/openssl/include:/usr/local/opt/curl/include:$HOME/include:/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include:$C_INCLUDE_PATH
+    C_INCLUDE_PATH=$(xcrun --sdk macosx --show-sdk-path)/usr/include
+    C_INCLUDE_PATH=$C_INCLUDE_PATH:$HOME/include:/usr/local/opt/openssl/include:/usr/local/opt/curl/include
+
+    export C_INCLUDE_PATH
 }
 
 _path()
@@ -27,12 +42,9 @@ _path()
     export GOPATH=$HOME/go
     export GOBIN=$GOPATH/bin
 
-    export PATH=$(echo "/opt/local/bin:/usr/local/sbin:$(brew --prefix llvm)/bin:$GOBIN:$PATH" \
-                      | gsed 's/:/\n/g' \
-                      | sort \
-                      | uniq \
-                      | tr '\n' ':' \
-                      | gsed 's/:$/\n/g')
+    PATH=/opt/local/bin:/usr/local/sbin:$(brew --prefix llvm)/bin:$GOBIN:$PATH
+
+    export PATH
 }
 
 _init_osx() {
