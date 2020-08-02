@@ -43,5 +43,5 @@
 (define-key evil-normal-state-map (kbd ",g[") 'helm-gtags-pop-stack)
 
 
-(with-eval-after-load "org"
-  (org-remap org-mode-map 'org-insert-heading 'org-todo-return))
+;; (with-eval-after-load "org"
+;;   (org-remap org-mode-map 'org-insert-heading 'org-todo-return))
