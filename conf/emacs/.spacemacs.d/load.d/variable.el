@@ -144,3 +144,9 @@
 
 ;; python
 (setq python-indent-offset 4)
+
+
+;; lua
+(with-eval-after-load 'flycheck
+  (setq flycheck-luacheck-standards (quote ("ngx_lua"))))
+
