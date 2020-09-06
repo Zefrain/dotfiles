@@ -16,20 +16,9 @@
 (add-hook 'json-mode-hook (lambda() (define-key json-mode-map [remap web-beautify-js] 'json-pretty-print-buffer)))
 
 
-;; load current-buffer
-(defun load-buffer-file()
-  "load current buffer"
-  (interactive)
-  (load-file (buffer-file-name)))
-
+;; reload current config file
 (spacemacs/set-leader-keys "fer" 'load-buffer-file)
-
-
-;; goto project changelog
-(defun org-projectile/goto-changelog()
-  "goto projectile changelog"
-  (interactive)
-  (org-projectile-goto-location-for-project (projectile-project-name)))
+;; (spacemacs/set-leader-keys-for-major-mode 'emacs-lisp-mode "fer" 'load-buffer-file)
 
 
 (spacemacs/set-leader-keys "ps" 'projectile-save-project-buffers)
@@ -38,10 +27,9 @@
 
 (setq-default evil-escape-key-sequence nil)
 
+(spacemacs/set-leader-keys-for-minor-mode 'ggtags-mode
+  "g]" 'helm-gtags-dwim
+  "g[" 'helm-gtags-pop-stack)
 
-(define-key evil-normal-state-map (kbd ",g]") 'helm-gtags-dwim)
-(define-key evil-normal-state-map (kbd ",g[") 'helm-gtags-pop-stack)
-
-
-;; (with-eval-after-load "org"
-;;   (org-remap org-mode-map 'org-insert-heading 'org-todo-return))
+;; org-mode
+(spacemacs/set-leader-keys-for-major-mode 'org-mode "iT" 'org-insert-todo-return)
