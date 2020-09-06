@@ -51,10 +51,26 @@
 
 
 ;; org-todo
-(defun org-todo-return (&optional ARG INVISIBLE-OK TOP)
-  "Do org-todo before and after inerting org-heading"
-  (interactive)
+(defun org-insert-todo-return (&optional ARG INVISIBLE-OK TOP)
+  "Do org-todo before and then insert org-heading"
+  (interactive "P")
   (org-todo ARG)
   (org-insert-heading ARG INVISIBLE-OK TOP)
-  (org-todo ARG))
+  (org-todo ARG)
+  (end-of-line))
 
+
+;; load current-buffer
+(defun load-buffer-file()
+  "load current buffer"
+  (interactive)
+  (if (eq major-mode 'emacs-lisp-mode)
+      (load-file (buffer-file-name))
+    (message "This isn't a emacs lisp file")))
+
+
+;; goto project changelog
+(defun org-projectile/goto-changelog()
+  "goto projectile changelog"
+  (interactive)
+  (org-projectile-goto-location-for-project (projectile-project-name)))

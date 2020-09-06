@@ -11,7 +11,6 @@
 (setq utf-translate-cjk-mode nil)
 
 
-
 ;; set the default encoding system
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -58,6 +57,7 @@
 
 
 ;; org
+(setq org-export-with-section-numbers nil)
 (setq org-export-with-sub-superscripts nil)
 (setq org-export-with-sub-superscripts (quote {}))
 (setq org-superstar-headline-bullets-list '("✙" "♱" "♰" "☥" "✞" "✟" "✝" "†" "✠" "✚" "✜" "✛" "✢" "✣" "✤" "✥"))
@@ -81,6 +81,7 @@
   (mapcar 'push-agenda (org-projectile-todo-files))
   (require 'org-journal)
   (push-agenda org-journal-dir))
+
 
 ;; org-publish
 (setq org-publish-project-alist
@@ -134,7 +135,7 @@
 ;; (setq ccls-initialization-options:cache (concat spacemacs-cache-directory "ccls-cache"))
 
 
-;; c-style
+;; c-c++
 (setq c-basic-offset 4)
 
 
@@ -144,9 +145,67 @@
 
 ;; python
 (setq python-indent-offset 4)
+(setq python-shell-interpreter "python3")
 
 
 ;; lua
 (with-eval-after-load 'flycheck
   (setq flycheck-luacheck-standards (quote ("ngx_lua"))))
 
+
+(use-package lsp-lua-emmy
+  :demand
+  :ensure nil
+  :load-path "~/Public/github/lsp-lua-emmy"
+  :hook (lua-mode . lsp)
+  :config
+  (setq lsp-lua-emmy-jar-path (expand-file-name "EmmyLua-LS-all.jar" dotspacemacs-directory))
+  )
+
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :commands lsp
+;;   :hook ((lua-mode) . lsp)
+;;   :config
+;;   )
+
+;; (use-package company-lsp
+;;   :ensure t
+;;   :after lsp-mode
+;;   :config
+;;   (setq company-lsp-enable-recompletion t)
+;;   (setq lsp-auto-configure nil)         ;该功能会自动执行(push company-lsp company-backends)
+;;   )
+
+;; (defun set-company-backends-for-lua()
+;;   "Set lua company backend."
+;;   (setq-local company-backends '(
+;;                                  (
+;;                                   company-lua
+;;                                   company-lsp
+;;                                   company-keywords
+;;                                   company-gtags
+;;                                   company-yasnippet
+;;                                   )
+;;                                  company-capf
+;;                                  company-dabbrev-code
+;;                                  company-files
+;;                                  )))
+
+;; (use-package lua-mode
+;;   :ensure t
+;;   :mode "\\.lua$"
+;;   :interpreter "lua"
+;;   :hook (lua-mode . set-company-backends-for-lua)
+;;   :config
+;;   (setq lua-indent-level 4)
+;;   (setq lua-indent-string-contents t)
+;;   (setq lua-prefix-key nil))
+
+
+;; company faces
+(custom-set-faces
+ '(company-tooltip-common
+   ((t (:inherit company-tooltip :weight bold :underline nil))))
+ '(company-tooltip-common-selection
+   ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
