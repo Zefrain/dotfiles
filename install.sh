@@ -13,7 +13,7 @@ sh_dir="$dotfiles_dir/sh"
 
 
 init_sh() {
-    stow -d $dotfiles_dir -t /usr/local/bin -R sh
+    sudo stow -d $dotfiles_dir -t /usr/local/bin -R sh
 }
 
 init_conf() {
