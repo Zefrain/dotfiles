@@ -25,13 +25,13 @@ init_conf() {
 
 
 init_dotfiles() {
-    git submodule update --init --recursive
+    git submodule update --init --recursive --force --remote
 
     # if [[ "$(uname -s)" == "Darwin" ]]; then
     #     brew tap  mycli
     # fi
 
-    # symlinks -d $HOME
+    symlinks -d $HOME
 
     init_sh
     init_conf
