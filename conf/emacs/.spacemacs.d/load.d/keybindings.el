@@ -33,3 +33,4 @@
 
 ;; org-mode
 (spacemacs/set-leader-keys-for-major-mode 'org-mode "iT" 'org-insert-todo-return)
+
