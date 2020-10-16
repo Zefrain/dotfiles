@@ -47,12 +47,22 @@ _path()
     export PATH
 }
 
+_tmux() {
+    if [ -z "$(echo $TMUX)" ]
+    then
+        tmux -2
+    else
+        tmux a
+    fi
+}
+
 _init_osx() {
     _alias
     _lib_path
     _incl_path
     _flag_env
     _path
+    _tmux
     export HOMEBREW_GITHUB_API_TOKEN=df26de212617b72c44745f56fd12d9224a6c7d24
 }
 
