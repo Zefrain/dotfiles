@@ -97,13 +97,14 @@
 
         ("images"
          :base-directory "/Users/zhoush/Documents/Notes/"
-         :base-extension "css\\|js\\|png\\|jpg\\|gif"
+         :base-extension "svg\\|css\\|js\\|png\\|jpg\\|gif"
          :publishing-directory "/ssh:root@39.105.199.190:/usr/local/openresty/nginx/html/"
          ;; :publishing-directory "/Users/zhoush/Dropbox/Publish/Notes/"
          :publishing-function org-publish-attachment
          :recursive t)
 
-        ("blog" :components ("orgfiles" "images"))
+        ("blog"
+         :components ("orgfiles" "images"))
 
         ("resume"
          :base-directory "/Users/zhoush/Dropbox/Resume"
@@ -203,7 +204,7 @@
 ;;   (setq lua-prefix-key nil))
 
 
-;; company faces
+;; company
 (custom-set-faces
  '(company-tooltip-common
    ((t (:inherit company-tooltip :weight bold :underline nil))))
