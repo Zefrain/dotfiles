@@ -122,6 +122,15 @@
          )))
 
 
+;; Mobile-org
+;; Set to the location of your Org files on your local system
+(setq org-directory "~/Documents/Notes/")
+;; Set to the name of the file where new notes will be stored
+(setq org-mobile-inbox-for-pull "~/Documents/Notes/index.org")
+;; Set to <your Dropbox root directory>/MobileOrg.
+(setq org-mobile-directory "~/Dropbox/Apps/MobileOrg")
+
+
 ;; projectile
 (setq projectile-indexing-method (quote hybrid))
 (with-eval-after-load 'projectile
@@ -137,7 +146,7 @@
 
 
 ;; c-c++
-(setq c-basic-offset 4)
+(setq tab-width 8)
 
 
 ;; tex
@@ -205,8 +214,27 @@
 
 
 ;; company
+
+
 (custom-set-faces
  '(company-tooltip-common
    ((t (:inherit company-tooltip :weight bold :underline nil))))
  '(company-tooltip-common-selection
    ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
+
+
+(dir-locals-set-class-variables 'gtags
+                                '((nil . ((c-c++-backend . company-gtags)
+                                          (company-backends . '(company-gtags company-c-headers))
+                                          (flycheck-mode . nil)
+                                          (lsp-mode . nil)))))
+
+(dir-locals-set-directory-class "/Users/zhoush/Public/github/linux" 'gtags)
+(dir-locals-set-directory-class "/Users/zhoush/Public/github/mariadb-server" 'gtags)
+
+(with-eval-after-load 'projectile
+  (when nil (file-exists-p (concat (projectile-project-root) ".ccls"))
+        (setq c-c++-backend company-gtags)
+        (setq company-backends '(company-gtags company-c-headers))
+        (setq flycheck-mode nil)
+        (setq lsp-mode nil)))
