@@ -13,8 +13,10 @@ unique_path()
 _alias()
 {
     alias rm="rmtrash"
+    alias "rm -rf"="rmtrash"
     alias mysql="mycli"
-    alias python="python2"
+    alias python="python3"
+    alias brew="proxy brew"
 }
 
 _lib_path()
@@ -42,18 +44,13 @@ _path()
     export GOPATH=$HOME/go
     export GOBIN=$GOPATH/bin
 
-    PATH=/opt/local/bin:/usr/local/sbin:$(brew --prefix llvm)/bin:$GOBIN:$PATH
+    PATH=/usr/local/opt/binutils/bin:/opt/local/bin:/usr/local/sbin:$(brew --prefix llvm)/bin:$GOBIN:$PATH
 
     export PATH
 }
 
 _tmux() {
-    if [ -z "$(echo $TMUX)" ]
-    then
-        tmux -2
-    else
-        tmux a
-    fi
+        ZSH_TMUX_AUTOSTART=false
 }
 
 _init_osx() {

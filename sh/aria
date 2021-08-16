@@ -6,7 +6,7 @@ import sys
 import getopt
 import xmlrpc.client as XC
 
-s = XC.ServerProxy('http://localhost:6800/rpc')
+s = XC.ServerProxy('http://localhost:16800/rpc')
 
 
 def help():
