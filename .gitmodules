@@ -8,15 +8,15 @@
 	master = master
 [submodule "conf/tmux/.tmux/plugins/tpm"]
 	path = conf/tmux/.tmux/plugins/tpm
-	url = git@github.com:tmux-plugins/tpm.git
+	url = https://github.com:tmux-plugins/tpm.git
 	master = master
 [submodule "conf/tmux/.tmux/plugins/tmux-sensible"]
 	path = conf/tmux/.tmux/plugins/tmux-sensible
-	url = git@github.com:tmux-plugins/tmux-sensible.git
+	url = https://github.com:tmux-plugins/tmux-sensible.git
 	master = master
 [submodule "conf/tmux/.tmux/plugins/tmux-themepack"]
 	path = conf/tmux/.tmux/plugins/tmux-themepack
-	url = git@github.com:jimeh/tmux-themepack.git
+	url = https://github.com:jimeh/tmux-themepack.git
 	master = master
 [submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
