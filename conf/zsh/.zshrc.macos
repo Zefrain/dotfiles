@@ -17,6 +17,15 @@ _alias()
     alias mysql="mycli"
     alias python="python3"
     alias brew="proxy brew"
+    # Define show hidden files alias to show hidden files.
+    alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles YES;
+    # Relaunch MacOS Finder.
+    killall Finder /System/Library/CoreServices/Finder.app'
+
+    # Define hide hidden files alias to hide hidden files.
+    alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles NO;
+    # Relaunch MacOS Finder.
+    killall Finder /System/Library/CoreServices/Finder.app'
 }
 
 _lib_path()
@@ -50,7 +59,7 @@ _path()
 }
 
 _tmux() {
-        ZSH_TMUX_AUTOSTART=false
+    ZSH_TMUX_AUTOSTART=false
 }
 
 _init_osx() {
@@ -60,7 +69,7 @@ _init_osx() {
     _flag_env
     _path
     _tmux
-    export HOMEBREW_GITHUB_API_TOKEN=df26de212617b72c44745f56fd12d9224a6c7d24
+    export HOMEBREW_GITHUB_API_TOKEN=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
 }
 
 _init_osx
