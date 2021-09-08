@@ -81,7 +81,7 @@ This function should only modify configuration layer settings."
             lsp-auto-guess-root t
             )
      (python :variables
-             python-backend 'lsp
+             python-backend 'lsp python-lsp-server 'pyright
              python-formatter 'yapf)
      docker
      cnfonts
@@ -665,8 +665,8 @@ This function is called at the very end of Spacemacs initialization."
  '(pdf-view-midnight-colors '("#5f5f87" . "#ffffff"))
  '(projectile-globally-ignored-directories
    '(".ccls-cache" ".*" ".idea" ".vscode" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".ccls-cache" ".clangd" ".mypy_cache" "build" "bin"))
- '(python-shell-exec-path '("python3"))
- '(python-shell-interpreter "python3")
+ '(python-shell-exec-path '("python2"))
+ '(python-shell-interpreter "python2")
  '(safe-local-variable-values
    '((lsp-mode)
      (flycheck-mode)
