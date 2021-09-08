@@ -146,7 +146,7 @@
 
 
 ;; c-c++
-(setq tab-width 8)
+(setq-default tab-width 8)
 
 
 ;; tex
