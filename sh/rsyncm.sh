@@ -1,9 +1,9 @@
 #!/bin/sh
-#set -x
+set -e
 #var
-src="/home/zhoush/Projects/radiusbin/wlanzb /home/zhoush/Projects/telecomvpdn/cproject/vpdn_data_process/src/intervpdn_dodb  /home/zhoush/Projects/radiusbin/radiuscap/interaaa_dodb"
 
-des_ip="172.16.31.156 172.16.31.219"
+from=""
+to=""
 
 
 #function
@@ -12,17 +12,23 @@ inotify_fun ()
     /usr/bin/inotifywait -mrq --timefmt '%Y%m%d-%H:%M' --format '%T %e %w%f' \
                          -e CLOSE_WRITE,delete,create,move $1|while read time file
     do
-        for ip in $des_ip
+        f=$1
+        for t in $to
         do
-            echo "`date +%Y%m%d-%T`: rsync -avzq --delete --progress $1 $ip:/home/zhoushang/Projects"
-            rsync -avzq --delete --progress $1 $ip:/home/zhoushang/Projects
-            echo
+            cmd="rsync -avzq --delete --progress --prune-empty-dirs --include=\"*.c\" --include \"*.h\" --include=\"**HELP/***\" --exclude=\"*\" $f $t"
+            echo `date +%Y%m%d-%T`: $cmd
+            eval $cmd
         done
     done
 }
 #main
-for a in $src
-do
-    inotify_fun $a &
 
-done
+main()
+{
+    for a in $from
+    do
+        inotify_fun $a
+    done
+}
+
+main
