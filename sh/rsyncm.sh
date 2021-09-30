@@ -27,7 +27,7 @@ main()
 {
     for a in $from
     do
-        inotify_fun $a
+        inotify_fun $a 
     done
 }
 
