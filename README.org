@@ -5,18 +5,9 @@
 ** 脚本
    [[./sh][sh]]
 
-** Pre-installation
-*** Mac OS
-    #+BEGIN_SRC sh
-      brew install zsh stow
-      brew cask install emacs
-    #+END_SRC
+** Requirements
+   * stow
 ** Usage
-  1. git finish
-       #+BEGIN_SRC sh
-         git submodule update --recursive
-       #+END_SRC
-  2. env init
-     #+BEGIN_SRC sh
-       ./init.sh
-     #+END_SRC
+   #+begin_src sh
+     ./install.sh
+   #+end_src
