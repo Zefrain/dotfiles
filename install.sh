@@ -25,7 +25,7 @@ init_conf() {
 }
 
 init_zsh_custom_post() {
-	sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}\/omz_custom|g" /home/zhoushang/.zshrc
+	sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}\/omz_custom|g" $HOME/.zshrc
 }
 
 
