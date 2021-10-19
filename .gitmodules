@@ -25,9 +25,9 @@
 [submodule "workflows/Ariafred"]
 	path = workflows/Ariafred
 	url = https://github.com/Wildog/Ariafred
-[submodule "conf/zsh/custom/plugins/zsh-autosuggestions"]
-	path = conf/zsh/custom/plugins/zsh-autosuggestions
+[submodule "conf/zsh/omz_custom/plugins/zsh-autosuggestions"]
+	path = conf/zsh/omz_custom/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
-[submodule "conf/zsh/custom/plugins/zsh-syntax-highlighting"]
-	path = conf/zsh/custom/plugins/zsh-syntax-highlighting
+[submodule "conf/zsh/omz_custom/plugins/zsh-syntax-highlighting"]
+	path = conf/zsh/omz_custom/plugins/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting

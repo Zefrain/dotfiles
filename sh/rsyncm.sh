@@ -2,8 +2,8 @@
 set -e
 #var
 
-from=""
-to=""
+from="/home/zhoushang/Documents/BambooCloudBDC/"
+to="root@192.168.4.210:~/BambooCloudBDC"
 
 
 #function
