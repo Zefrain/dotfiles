@@ -57,7 +57,7 @@ export UPDATE_ZSH_DAYS=13
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup..
-plugins=(extract command-not-found osx zsh-syntax-highlighting zsh-autosuggestions
+plugins=(extract command-not-found macos zsh-syntax-highlighting zsh-autosuggestions
          emacs web-search colored-man-pages z git git-auto-fetch tmux)
 
 source $ZSH/oh-my-zsh.sh
