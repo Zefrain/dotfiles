@@ -26,7 +26,7 @@ ZSH_THEME="jispwoso"
 # DISABLE_AUTO_UPDATE="true"
 
 # Uncomment the following line to change how often to auto-update (in days).
-export UPDATE_ZSH_DAYS=13
+export UPDATE_ZSH_DAYS=1
 
 # Uncomment the following line to disable colors in ls.
 # DISABLE_LS_COLORS="true"
@@ -101,3 +101,5 @@ export LANG=en_US.UTF-8
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
