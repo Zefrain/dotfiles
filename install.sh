@@ -30,7 +30,10 @@ init_zsh_custom_post() {
 
 
 install_systemd() {
-	stow -d $dotfiles_dir -t $HOME/.config systemd
+	sudo apt install -y xsel
+
+	do_symlinks
+	stow -d $dotfiles_dir -t $HOME/.config/systemd systemd
 	cd $systemd_dir;
 	for service in $(ls *); do
 		systemctl --user start $service
@@ -58,18 +61,47 @@ system_specified() {
 	fi
 }
 
-
-init_dotfiles() {
+do_git() {
 	git submodule update --init --recursive --force --remote
+}
 
+do_symlinks() {
 	symlinks -d $HOME
-
-	init_sh
-	init_conf
-	init_zsh_custom_post
-
-	system_specified
 }
 
 
-init_dotfiles
+init_dotfiles() {
+	case $1 in 
+		init_sh)
+			init_sh
+			;;
+
+		init_conf)
+			init_conf
+			;;
+
+
+		init_zsh_custom_post)
+			init_zsh_custom_post
+			;;
+
+
+		system_specified)
+			system_specified
+			;;
+
+		*)
+			do_git
+			do_symlinks
+			init_sh
+			init_conf
+			init_zsh_custom_post
+			systemd_specified
+			;;
+	esac
+
+
+}
+
+
+init_dotfiles $1
