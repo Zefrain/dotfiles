@@ -69,6 +69,11 @@ do_symlinks() {
 	symlinks -d $HOME
 }
 
+add_vim() {
+	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	stow -d $conf_dir -t $HOME -R vim
+}
 
 init_dotfiles() {
 	case $1 in 
@@ -90,12 +95,17 @@ init_dotfiles() {
 			system_specified
 			;;
 
+		add_vim)
+			add_vim
+			;;
+
 		*)
 			do_git
 			do_symlinks
 			init_sh
 			init_conf
 			init_zsh_custom_post
+			add_vim
 			systemd_specified
 			;;
 	esac
