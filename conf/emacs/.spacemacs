@@ -81,10 +81,10 @@ This function should only modify configuration layer settings."
             lsp-auto-guess-root t
             )
      (python :variables
-             python-backend 'lsp python-lsp-server 'pyright
+             python-backend 'lsp python-lsp-server
              python-formatter 'yapf)
      docker
-     cnfonts
+     ;; cnfonts
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
@@ -165,9 +165,9 @@ It should only modify the values of Spacemacs settings."
    ;; portable dumper in the cache directory under dumps sub-directory.
    ;; To load it when starting Emacs add the parameter `--dump-file'
    ;; when invoking Emacs 27.1 executable on the command line, for instance:
-   ;;   ./emacs --dump-file=~/.emacs.d/.cache/dumps/spacemacs.pdmp
-   ;; (default spacemacs.pdmp)
-   dotspacemacs-emacs-dumper-dump-file "spacemacs.pdmp"
+   ;;   ./emacs --dump-file=$HOME/.emacs.d/.cache/dumps/spacemacs-27.1.pdmp
+   ;; (default (format "spacemacs-%s.pdmp" emacs-version))
+   dotspacemacs-emacs-dumper-dump-file (format "spacemacs-%s.pdmp" emacs-version)
 
    ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
    ;; possible. Set it to nil if you have no way to use HTTPS in your
@@ -202,8 +202,8 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-use-spacelpa nil
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
-   ;; (default nil)
-   dotspacemacs-verify-spacelpa-archives nil
+   ;; (default t)
+   dotspacemacs-verify-spacelpa-archives t
 
    ;; If non-nil then spacemacs will check for updates at startup
    ;; when the current branch is not `develop'. Note that checking for
@@ -253,6 +253,9 @@ It should only modify the values of Spacemacs settings."
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
 
+   ;; Show numbers before the startup list lines. (default t)
+   dotspacemacs-show-startup-list-numbers t
+
    ;; The minimum delay in seconds between number key presses. (default 0.4)
    dotspacemacs-startup-buffer-multi-digit-delay 0.4
 
@@ -298,8 +301,8 @@ It should only modify the values of Spacemacs settings."
    ;; Default font or prioritized list of fonts. The `:size' can be specified as
    ;; a non-negative integer (pixel size), or a floating-point (point size).
    ;; Point size is recommended, because it's device independent. (default 10.0)
-   dotspacemacs-default-font '("Source Code Pro for Powerline"
-                               :size 10.0
+   dotspacemacs-default-font '("Hack"
+                               :size 12.0
                                :weight normal
                                :width normal)
 
@@ -362,7 +365,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-auto-save-file-location 'cache
 
    ;; Maximum number of rollback slots to keep in the cache. (default 5)
-   dotspacemacs-max-rollback-slots 16
+   dotspacemacs-max-rollback-slots 5
 
    ;; If non-nil, the paste transient-state is enabled. While enabled, after you
    ;; paste something, pressing `C-j' and `C-k' several times cycles through the
@@ -435,12 +438,16 @@ It should only modify the values of Spacemacs settings."
    ;; when it reaches the top or bottom of the screen. (default t)
    dotspacemacs-smooth-scrolling t
 
+   ;; Show the scroll bar while scrolling. The auto hide time can be configured
+   ;; by setting this variable to a number. (default t)
+   dotspacemacs-scroll-bar-while-scrolling t
+
    ;; Control line numbers activation.
    ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
    ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
    ;; numbers are relative. If set to `visual', line numbers are also relative,
-   ;; but lines are only visual lines are counted. For example, folded lines
-   ;; will not be counted and wrapped lines are counted as multiple lines.
+   ;; but only visual lines are counted. For example, folded lines will not be
+   ;; counted and wrapped lines are counted as multiple lines.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
    ;;   :visual nil
@@ -514,6 +521,9 @@ It should only modify the values of Spacemacs settings."
    ;; %n - Narrow if appropriate
    ;; %z - mnemonics of buffer, terminal, and keyboard coding systems
    ;; %Z - like %z, but including the end-of-line format
+   ;; If nil then Spacemacs uses default `frame-title-format' to avoid
+   ;; performance issues, instead of calculating the frame title by
+   ;; `spacemacs/title-prepare' all the time.
    ;; (default "%I@%S")
    dotspacemacs-frame-title-format "%I@%b"
 
@@ -531,12 +541,15 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-whitespace-cleanup 'trailing
 
-   ;; If non nil activate `clean-aindent-mode' which tries to correct
-   ;; virtual indentation of simple modes. This can interfer with mode specific
+   ;; If non-nil activate `clean-aindent-mode' which tries to correct
+   ;; virtual indentation of simple modes. This can interfere with mode specific
    ;; indent handling like has been reported for `go-mode'.
    ;; If it does deactivate it here.
    ;; (default t)
    dotspacemacs-use-clean-aindent-mode t
+
+   ;; Accept SPC as y for prompts if non-nil. (default nil)
+   dotspacemacs-use-SPC-as-y nil
 
    ;; If non-nil shift your number row to match the entered keyboard layout
    ;; (only in insert state). Currently supported keyboard layouts are:
@@ -555,7 +568,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-pretty-docs nil
 
    ;; If nil the home buffer shows the full path of agenda items
-   ;; and todos. If non nil only the file name is shown.
+   ;; and todos. If non-nil only the file name is shown.
    dotspacemacs-home-shorten-agenda-source nil
 
    ;; If non-nil then byte-compile some of Spacemacs files.
@@ -567,21 +580,24 @@ This function defines the environment variables for your Emacs session. By
 default it calls `spacemacs/load-spacemacs-env' which loads the environment
 variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
-  (spacemacs/load-spacemacs-env))
+  (spacemacs/load-spacemacs-env)
+)
 
 (defun dotspacemacs/user-init ()
   "Initialization for user code:
 This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
-If you are unsure, try setting them in `dotspacemacs/user-config' first.")
+If you are unsure, try setting them in `dotspacemacs/user-config' first."
+)
 
 
 (defun dotspacemacs/user-load ()
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump.")
+dump."
+)
 
 
 (defun dotspacemacs/user-config ()
@@ -647,8 +663,6 @@ This function is called at the very end of Spacemacs initialization."
      ("\\?\\?\\?+" . "#dc752f")))
  '(lsp-enable-file-watchers t)
  '(lsp-ui-imenu-auto-refresh 'after-save)
- '(org-agenda-files
-   '("/Users/zhoush/Documents/Notes/org/journal/20190118.org" "/Users/zhoush/Documents/Notes/org/journal/20190120.org" "/Users/zhoush/Documents/Notes/org/journal/20190121.org" "/Users/zhoush/Documents/Notes/org/journal/20190122.org" "/Users/zhoush/Documents/Notes/org/journal/20190226.org" "/Users/zhoush/Documents/Notes/org/journal/20190311.org" "/Users/zhoush/Documents/Notes/org/journal/20190403.org" "/Users/zhoush/Documents/Notes/org/journal/20190404.org" "/Users/zhoush/Documents/Notes/org/journal/20190408.org" "/Users/zhoush/Documents/Notes/org/journal/20190415.org" "/Users/zhoush/Documents/Notes/org/journal/20190510.org" "/Users/zhoush/Documents/Notes/org/journal/20190513.org" "/Users/zhoush/Documents/Notes/org/journal/20190514.org" "/Users/zhoush/Documents/Notes/org/journal/20190516.org" "/Users/zhoush/Documents/Notes/org/journal/20190520.org" "/Users/zhoush/Documents/Notes/org/journal/20190523.org" "/Users/zhoush/Documents/Notes/org/journal/20190526.org" "/Users/zhoush/Documents/Notes/org/journal/20190529.org" "/Users/zhoush/Documents/Notes/org/journal/20190611.org" "/Users/zhoush/Documents/Notes/org/journal/20190704.org" "/Users/zhoush/Documents/Notes/org/journal/20190909.org" "/Users/zhoush/Documents/Notes/org/journal/20190910.org" "/Users/zhoush/Documents/Notes/org/journal/20190916.org" "/Users/zhoush/Documents/Notes/org/journal/20190918.org" "/Users/zhoush/Documents/Notes/org/journal/20190923.org" "/Users/zhoush/Documents/Notes/org/journal/20190925.org" "/Users/zhoush/Documents/Notes/org/journal/20190929.org" "/Users/zhoush/Documents/Notes/org/journal/20190930.org" "/Users/zhoush/Documents/Notes/org/journal/20191008.org" "/Users/zhoush/Documents/Notes/org/journal/20200211.org" "/Users/zhoush/Documents/Notes/org/journal/20200212.org" "/Users/zhoush/Documents/Notes/org/journal/20200418.org" "/Users/zhoush/Documents/Notes/org/journal/20200419.org" "/Users/zhoush/Documents/Notes/org/journal/20200422.org" "/Users/zhoush/Documents/Notes/org/journal/20200429.org" "/Users/zhoush/Documents/Notes/org/journal/20200430.org" "/Users/zhoush/Documents/Notes/org/journal/20200506.org" "/Users/zhoush/Documents/Notes/org/journal/20200507.org" "/Users/zhoush/Documents/Notes/org/journal/20200508.org" "/Users/zhoush/Documents/Notes/org/journal/20200511.org" "/Users/zhoush/Documents/Notes/org/journal/20200512.org" "/Users/zhoush/Documents/Notes/org/journal/20200513.org" "/Users/zhoush/Documents/Notes/org/journal/20200514.org" "/Users/zhoush/Documents/Notes/org/journal/20200515.org" "/Users/zhoush/Documents/Notes/org/journal/20200518.org" "/Users/zhoush/Documents/Notes/org/journal/20200519.org" "/Users/zhoush/Documents/Notes/org/journal/20200520.org" "/Users/zhoush/Documents/Notes/org/journal/20200521.org" "/Users/zhoush/Documents/Notes/org/journal/20200523.org" "/Users/zhoush/Documents/Notes/org/journal/20200525.org" "/Users/zhoush/Documents/Notes/org/journal/20200526.org" "/Users/zhoush/Documents/Notes/org/journal/20200527.org" "/Users/zhoush/Documents/Notes/org/journal/20200528.org" "/Users/zhoush/Documents/Notes/org/journal/20200531.org" "/Users/zhoush/Documents/Notes/org/journal/20200601.org" "/Users/zhoush/Documents/Notes/org/journal/20200602.org" "/Users/zhoush/Documents/Notes/org/journal/20200603.org" "/Users/zhoush/Documents/Notes/org/journal/20200604.org" "/Users/zhoush/Documents/Notes/org/journal/20200607.org" "/Users/zhoush/Documents/Notes/org/journal/20200608.org" "/Users/zhoush/Documents/Notes/org/journal/20200609.org" "/Users/zhoush/Documents/Notes/org/journal/20200610.org" "/Users/zhoush/Documents/Notes/org/journal/20200611.org" "/Users/zhoush/Documents/Notes/org/journal/20200612.org" "/Users/zhoush/Documents/Notes/org/journal/20200615.org" "/Users/zhoush/Documents/Notes/org/journal/20200616.org" "/Users/zhoush/Documents/Notes/org/journal/20200617.org" "/Users/zhoush/Documents/Notes/org/journal/20200618.org" "/Users/zhoush/Documents/Notes/org/journal/20200620.org" "/Users/zhoush/Documents/Notes/org/journal/20200622.org" "/Users/zhoush/Documents/Notes/org/journal/20200623.org" "/Users/zhoush/Documents/Notes/org/journal/20200624.org" "/Users/zhoush/Documents/Notes/org/journal/20200629.org" "/Users/zhoush/Documents/Notes/org/journal/20200630.org" "/Users/zhoush/Documents/Notes/org/journal/20200701.org" "/Users/zhoush/Documents/Notes/org/journal/20200702.org" "/Users/zhoush/Documents/Notes/org/journal/20200703.org" "/Users/zhoush/Documents/Notes/org/journal/20200706.org" "/Users/zhoush/Documents/Notes/org/journal/20200707.org" "/Users/zhoush/Documents/Notes/org/journal/20200708.org" "/Users/zhoush/Documents/Notes/org/journal/20200709.org" "/Users/zhoush/Documents/Notes/org/journal/20200711.org" "/Users/zhoush/Documents/Notes/org/journal/20200713.org" "/Users/zhoush/Documents/Notes/org/journal/20200714.org" "/Users/zhoush/Documents/Notes/org/journal/20200715.org" "/Users/zhoush/Documents/Notes/org/journal/20200716.org" "/Users/zhoush/Documents/Notes/org/journal/20200717.org" "/Users/zhoush/Documents/Notes/org/journal/20200720.org" "/Users/zhoush/Documents/Notes/org/journal/20200721.org" "/Users/zhoush/Documents/Notes/org/journal/20200722.org" "/Users/zhoush/Documents/Notes/org/journal/20200723.org" "/Users/zhoush/Documents/Notes/org/journal/20200724.org" "/Users/zhoush/Documents/Notes/org/journal/20200727.org" "/Users/zhoush/Documents/Notes/org/journal/20200728.org" "/Users/zhoush/Documents/Notes/org/journal/20200729.org" "/Users/zhoush/Documents/Notes/org/journal/20200730.org" "/Users/zhoush/Documents/Notes/org/journal/20200731.org" "/Users/zhoush/Documents/Notes/org/journal/20200803.org" "/Users/zhoush/Documents/Notes/org/journal/20200804.org" "/Users/zhoush/Documents/Notes/org/journal/20200805.org" "/Users/zhoush/Documents/Notes/org/journal/20200806.org" "/Users/zhoush/Documents/Notes/org/journal/20200807.org" "/Users/zhoush/Documents/Notes/org/journal/20200810.org" "/Users/zhoush/Documents/Notes/org/journal/20200811.org" "/Users/zhoush/Documents/Notes/org/journal/20200812.org" "/Users/zhoush/Documents/Notes/org/journal/20200813.org" "/Users/zhoush/Documents/Notes/org/journal/20200814.org" "/Users/zhoush/Documents/Notes/org/journal/20210103.org" "/Users/zhoush/Documents/Notes/org/journal/20210104.org" "/Users/zhoush/Documents/Notes/org/journal/20210201.org" "/Users/zhoush/Documents/Notes/org/journal/20210327.org" "~/Documents/Working/.xingdata/sunmi/doc/TODOs.org" "~/Documents/Working/AW_Tech/proj/AW-Libs/AW-String/doc/TODOs.org" "~/Documents/Notes/books/system/CSAPP/CSAPP.org" "/Users/zhoush/Documents/Notes/org/journal/20190118.org" "/Users/zhoush/Documents/Notes/org/journal/20190120.org" "/Users/zhoush/Documents/Notes/org/journal/20190121.org" "/Users/zhoush/Documents/Notes/org/journal/20190122.org" "/Users/zhoush/Documents/Notes/org/journal/20190226.org" "/Users/zhoush/Documents/Notes/org/journal/20190311.org" "/Users/zhoush/Documents/Notes/org/journal/20190403.org" "/Users/zhoush/Documents/Notes/org/journal/20190404.org" "/Users/zhoush/Documents/Notes/org/journal/20190408.org" "/Users/zhoush/Documents/Notes/org/journal/20190415.org" "/Users/zhoush/Documents/Notes/org/journal/20190510.org" "/Users/zhoush/Documents/Notes/org/journal/20190513.org" "/Users/zhoush/Documents/Notes/org/journal/20190514.org" "/Users/zhoush/Documents/Notes/org/journal/20190516.org" "/Users/zhoush/Documents/Notes/org/journal/20190520.org" "/Users/zhoush/Documents/Notes/org/journal/20190523.org" "/Users/zhoush/Documents/Notes/org/journal/20190526.org" "/Users/zhoush/Documents/Notes/org/journal/20190529.org" "/Users/zhoush/Documents/Notes/org/journal/20190611.org" "/Users/zhoush/Documents/Notes/org/journal/20190704.org" "/Users/zhoush/Documents/Notes/org/journal/20190909.org" "/Users/zhoush/Documents/Notes/org/journal/20190910.org" "/Users/zhoush/Documents/Notes/org/journal/20190916.org" "/Users/zhoush/Documents/Notes/org/journal/20190918.org" "/Users/zhoush/Documents/Notes/org/journal/20190923.org" "/Users/zhoush/Documents/Notes/org/journal/20190925.org" "/Users/zhoush/Documents/Notes/org/journal/20190929.org" "/Users/zhoush/Documents/Notes/org/journal/20190930.org" "/Users/zhoush/Documents/Notes/org/journal/20191008.org" "/Users/zhoush/Documents/Notes/org/journal/20200211.org" "/Users/zhoush/Documents/Notes/org/journal/20200212.org" "/Users/zhoush/Documents/Notes/org/journal/20200418.org" "/Users/zhoush/Documents/Notes/org/journal/20200419.org" "/Users/zhoush/Documents/Notes/org/journal/20200422.org" "/Users/zhoush/Documents/Notes/org/journal/20200429.org" "/Users/zhoush/Documents/Notes/org/journal/20200430.org" "/Users/zhoush/Documents/Notes/org/journal/20200506.org" "/Users/zhoush/Documents/Notes/org/journal/20200507.org" "/Users/zhoush/Documents/Notes/org/journal/20200508.org" "/Users/zhoush/Documents/Notes/org/journal/20200511.org" "/Users/zhoush/Documents/Notes/org/journal/20200512.org" "/Users/zhoush/Documents/Notes/org/journal/20200513.org" "/Users/zhoush/Documents/Notes/org/journal/20200514.org" "/Users/zhoush/Documents/Notes/org/journal/20200515.org" "/Users/zhoush/Documents/Notes/org/journal/20200518.org" "/Users/zhoush/Documents/Notes/org/journal/20200519.org" "/Users/zhoush/Documents/Notes/org/journal/20200520.org" "/Users/zhoush/Documents/Notes/org/journal/20200521.org" "/Users/zhoush/Documents/Notes/org/journal/20200523.org" "/Users/zhoush/Documents/Notes/org/journal/20200525.org" "/Users/zhoush/Documents/Notes/org/journal/20200526.org" "/Users/zhoush/Documents/Notes/org/journal/20200527.org" "/Users/zhoush/Documents/Notes/org/journal/20200528.org" "/Users/zhoush/Documents/Notes/org/journal/20200531.org" "/Users/zhoush/Documents/Notes/org/journal/20200601.org" "/Users/zhoush/Documents/Notes/org/journal/20200602.org" "/Users/zhoush/Documents/Notes/org/journal/20200603.org" "/Users/zhoush/Documents/Notes/org/journal/20200604.org" "/Users/zhoush/Documents/Notes/org/journal/20200607.org" "/Users/zhoush/Documents/Notes/org/journal/20200608.org" "/Users/zhoush/Documents/Notes/org/journal/20200609.org" "/Users/zhoush/Documents/Notes/org/journal/20200610.org" "/Users/zhoush/Documents/Notes/org/journal/20200611.org" "/Users/zhoush/Documents/Notes/org/journal/20200612.org" "/Users/zhoush/Documents/Notes/org/journal/20200615.org" "/Users/zhoush/Documents/Notes/org/journal/20200616.org" "/Users/zhoush/Documents/Notes/org/journal/20200617.org" "/Users/zhoush/Documents/Notes/org/journal/20200618.org" "/Users/zhoush/Documents/Notes/org/journal/20200620.org" "/Users/zhoush/Documents/Notes/org/journal/20200622.org" "/Users/zhoush/Documents/Notes/org/journal/20200623.org" "/Users/zhoush/Documents/Notes/org/journal/20200624.org" "/Users/zhoush/Documents/Notes/org/journal/20200629.org" "/Users/zhoush/Documents/Notes/org/journal/20200630.org" "/Users/zhoush/Documents/Notes/org/journal/20200701.org" "/Users/zhoush/Documents/Notes/org/journal/20200702.org" "/Users/zhoush/Documents/Notes/org/journal/20200703.org" "/Users/zhoush/Documents/Notes/org/journal/20200706.org" "/Users/zhoush/Documents/Notes/org/journal/20200707.org" "/Users/zhoush/Documents/Notes/org/journal/20200708.org" "/Users/zhoush/Documents/Notes/org/journal/20200709.org" "/Users/zhoush/Documents/Notes/org/journal/20200711.org" "/Users/zhoush/Documents/Notes/org/journal/20200713.org" "/Users/zhoush/Documents/Notes/org/journal/20200714.org" "/Users/zhoush/Documents/Notes/org/journal/20200715.org" "/Users/zhoush/Documents/Notes/org/journal/20200716.org" "/Users/zhoush/Documents/Notes/org/journal/20200717.org" "/Users/zhoush/Documents/Notes/org/journal/20200720.org" "/Users/zhoush/Documents/Notes/org/journal/20200721.org" "/Users/zhoush/Documents/Notes/org/journal/20200722.org" "/Users/zhoush/Documents/Notes/org/journal/20200723.org" "/Users/zhoush/Documents/Notes/org/journal/20200724.org" "/Users/zhoush/Documents/Notes/org/journal/20200727.org" "/Users/zhoush/Documents/Notes/org/journal/20200728.org" "/Users/zhoush/Documents/Notes/org/journal/20200729.org" "/Users/zhoush/Documents/Notes/org/journal/20200730.org" "/Users/zhoush/Documents/Notes/org/journal/20200731.org" "/Users/zhoush/Documents/Notes/org/journal/20200803.org" "/Users/zhoush/Documents/Notes/org/journal/20200804.org" "/Users/zhoush/Documents/Notes/org/journal/20200805.org" "/Users/zhoush/Documents/Notes/org/journal/20200806.org" "/Users/zhoush/Documents/Notes/org/journal/20200807.org" "/Users/zhoush/Documents/Notes/org/journal/20200810.org" "/Users/zhoush/Documents/Notes/org/journal/20200811.org" "/Users/zhoush/Documents/Notes/org/journal/20200812.org" "/Users/zhoush/Documents/Notes/org/journal/20200813.org" "/Users/zhoush/Documents/Notes/org/journal/20200814.org" "~/Documents/Working/.xingdata/sunmi/doc/TODOs.org" "~/Documents/Working/AW_Tech/proj/AW-Libs/AW-String/doc/TODOs.org" "~/Documents/Working/.xingdata/sunmi/doc/TODOs.org" "~/Documents/Working/AW_Tech/proj/AW-Libs/AW-String/doc/TODOs.org" "/Users/zhoush/Documents/Notes/org/journal/20190404.org" "/Users/zhoush/Documents/Notes/org/journal/20190408.org" "/Users/zhoush/Documents/Notes/org/journal/20190415.org" "/Users/zhoush/Documents/Notes/org/journal/20190510.org" "/Users/zhoush/Documents/Notes/org/journal/20190513.org" "/Users/zhoush/Documents/Notes/org/journal/20190514.org" "/Users/zhoush/Documents/Notes/org/journal/20190516.org" "/Users/zhoush/Documents/Notes/org/journal/20190520.org" "/Users/zhoush/Documents/Notes/org/journal/20190523.org" "/Users/zhoush/Documents/Notes/org/journal/20190526.org" "/Users/zhoush/Documents/Notes/org/journal/20190529.org" "/Users/zhoush/Documents/Notes/org/journal/20190611.org" "/Users/zhoush/Documents/Notes/org/journal/20190704.org" "/Users/zhoush/Documents/Notes/org/journal/20190909.org" "/Users/zhoush/Documents/Notes/org/journal/20190910.org" "/Users/zhoush/Documents/Notes/org/journal/20190916.org" "/Users/zhoush/Documents/Notes/org/journal/20190918.org" "/Users/zhoush/Documents/Notes/org/journal/20190923.org" "/Users/zhoush/Documents/Notes/org/journal/20190925.org" "/Users/zhoush/Documents/Notes/org/journal/20190929.org" "/Users/zhoush/Documents/Notes/org/journal/20190930.org" "/Users/zhoush/Documents/Notes/org/journal/20191008.org" "/Users/zhoush/Documents/Notes/org/journal/20200211.org" "/Users/zhoush/Documents/Notes/org/journal/20200212.org" "/Users/zhoush/Documents/Notes/org/journal/20200418.org" "/Users/zhoush/Documents/Notes/org/journal/20200419.org" "/Users/zhoush/Documents/Notes/org/journal/20200422.org" "/Users/zhoush/Documents/Notes/org/journal/20200429.org" "/Users/zhoush/Documents/Notes/org/journal/20200430.org" "/Users/zhoush/Documents/Notes/org/journal/20200506.org" "/Users/zhoush/Documents/Notes/org/journal/20200507.org" "/Users/zhoush/Documents/Notes/org/journal/20200508.org" "/Users/zhoush/Documents/Notes/org/journal/20200511.org" "/Users/zhoush/Documents/Notes/org/journal/20200512.org" "/Users/zhoush/Documents/Notes/org/journal/20200513.org" "/Users/zhoush/Documents/Notes/org/journal/20200514.org" "/Users/zhoush/Documents/Notes/org/journal/20200515.org" "/Users/zhoush/Documents/Notes/org/journal/20200518.org" "/Users/zhoush/Documents/Notes/org/journal/20200519.org" "/Users/zhoush/Documents/Notes/org/journal/20200520.org" "/Users/zhoush/Documents/Notes/org/journal/20200521.org" "/Users/zhoush/Documents/Notes/org/journal/20200523.org" "/Users/zhoush/Documents/Notes/org/journal/20200525.org" "/Users/zhoush/Documents/Notes/org/journal/20200526.org" "/Users/zhoush/Documents/Notes/org/journal/20200527.org" "/Users/zhoush/Documents/Notes/org/journal/20200528.org" "/Users/zhoush/Documents/Notes/org/journal/20200531.org" "/Users/zhoush/Documents/Notes/org/journal/20200601.org" "/Users/zhoush/Documents/Notes/org/journal/20200602.org" "/Users/zhoush/Documents/Notes/org/journal/20200603.org" "/Users/zhoush/Documents/Notes/org/journal/20200604.org" "/Users/zhoush/Documents/Notes/org/journal/20200607.org" "/Users/zhoush/Documents/Notes/org/journal/20200608.org" "/Users/zhoush/Documents/Notes/org/journal/20200609.org" "/Users/zhoush/Documents/Notes/org/journal/20200610.org" "/Users/zhoush/Documents/Notes/org/journal/20200611.org" "/Users/zhoush/Documents/Notes/org/journal/20200612.org" "/Users/zhoush/Documents/Notes/org/journal/20200615.org" "/Users/zhoush/Documents/Notes/org/journal/20200616.org" "/Users/zhoush/Documents/Notes/org/journal/20200617.org" "/Users/zhoush/Documents/Notes/org/journal/20200618.org" "/Users/zhoush/Documents/Notes/org/journal/20200620.org" "/Users/zhoush/Documents/Notes/org/journal/20200622.org" "/Users/zhoush/Documents/Notes/org/journal/20200623.org" "/Users/zhoush/Documents/Notes/org/journal/20200624.org" "/Users/zhoush/Documents/Notes/org/journal/20200629.org" "/Users/zhoush/Documents/Notes/org/journal/20200630.org" "/Users/zhoush/Documents/Notes/org/journal/20200701.org" "/Users/zhoush/Documents/Notes/org/journal/20200702.org" "/Users/zhoush/Documents/Notes/org/journal/20200703.org" "/Users/zhoush/Documents/Notes/org/journal/20200706.org" "/Users/zhoush/Documents/Notes/org/journal/20200707.org" "/Users/zhoush/Documents/Notes/org/journal/20200708.org" "/Users/zhoush/Documents/Notes/org/journal/20200709.org" "/Users/zhoush/Documents/Notes/org/journal/20200711.org" "/Users/zhoush/Documents/Notes/org/journal/20200713.org" "/Users/zhoush/Documents/Notes/org/journal/20200714.org" "/Users/zhoush/Documents/Notes/org/journal/20200715.org" "/Users/zhoush/Documents/Notes/org/journal/20200716.org" "/Users/zhoush/Documents/Notes/org/journal/20200717.org" "/Users/zhoush/Documents/Notes/org/journal/20200720.org" "/Users/zhoush/Documents/Notes/org/journal/20200721.org" "/Users/zhoush/Documents/Notes/org/journal/20200722.org" "/Users/zhoush/Documents/Notes/org/journal/20200723.org" "/Users/zhoush/Documents/Notes/org/journal/20200724.org" "/Users/zhoush/Documents/Notes/org/journal/20200727.org" "/Users/zhoush/Documents/Notes/org/journal/20200728.org" "/Users/zhoush/Documents/Notes/org/journal/20200729.org" "/Users/zhoush/Documents/Notes/org/journal/20200730.org" "/Users/zhoush/Documents/Notes/org/journal/20200731.org" "/Users/zhoush/Documents/Notes/org/journal/20200803.org" "/Users/zhoush/Documents/Notes/org/journal/20200804.org" "/Users/zhoush/Documents/Notes/org/journal/20200805.org" "/Users/zhoush/Documents/Notes/org/journal/20200806.org" "/Users/zhoush/Documents/Notes/org/journal/20200807.org" "/Users/zhoush/Documents/Notes/org/journal/20200810.org" "/Users/zhoush/Documents/Notes/org/journal/20200811.org" "/Users/zhoush/Documents/Notes/org/journal/20200812.org" "/Users/zhoush/Documents/Notes/org/journal/20200813.org" "/Users/zhoush/Documents/Notes/org/journal/20200814.org"))
  '(org-babel-load-languages
    '((shell . t)
      (python . t)
@@ -665,8 +679,6 @@ This function is called at the very end of Spacemacs initialization."
  '(pdf-view-midnight-colors '("#5f5f87" . "#ffffff"))
  '(projectile-globally-ignored-directories
    '(".ccls-cache" ".*" ".idea" ".vscode" ".ensime_cache" ".eunit" ".git" ".hg" ".fslckout" "_FOSSIL_" ".bzr" "_darcs" ".tox" ".svn" ".stack-work" ".ccls-cache" ".clangd" ".mypy_cache" "build" "bin"))
- '(python-shell-exec-path '("python2"))
- '(python-shell-interpreter "python2")
  '(safe-local-variable-values
    '((lsp-mode)
      (flycheck-mode)
