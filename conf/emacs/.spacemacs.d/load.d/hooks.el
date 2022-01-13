@@ -1,6 +1,8 @@
 (add-hook 'c-mode-hook   (lambda ()
                            ;; (c-toggle-comment-style -1) ;;
                            ;; (ggtags-mode)
+                           (c-set-style "linux")
+                           (c-toggle-auto-state)
                            (setq comment-style (quote indent))
                            (setq flycheck-clang-language-standard "c11")))
 
