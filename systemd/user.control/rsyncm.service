@@ -1,11 +1,12 @@
-[Unit] 
+[Unit]
 Description=inotify directories for fast remote file copy program
 After=rsync.service
 
 [Service]
-ExecStart=rsyncm.sh 2>&1 >/dev/null; 
+Type=simple
+ExecStart=rsyncm.sh
 ExecStop=pkill rsyncm.sh
-ExecReload=kill -HUP $MAINPID
+ExecReload=on-abort
 
 
 [Install]
