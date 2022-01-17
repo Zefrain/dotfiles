@@ -18,6 +18,8 @@ init_sh() {
 }
 
 init_conf() {
+	mkdir -p ~/.config/clash
+	stow -d $conf_dir -t ~/.config/clash clash
 	stow -d $conf_dir -t $HOME -R emacs
 	stow -d $conf_dir -t $HOME -R zsh
 	stow -d $conf_dir -t $HOME -R aria2
