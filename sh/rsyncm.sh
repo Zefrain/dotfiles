@@ -15,7 +15,7 @@ inotify_fun ()
         f=$1
         for t in $to
         do
-            cmd="rsync -avzq --delete --progress --prune-empty-dirs --include=\"**HELP/***\" --files-from=$f/cscope.files $f $t"
+            cmd="rsync -avzq --delete --progress --prune-empty-dirs --files-from=$f/cscope.files . $f $t"
             echo `date +%Y%m%d-%T`: $cmd
             eval $cmd
         done

@@ -32,9 +32,9 @@ init_zsh_custom_post() {
 install_systemd() {
 	sudo apt install -y xsel
 
-	do_symlinks
 	stow -d $dotfiles_dir -t $HOME/.config/systemd systemd
-	cd $systemd_dir;
+	systemctl --user daemon-reload
+	cd $systemd_dir
 	for service in $(ls *); do
 		systemctl --user start $service
 		systemctl --user enable $service
@@ -76,6 +76,8 @@ add_vim() {
 }
 
 init_dotfiles() {
+	do_symlinks
+
 	case $1 in 
 		init_sh)
 			init_sh
@@ -106,7 +108,7 @@ init_dotfiles() {
 			init_conf
 			init_zsh_custom_post
 			add_vim
-			systemd_specified
+			system_specified
 			;;
 	esac
 
