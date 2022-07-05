@@ -4,8 +4,9 @@
 # --
 
 <div style={{textAlign:'${3:center}'}}>
-< img src={require('${1:image link}').default} />
 
-_${2:image caption}_
+![](${1:link})
+
+_Figure ${2:image caption}_
 </div>
 $0
