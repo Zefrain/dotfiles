@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Tex
+# key: tex
+# --
+
+<Tex texContent="${1:latex string}" />$0
