@@ -33,7 +33,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(systemd
+   '(octave
+     systemd
      yaml
      epub
      (sql :variables
@@ -72,12 +73,12 @@ This function should only modify configuration layer settings."
      (c-c++ :variables
             c-c++-adopt-subprojects t
             c-c++-default-mode-for-headers 'c-mode
-            ;; c-c++-backend 'company-gtags
+            c-c++-backend 'company-capf
             c-c++-backend 'lsp-ccls
-            c-c++-enable-google-style nil
+            ;; c-c++-enable-google-style nil
             ;; lsp-ui-doc-enable t
             lsp-enable-file-watchers t
-            lsp-file-watch-threshold 4096
+            ;; lsp-file-watch-threshold 4096
             lsp-auto-guess-root t
             )
      (python :variables
@@ -126,7 +127,8 @@ This function should only modify configuration layer settings."
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(load-dir
-                                      org-mobile-sync)
+                                      org-mobile-sync
+                                      edit-indirect)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()

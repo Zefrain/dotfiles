@@ -12,7 +12,7 @@ unique_path()
 
 _alias()
 {
-    alias rm="rmtrash"
+    alias rm="trash"
     alias "rm -rf"="rmtrash"
     alias mysql="mycli"
     alias python="python3"
