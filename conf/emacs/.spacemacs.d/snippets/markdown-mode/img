@@ -1,12 +1,12 @@
 # -*- mode: snippet -*-
-# name: insert image
-# key: fig
+# name: insert local image
+# key: limg
 # --
 
-<div style={{textAlign:'${3:center}'}}>
+<div style={{textAlign:'${4:center}'}}>
 
-![](${1:link})
+< img src={require('$1').default} style={{zoom: "${2:33}%"}}/>
 
-_Figure ${2:image caption}_
+_${3:image caption}_
 </div>
 $0
