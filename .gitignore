@@ -8,3 +8,5 @@ conf/tmux/.tmux/plugins
 
 *.dat
 *.txt
+
+.spacemacs.env
