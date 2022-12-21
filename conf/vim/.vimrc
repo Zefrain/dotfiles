@@ -23,12 +23,16 @@ Plug 'kana/vim-operator-user'
 Plug 'ericcurtin/CurtineIncSw.vim'
 
 " for lsp
-Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete.vim'
 " Plug 'm-pilia/vim-ccls'
 
 " comment
 Plug 'tpope/vim-commentary'
+
+" markdown
+Plug 'godlygeek/tabular'
+Plug 'preservim/vim-markdown'
 
 " Initialize plugin system
 call plug#end()
@@ -129,3 +133,11 @@ nmap <leader>sw :call CurtineIncSw()<CR>
 
 " cursor line 
 set cursorline
+
+" NERDTree
+nnoremap <leader>n :NERDTreeFocus<CR>
+" nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+
+" markdown
+let g:vim_markdown_folding_disabled = 1

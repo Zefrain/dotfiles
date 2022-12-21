@@ -28,7 +28,7 @@ _alias() {
 
 _init_linux() {
     _startx
-    _xmodmap
+    # _xmodmap
     _tmux
     _alias
 }
