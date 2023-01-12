@@ -61,6 +61,12 @@ darwin_specified() {
 	brew tap mycli
 }
 
+do_ubuntu_install() {
+	sudo apt update
+	sudo apt install -y xsel gnutls-bin zsh curl stow symlinks tmux vim symlinks
+
+}
+
 linux_specified() {
 	init_systemd
 }
@@ -99,7 +105,7 @@ init_dotfiles() {
 	init_packages
 	init_symlinks
 
-	case $1 in 
+	case $1 in
 		init_sh)
 			init_sh
 			;;
