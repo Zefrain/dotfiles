@@ -25,7 +25,7 @@ Plug 'ericcurtin/CurtineIncSw.vim'
 " for lsp
 " Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete.vim'
-" Plug 'm-pilia/vim-ccls'
+Plug 'm-pilia/vim-ccls'
 
 " comment
 Plug 'tpope/vim-commentary'
@@ -141,3 +141,9 @@ nnoremap <C-f> :NERDTreeFind<CR>
 
 " markdown
 let g:vim_markdown_folding_disabled = 1
+
+set clipboard^=unnamed,unnamedplus
+
+" clang-format
+map <C-K> :py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
+imap <C-K> <c-o>:py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
