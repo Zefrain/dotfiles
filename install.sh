@@ -5,13 +5,27 @@ set -e
 dotfiles_dir=$(dirname $(realpath $0))
 
 conf_dir="$dotfiles_dir/conf"
-emacs_dir="$conf_dir/emacs"
-tmux_dir="$conf_dir/tmux"
 zsh_dir="$conf_dir/zsh"
-aria_dir="$conf_dir/aria2"
-sh_dir="$dotfiles_dir/sh"
 systemd_dir="$dotfiles_dir/systemd"
 
+
+PLATFORM=$(sh /usr/local/bin/systype.sh)
+OS_RELEASE=$(lsb_release -d | awk '{print $2}')
+init_packages() {
+	if [ "$OS_RELEASE" == "Ubuntu" ]; then
+		sudo apt update && sudo apt install -y \
+			stow \
+			ripgrep \
+			git \
+			exuberant-ctags \
+			cscope \
+			global \
+			vim-gtk \
+			clang-format \
+			symlinks \
+			xclip xsel
+	fi
+}
 
 init_sh() {
 	sudo stow -d $dotfiles_dir -t /usr/local/bin -R sh
@@ -21,20 +35,20 @@ init_conf() {
 	mkdir -p ~/.config/clash
 	# stow -d $conf_dir -t ~/.config/clash clash
 	stow -d $conf_dir -t $HOME -R emacs
-	stow -d $conf_dir -t $HOME -R zsh
 	stow -d $conf_dir -t $HOME -R aria2
 	stow -d $conf_dir -t $HOME -R tmux
 }
 
-init_zsh_custom_post() {
+init_zsh() {
+	rm -f ~/.zshrc
+	stow -d $conf_dir -t $HOME -R zsh
 	sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}\/omz_custom|g" $HOME/.zshrc
 }
 
-
-install_systemd() {
+init_systemd() {
 	sudo apt install -y xsel
 
-	stow -d $dotfiles_dir -t $HOME/.config/systemd systemd
+	stow -d . -t $HOME/.config/systemd systemd
 	systemctl --user daemon-reload
 	cd $systemd_dir
 	for service in $(ls *); do
@@ -48,7 +62,7 @@ darwin_specified() {
 }
 
 linux_specified() {
-	install_systemd
+	init_systemd
 }
 
 system_specified() {
@@ -63,22 +77,27 @@ system_specified() {
 	fi
 }
 
-do_git() {
+init_git() {
 	git submodule update --init --recursive --force --remote
 }
 
-do_symlinks() {
+init_symlinks() {
 	symlinks -d $HOME
 }
 
-add_vim() {
+init_vim() {
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	stow -d $conf_dir -t $HOME -R vim
 }
 
+init_clangformat() {
+	stow -d $conf_dir -t $HOME -R clang-format
+}
+
 init_dotfiles() {
-	do_symlinks
+	init_packages
+	init_symlinks
 
 	case $1 in 
 		init_sh)
@@ -91,7 +110,7 @@ init_dotfiles() {
 
 
 		init_zsh_custom_post)
-			init_zsh_custom_post
+			init_zsh
 			;;
 
 
@@ -99,17 +118,22 @@ init_dotfiles() {
 			system_specified
 			;;
 
-		add_vim)
-			add_vim
+		vim)
+			init_vim
+			;;
+
+		clang_format)
+			init_clangformat
 			;;
 
 		*)
-			do_git
-			do_symlinks
+			init_git
+			init_symlinks
 			init_sh
 			init_conf
-			init_zsh_custom_post
-			add_vim
+			init_zsh
+			init_vim
+			init_clangformat
 			system_specified
 			;;
 	esac
