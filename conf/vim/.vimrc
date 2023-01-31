@@ -25,7 +25,7 @@ Plug 'ericcurtin/CurtineIncSw.vim'
 " for lsp
 " Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'm-pilia/vim-ccls'
+" Plug 'm-pilia/vim-ccls'
 
 " comment
 Plug 'tpope/vim-commentary'
@@ -33,6 +33,9 @@ Plug 'tpope/vim-commentary'
 " markdown
 Plug 'godlygeek/tabular'
 Plug 'preservim/vim-markdown'
+
+" YCM
+Plug 'tabnine/YouCompleteMe'
 
 " Initialize plugin system
 call plug#end()
@@ -85,15 +88,15 @@ imap <c-space> <Plug>(asyncomplete_force_refresh)
 " imap <c-@> <Plug>(asyncomplete_force_refresh)
 
 " Register ccls C++ lanuage server.
-if executable('ccls')
-   au User lsp_setup call lsp#register_server({
-      \ 'name': 'ccls',
-      \ 'cmd': {server_info->['ccls']},
-      \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.ccls'))},
-      \ 'initialization_options': {'cache': {'directory': expand('~/.cache/ccls') }},
-      \ 'allowlist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
-      \ })
-endif
+" if executable('ccls')
+"    au User lsp_setup call lsp#register_server({
+"       \ 'name': 'ccls',
+"       \ 'cmd': {server_info->['ccls']},
+"       \ 'root_uri': {server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), '.ccls'))},
+"       \ 'initialization_options': {'cache': {'directory': expand('~/.cache/ccls') }},
+"       \ 'allowlist': ['c', 'cpp', 'objc', 'objcpp', 'cc'],
+"       \ })
+" endif
 
 " Key bindings for vim-lsp.
 nn <silent> <M-d> :LspDefinition<cr>

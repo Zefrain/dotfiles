@@ -20,10 +20,11 @@ init_packages() {
 			exuberant-ctags \
 			cscope \
 			global \
-			vim-gtk \
 			clang-format \
 			symlinks \
-			xclip xsel
+			xclip xsel \
+			build-essential cmake vim-nox python3-dev \
+			mono-complete golang nodejs default-jdk npm
 	fi
 }
 
@@ -95,6 +96,8 @@ init_vim() {
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	stow -d $conf_dir -t $HOME -R vim
+	vim +PlugInstall +qall && python3 /home/zhou/.vim/plugged/YouCompleteMe/install.py
+
 }
 
 init_clangformat() {
