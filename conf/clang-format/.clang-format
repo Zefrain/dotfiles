@@ -12,3 +12,4 @@ AlignArrayOfStructures: Left
 AlignConsecutiveMacros: AcrossComments
 AlignOperands: Align
 AlignTrailingComments: true
+AlignConsecutiveDeclarations: true

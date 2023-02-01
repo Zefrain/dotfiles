@@ -150,3 +150,7 @@ set clipboard^=unnamed,unnamedplus
 " clang-format
 map <C-K> :py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
 imap <C-K> <c-o>:py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
+
+let s:vimdir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+let s:cscope_path = s:vimdir . '/cscope_maps.vim'
+:execute "source " . s:cscope_path

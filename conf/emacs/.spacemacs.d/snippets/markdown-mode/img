@@ -5,7 +5,7 @@
 
 <div style={{textAlign:'${4:center}'}}>
 
-< img src={require('$1').default} style={{zoom: "${2:33}%"}}/>
+< img src={require('$1').default} style={{zoom: "${2:100}%"}}/>
 
 _${3:image caption}_
 </div>
