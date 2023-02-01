@@ -143,7 +143,7 @@ init_dotfiles() {
 			init_zsh
 			init_vim
 			init_clangformat
-			system_specified
+			# system_specified
 			;;
 	esac
 
