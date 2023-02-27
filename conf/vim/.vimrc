@@ -19,9 +19,6 @@ Plug 'junegunn/fzf.vim'
 " for clang-format
 Plug 'kana/vim-operator-user'
 
-" for switch header and source file
-Plug 'ericcurtin/CurtineIncSw.vim'
-
 " for lsp
 " Plug 'prabirshrestha/vim-lsp'
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -145,6 +142,10 @@ nnoremap <C-f> :NERDTreeFind<CR>
 " markdown
 let g:vim_markdown_folding_disabled = 1
 
+" folding
+set foldmethod=syntax
+
+" clipboard
 set clipboard^=unnamed,unnamedplus
 
 " clang-format
@@ -153,4 +154,5 @@ imap <C-K> <c-o>:py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
 
 let s:vimdir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let s:cscope_path = s:vimdir . '/cscope_maps.vim'
+
 :execute "source " . s:cscope_path
