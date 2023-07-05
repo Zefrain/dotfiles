@@ -76,10 +76,12 @@ system_specified() {
 	PLATFORM=$(sh /usr/local/bin/systype.sh)
 
 	if [ "${PLATFORM}" = "linux" ]; then
+		git submodule deinit workflows/Ariafred
+
 		linux_specified
 	fi
 
-	if [ "${PLATFORM}" = "Darwin" ]; then
+	if [ "${PLATFORM}" = "macos" ]; then
 		darwin_specified
 	fi
 }
@@ -96,7 +98,8 @@ init_vim() {
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	stow -d $conf_dir -t $HOME -R vim
-	vim +PlugInstall +qall && python3 /home/zhou/.vim/plugged/YouCompleteMe/install.py
+	vim +PlugInstall +qall 
+	# python3 /home/zhou/.vim/plugged/YouCompleteMe/install.py
 
 }
 
@@ -136,6 +139,7 @@ init_dotfiles() {
 			;;
 
 		*)
+			system_specified
 			init_git
 			init_symlinks
 			init_sh
@@ -143,7 +147,6 @@ init_dotfiles() {
 			init_zsh
 			init_vim
 			init_clangformat
-			# system_specified
 			;;
 	esac
 
