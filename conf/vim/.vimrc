@@ -3,9 +3,6 @@ call plug#begin('~/.vim/plugged')
 
 " Make sure you use single quotes
 
-" Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
-Plug 'junegunn/vim-easy-align'
-
 " Multiple Plug commands can be written in a single line using | separators
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
@@ -32,7 +29,10 @@ Plug 'godlygeek/tabular'
 Plug 'preservim/vim-markdown'
 
 " YCM
-Plug 'tabnine/YouCompleteMe'
+" Plug 'tabnine/YouCompleteMe'
+
+" Golang
+Plug 'fatih/vim-go'
 
 " Initialize plugin system
 call plug#end()
@@ -144,6 +144,7 @@ let g:vim_markdown_folding_disabled = 1
 
 " folding
 set foldmethod=syntax
+set nofoldenable
 
 " clipboard
 set clipboard^=unnamed,unnamedplus
