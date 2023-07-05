@@ -613,9 +613,9 @@ before packages are loaded."
   (load-dir-one (concat dotspacemacs-directory "load.d/"))
 
   ;; orgmode pdf
-  (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
-                                "xelatex -interaction nonstopmode %f"))
-  (require 'org-tempo)
+  ;; (setq org-latex-pdf-process '("xelatex -interaction nonstopmode %f"
+  ;;                               "xelatex -interaction nonstopmode %f"))
+  ;; (require 'org-tempo)
 
   ;; (when (not (display-graphic-p))
   ;;   (setq flycheck-indication-mode nil))
