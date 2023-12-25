@@ -9,7 +9,7 @@ zsh_dir="$conf_dir/zsh"
 systemd_dir="$dotfiles_dir/systemd"
 
 
-PLATFORM=$(sh /usr/local/bin/systype.sh)
+PLATFORM=$(sh sh/systype.sh)
 OS_RELEASE=$(lsb_release -d | awk '{print $2}')
 init_packages() {
 	if [ "$OS_RELEASE" == "Ubuntu" ]; then
@@ -73,10 +73,8 @@ linux_specified() {
 }
 
 system_specified() {
-	PLATFORM=$(sh /usr/local/bin/systype.sh)
-
 	if [ "${PLATFORM}" = "linux" ]; then
-		git submodule deinit workflows/Ariafred
+		git submodule deinit -f workflows/Ariafred
 
 		linux_specified
 	fi
