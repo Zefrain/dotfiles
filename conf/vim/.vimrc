@@ -139,6 +139,14 @@ nnoremap <leader>n :NERDTreeFocus<CR>
 " nnoremap <C-t> :NERDTreeToggle<CR>
 nnoremap <C-f> :NERDTreeFind<CR>
 
+" fzf-vim
+" nnoremap <Leader>rg :Rg <c-r>=expand('<cword>')<cr><CR>
+nnoremap <leader>rg :Rg \b<c-r><c-w>\b<CR>
+
+" Map a key combination to search for selected text with :Rg
+vnoremap <leader>rg y:Rg \b<C-R>"\b<CR>
+"vnoremap <Leader>rg :Rg "\b" . escape(@", '\\/') . "\b"<CR>
+
 " markdown
 let g:vim_markdown_folding_disabled = 1
 
@@ -148,6 +156,9 @@ set nofoldenable
 
 " clipboard
 set clipboard^=unnamed,unnamedplus
+
+" highlight search
+set hlsearch
 
 " clang-format
 map <C-K> :py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
