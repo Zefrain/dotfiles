@@ -34,7 +34,15 @@ Plug 'preservim/vim-markdown'
 " Golang
 Plug 'fatih/vim-go'
 
-" Initialize plugin system
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+let g:deoplete#enable_at_startup = 1
+
 call plug#end()
 
 " setup leader key
@@ -105,8 +113,8 @@ nn <silent> <M-l> :LspDocumentSymbol<cr>
 
 set fileencodings=utf-8,gbk,big5
 
-set tabstop=8
-set shiftwidth=8
+" set tabstop=8
+" set shiftwidth=8
 
 if has("syntax") && (&t_Co > 2 || has("gui_running"))
 	syntax on
@@ -120,8 +128,8 @@ endif
 " set list listchars=tab:»·,trail:·,extends:…
 
 " highlight overly long lines same as TODOs.
-set textwidth=80
-autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
+set textwidth=200
+" autocmd BufNewFile,BufRead *.c,*.h exec 'match Todo /\%>' . &textwidth . 'v.\+/'
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
 xmap ga <Plug>(EasyAlign)
