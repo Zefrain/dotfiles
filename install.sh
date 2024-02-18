@@ -10,7 +10,13 @@ systemd_dir="$dotfiles_dir/systemd"
 
 
 PLATFORM=$(sh sh/systype.sh)
-OS_RELEASE=$(lsb_release -d | awk '{print $2}')
+
+get_os_release() {
+	if [ $PLATFORM == "linux" ] ; then
+		OS_RELEASE=$(lsb_release -d | awk '{print $2}')
+	fi
+}
+
 init_packages() {
 	if [ "$OS_RELEASE" == "Ubuntu" ]; then
 		sudo apt update && sudo apt install -y \
@@ -59,7 +65,8 @@ init_systemd() {
 }
 
 darwin_specified() {
-	brew tap mycli
+	# brew tap mycli
+	return
 }
 
 do_ubuntu_install() {
@@ -108,6 +115,7 @@ init_clangformat() {
 init_dotfiles() {
 	init_packages
 	init_symlinks
+	get_os_release
 
 	case $1 in
 		init_sh)
@@ -150,6 +158,5 @@ init_dotfiles() {
 
 
 }
-
 
 init_dotfiles $1
