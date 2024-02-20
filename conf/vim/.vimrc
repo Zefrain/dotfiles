@@ -18,8 +18,11 @@ Plug 'kana/vim-operator-user'
 
 " for lsp
 " Plug 'prabirshrestha/vim-lsp'
-Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'prabirshrestha/asyncomplete.vim'
+" Plug 'mattn/vim-lsp-settings'
+" Plug 'ycm-core/YouCompleteMe'
 " Plug 'm-pilia/vim-ccls'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 " comment
 Plug 'tpope/vim-commentary'
@@ -58,34 +61,34 @@ if executable('pylsp')
         \ })
 endif
 
-function! s:on_lsp_buffer_enabled() abort
-    setlocal omnifunc=lsp#complete
-    setlocal signcolumn=yes
-    if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
-    nmap <buffer> <leader>gd <plug>(lsp-definition)
-    nmap <buffer> <leader>gs <plug>(lsp-document-symbol-search)
-    nmap <buffer> <leader>gS <plug>(lsp-workspace-symbol-search)
-    nmap <buffer> <leader>gr <plug>(lsp-references)
-    nmap <buffer> <leader>gi <plug>(lsp-implementation)
-    nmap <buffer> <leader>gt <plug>(lsp-type-definition)
-    nmap <buffer> <leader>rn <plug>(lsp-rename)
-    nmap <buffer> <leader>[g <plug>(lsp-previous-diagnostic)
-    nmap <buffer> <leader>]g <plug>(lsp-next-diagnostic)
-    nmap <buffer> <leader>K <plug>(lsp-hover)
-    " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
-    " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
+" function! s:on_lsp_buffer_enabled() abort
+"     setlocal omnifunc=lsp#complete
+"     setlocal signcolumn=yes
+"     if exists('+tagfunc') | setlocal tagfunc=lsp#tagfunc | endif
+"     nmap <buffer> <leader>gd <plug>(lsp-definition)
+"     nmap <buffer> <leader>gs <plug>(lsp-document-symbol-search)
+"     nmap <buffer> <leader>gS <plug>(lsp-workspace-symbol-search)
+"     nmap <buffer> <leader>gr <plug>(lsp-references)
+"     nmap <buffer> <leader>gi <plug>(lsp-implementation)
+"     nmap <buffer> <leader>gt <plug>(lsp-type-definition)
+"     nmap <buffer> <leader>rn <plug>(lsp-rename)
+"     nmap <buffer> <leader>[g <plug>(lsp-previous-diagnostic)
+"     nmap <buffer> <leader>]g <plug>(lsp-next-diagnostic)
+"     nmap <buffer> <leader>K <plug>(lsp-hover)
+"     " nnoremap <buffer> <expr><c-f> lsp#scroll(+4)
+"     " nnoremap <buffer> <expr><c-d> lsp#scroll(-4)
 
-    let g:lsp_format_sync_timeout = 1000
-    autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
+"     let g:lsp_format_sync_timeout = 1000
+"     autocmd! BufWritePre *.rs,*.go call execute('LspDocumentFormatSync')
 
-    " refer to doc to add more commands
-endfunction
+"     " refer to doc to add more commands
+" endfunction
 
-augroup lsp_install
-    au!
-    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+" augroup lsp_install
+"     au!
+"     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+"     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+" augroup END
 
 " force refresh completion
 imap <c-space> <Plug>(asyncomplete_force_refresh)
@@ -174,5 +177,7 @@ imap <C-K> <c-o>:py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
 
 let s:vimdir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let s:cscope_path = s:vimdir . '/cscope_maps.vim'
+let s:coc_path = s:vimdir . '/coc.vim'
 
 :execute "source " . s:cscope_path
+:execute "source " . s:coc_path
