@@ -50,6 +50,10 @@ init_zsh() {
 	rm -f ~/.zshrc
 	stow -d $conf_dir -t $HOME -R zsh
 	sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}\/omz_custom|g" $(realpath $HOME/.zshrc)
+
+	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+	git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+
 }
 
 init_systemd() {
@@ -66,7 +70,8 @@ init_systemd() {
 
 darwin_specified() {
 	# brew tap mycli
-	brew install symlinks stow node
+	brew install symlinks stow node zsh-autosuggestions zsh-syntax-highlighting ccls trash vim
+	echo PATH=/opt/homebrew/bin/:$PATH >> ~/.zshrc
 	return
 }
 
