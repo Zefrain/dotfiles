@@ -4,23 +4,22 @@ unique_path()
                  | gsed 's/:/\n/g' \
                  | sort \
                  | uniq \
-                 | tr '\n' ':' \
-                 | gsed 's/:$/\n/g')
+		 | tr '\n' ':' \
+		 | gsed 's/:$/\n/g')
 
     return $ret
 }
 
 _alias()
 {
-    alias rm="trash"
-    alias "rm -rf"="rmtrash"
-    alias mysql="mycli"
-    alias python="python3"
-    alias brew="proxy brew"
-    # Define show hidden files alias to show hidden files.
-    alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles YES;
-    # Relaunch MacOS Finder.
-    killall Finder /System/Library/CoreServices/Finder.app'
+	alias rm="trash"
+	alias "rm -rf"="rmtrash"
+	alias mysql="mycli"
+	alias python="python3"
+	# Define show hidden files alias to show hidden files.
+	alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles YES;
+	# Relaunch MacOS Finder.
+	killall Finder /System/Library/CoreServices/Finder.app'
 
     # Define hide hidden files alias to hide hidden files.
     alias hideHiddenFiles='defaults write com.apple.finder AppleShowAllFiles NO;
@@ -30,46 +29,98 @@ _alias()
 
 _lib_path()
 {
-    LD_LIBRARY_PATH=/usr/local/opt/openssl/lib:/usr/local/opt/curl/lib:$LD_LIBRARY_PATH
-    export LD_LIBRARY_PATH
+	LD_LIBRARY_PATH=/usr/local/opt/openssl/lib:/usr/local/opt/curl/lib:$LD_LIBRARY_PATH
+	export LD_LIBRARY_PATH
 }
 
 _flag_env()
 {
-    export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
-    export CPPFLAGS="-I/usr/local/opt/llvm/include":$CPPFLAGS
+	export LDFLAGS="-L/usr/local/opt/llvm/lib -Wl,-rpath,/usr/local/opt/llvm/lib"
+	export CPPFLAGS="-I/usr/local/opt/llvm/include":$CPPFLAGS
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+	alias ll='ls -alF'
+	alias la='ls -A'
+	alias l='ls -CF'
+
+# iOS-Cmake
+export IOS_CMAKE=$HOME/ios-cmake
+export PATH=$PATH:$IOS_CMAKE
+
+# GO
+export GO111MODULE=on
+export GOPROXY=https://goproxy.cn
+export CGO_CFLAGS="-I$(brew --prefix openssl)/include"
+export CGO_LDFLAGS="-L$(brew --prefix openssl)/lib -lcrypto -lssl"
+export CGO_CPPFLAGS="-I$(brew --prefix openssl)/include"
+# export GOROOT=$(brew --prefix go)
+# export GOPATH=$HOME/go_path
+# export PATH=$GOROOT/bin:$GOPATH/bin:$PATH
+# export GOPRIVATE=github.com/george012
+
+export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+
+# NVM Node 版本管理工具
+
+export NVM_DIR=~/.nvm
+
+export NVM_NODEJS_ORG_MIRROR=http://npm.taobao.org/mirrors/node
+export NVM_IOJS_ORG_MIRROR=http://npm.taobao.org/mirrors/iojs
+
+# VCPKG
+export VCPKG_ROOT=$HOME/vcpkg
+
+# ccache PATH
+export PATH=$PATH:/usr/local/opt/ccache/libexec
+
+# Python
+export PYENV_ROOT=~/.pyenv
+
+# LLVM
+export LDFLAGS="-L/opt/homebrew/opt/llvm/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/llvm/include"
 }
 
 _incl_path()
 {
-    C_INCLUDE_PATH="$(xcrun --sdk macosx --show-sdk-path)/usr/include"
-    C_INCLUDE_PATH=$C_INCLUDE_PATH:$HOME/include:/usr/local/opt/openssl/include:/usr/local/opt/curl/include
+	C_INCLUDE_PATH="$(xcrun --sdk macosx --show-sdk-path)/usr/include"
+	C_INCLUDE_PATH=$C_INCLUDE_PATH:$HOME/include:/usr/local/opt/openssl/include:/usr/local/opt/curl/include
 
-    export C_INCLUDE_PATH
+	export C_INCLUDE_PATH
 }
 
 _path()
 {
-    export GOPATH=$HOME/go
-    export GOBIN=$GOPATH/bin
+	export GOPATH=$HOME/go
+	export GOBIN=$GOPATH/bin
 
-    PATH=/usr/local/opt/binutils/bin:/opt/local/bin:/usr/local/sbin:$(brew --prefix llvm)/bin:$GOBIN:$PATH
+	export LC_ALL=en_US.UTF-8
+	export LANG=en_US.UTF-8
 
-    export PATH
+	PATH=/usr/local/opt/binutils/bin:/opt/local/bin:/usr/local/sbin:$(brew --prefix llvm)/bin:$GOBIN:$PATH
+
+	export PATH
 }
 
 _tmux() {
-    ZSH_TMUX_AUTOSTART=false
+	ZSH_TMUX_AUTOSTART=false
 }
 
 _init_osx() {
-    _alias
-    _lib_path
-    _incl_path
-    _flag_env
-    _path
-    _tmux
-    export HOMEBREW_GITHUB_API_TOKEN=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
+	_alias
+	_lib_path
+	_incl_path
+	_flag_env
+	_path
+	_tmux
+	export HOMEBREW_GITHUB_API_TOKEN=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
 }
 
 _init_osx
