@@ -49,7 +49,7 @@ init_conf() {
 init_zsh() {
 	rm -f ~/.zshrc
 	stow -d $conf_dir -t $HOME -R zsh
-	sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}\/omz_custom|g" $HOME/.zshrc
+	sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}\/omz_custom|g" $(realpath $HOME/.zshrc)
 }
 
 init_systemd() {
@@ -66,6 +66,7 @@ init_systemd() {
 
 darwin_specified() {
 	# brew tap mycli
+	brew install symlinks stow node
 	return
 }
 
@@ -113,6 +114,8 @@ init_clangformat() {
 }
 
 init_dotfiles() {
+
+	system_specified
 	init_packages
 	init_symlinks
 	get_os_release
@@ -131,28 +134,21 @@ init_dotfiles() {
 			init_zsh
 			;;
 
-
-		system_specified)
-			system_specified
-			;;
-
-		vim)
-			init_vim
-			;;
+		# vim)
+		# 	init_vim
+		# 	;;
 
 		clang_format)
 			init_clangformat
 			;;
 
 		*)
-			system_specified
 			init_git
 			init_symlinks
 			init_sh
 			init_conf
 			init_zsh
 			init_vim
-			init_clangformat
 			;;
 	esac
 
