@@ -14,6 +14,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
 " for clang-format
+Plug 'rhysd/vim-clang-format'
 Plug 'kana/vim-operator-user'
 
 " for lsp
