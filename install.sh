@@ -70,7 +70,7 @@ init_systemd() {
 
 darwin_specified() {
 	# brew tap mycli
-	brew install symlinks stow node zsh-autosuggestions zsh-syntax-highlighting ccls trash vim
+	brew install symlinks stow node ccls trash vim
 	echo PATH=/opt/homebrew/bin/:$PATH >> ~/.zshrc
 	return
 }
