@@ -35,6 +35,7 @@ init_packages() {
 }
 
 init_sh() {
+	sudo symlinks -d /usr/local/bin/
 	sudo stow -d $dotfiles_dir -t /usr/local/bin -R sh
 }
 
@@ -51,8 +52,15 @@ init_zsh() {
 	stow -d $conf_dir -t $HOME -R zsh
 	sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}\/omz_custom|g" $(realpath $HOME/.zshrc)
 
-	git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
-	git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+	if [ -e "~/.oh-my-zsh/custom/plugins" ]; then
+		if [ ! -e "~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" ]; then
+			git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+		fi
+
+		if [ ! -e "~/.oh-my-zsh/custom/plugins/zsh-autosuggestions" ] ; then
+			git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+		fi
+	fi
 
 }
 
@@ -70,7 +78,7 @@ init_systemd() {
 
 darwin_specified() {
 	# brew tap mycli
-	brew install symlinks stow node ccls trash vim
+	brew install symlinks stow node ccls trash vim calibre dropbox keepassxc
 	echo PATH=/opt/homebrew/bin/:$PATH >> ~/.zshrc
 	return
 }
@@ -78,7 +86,6 @@ darwin_specified() {
 do_ubuntu_install() {
 	sudo apt update
 	sudo apt install -y xsel gnutls-bin zsh curl stow symlinks tmux vim symlinks
-
 }
 
 linux_specified() {
@@ -109,6 +116,7 @@ init_vim() {
 	curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 		https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	stow -d $conf_dir -t $HOME -R vim
+	vim +PlugUninstal +q
 	vim +PlugInstall +qall 
 	# python3 /home/zhou/.vim/plugged/YouCompleteMe/install.py
 
