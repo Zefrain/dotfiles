@@ -85,11 +85,12 @@ darwin_specified() {
 
 do_ubuntu_install() {
 	sudo apt update
-	sudo apt install -y xsel gnutls-bin zsh curl stow symlinks tmux vim symlinks
+	sudo apt install -y xsel gnutls-bin zsh curl stow symlinks tmux vim symlinks node ccls trash calibre dropbox keepassxc
 }
 
 linux_specified() {
 	init_systemd
+	do_ubuntu_install
 }
 
 system_specified() {
