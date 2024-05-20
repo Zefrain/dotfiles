@@ -1,0 +1,11 @@
+[Unit]
+Description=Generate DHCP networking demo for netplan
+Before=network-online.target
+
+[Service]
+ExecStart=/net/netplan/gen_netplan_config.sh
+
+[Install]
+WantedBy=multi-user.target
+
+
