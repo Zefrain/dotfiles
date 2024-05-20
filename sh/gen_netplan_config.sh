@@ -8,6 +8,7 @@ network:
     $inter:
       dhcp4: true
   version: 2
+  renderer: networkd
 EOF
 ip link set dev $inter up
 fi
