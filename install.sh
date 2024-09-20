@@ -65,8 +65,6 @@ init_zsh() {
 }
 
 init_systemd() {
-	sudo apt install -y xsel
-
 	stow -d . -t $HOME/.config/systemd systemd
 	systemctl --user daemon-reload
 	cd $systemd_dir
@@ -94,7 +92,7 @@ do_ubuntu_install() {
 
 linux_specified() {
 	do_ubuntu_install
-	init_systemd
+	# init_systemd
 }
 
 system_specified() {
@@ -170,7 +168,7 @@ init_dotfiles() {
 			;;
 	esac
 
-
+	sudo su - $USER
 }
 
 init_dotfiles $1
