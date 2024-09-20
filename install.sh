@@ -84,13 +84,17 @@ darwin_specified() {
 }
 
 do_ubuntu_install() {
-	sudo apt update
-	sudo apt install -y xsel gnutls-bin zsh curl stow symlinks tmux vim symlinks node ccls trash calibre dropbox keepassxc
+	. /etc/os-release
+
+	if [ "${ID}" = "ubuntu" ]; then
+		sudo apt update
+		sudo apt install -y stow xsel gnutls-bin zsh curl stow symlinks tmux vim symlinks ccls calibre keepassxc nodejs
+	fi
 }
 
 linux_specified() {
-	init_systemd
 	do_ubuntu_install
+	init_systemd
 }
 
 system_specified() {
