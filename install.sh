@@ -13,24 +13,8 @@ PLATFORM=$(sh sh/systype.sh)
 
 get_os_release() {
 	if [ $PLATFORM == "linux" ] ; then
-		OS_RELEASE=$(lsb_release -d | awk '{print $2}')
-	fi
-}
-
-init_packages() {
-	if [ "$OS_RELEASE" == "Ubuntu" ]; then
-		sudo apt update && sudo apt install -y \
-			stow \
-			ripgrep \
-			git \
-			exuberant-ctags \
-			cscope \
-			global \
-			clang-format \
-			symlinks \
-			xclip xsel \
-			build-essential cmake vim-nox python3-dev \
-			mono-complete golang nodejs default-jdk npm
+		. /etc/os-release
+		OS_RELEASE=${Name}
 	fi
 }
 
@@ -76,29 +60,47 @@ init_systemd() {
 
 darwin_specified() {
 	# brew tap mycli
-	brew install symlinks stow node ccls trash vim calibre dropbox keepassxc
+	brew install symlinks stow node ccls trash vim dropbox keepassxc
 	echo PATH=/opt/homebrew/bin/:$PATH >> ~/.zshrc
 	return
 }
 
-do_ubuntu_install() {
-	. /etc/os-release
-
-	if [ "${ID}" = "ubuntu" ]; then
-		sudo apt update
-		sudo apt install -y stow xsel gnutls-bin zsh curl stow symlinks tmux vim symlinks ccls calibre keepassxc nodejs
-	fi
-}
-
 linux_specified() {
-	do_ubuntu_install
-	# init_systemd
+	git submodule deinit -f workflows/Ariafred
+
+	if [ "$OS_RELEASE" == "Ubuntu" ]; then
+		sudo apt update && sudo apt install -y \
+			build-essential \
+			ccls \
+			clang-format \
+			cmake \
+			cscope \
+			curl \
+			default-jdk \
+			exuberant-ctags \
+			git \
+			global \
+			gnutls-bin \
+			golang \
+			keepassxc \
+			mono-complete \
+			nodejs \
+			npm \
+			python3-dev \
+			ripgrep \
+			stow \
+			symlinks \
+			tmux \
+			vim-nox \
+			xclip \
+		       	xsel \
+			zsh
+	fi
+
 }
 
 system_specified() {
 	if [ "${PLATFORM}" = "linux" ]; then
-		git submodule deinit -f workflows/Ariafred
-
 		linux_specified
 	fi
 
@@ -130,11 +132,9 @@ init_clangformat() {
 }
 
 init_dotfiles() {
-
-	system_specified
-	init_packages
-	init_symlinks
 	get_os_release
+	system_specified
+	init_symlinks
 
 	case $1 in
 		init_sh)
@@ -150,9 +150,9 @@ init_dotfiles() {
 			init_zsh
 			;;
 
-		# vim)
-		# 	init_vim
-		# 	;;
+		vim)
+			init_vim
+			;;
 
 		clang_format)
 			init_clangformat
@@ -167,8 +167,6 @@ init_dotfiles() {
 			init_vim
 			;;
 	esac
-
-	sudo su - $USER
 }
 
 init_dotfiles $1
