@@ -1,0 +1,1 @@
+git log --all --decorate --oneline | grep -A 1 $(git rev-parse --short HEAD) | awk '{print $1}' | tail -1 | xargs -I {} git checkout {}
