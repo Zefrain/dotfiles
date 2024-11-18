@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 dotfiles_dir=$(dirname $(realpath $0))
 
 conf_dir="$dotfiles_dir/conf"
@@ -49,6 +47,12 @@ init_zsh() {
 }
 
 init_systemd() {
+	sudo apt install -y xsel
+
+	if [[ ! -e $HOME/.config/systemd ]]; then
+		mkdir $HOME/.config/systemd
+	fi
+
 	stow -d . -t $HOME/.config/systemd systemd
 	systemctl --user daemon-reload
 	cd $systemd_dir
@@ -60,8 +64,8 @@ init_systemd() {
 
 darwin_specified() {
 	# brew tap mycli
-	brew install symlinks stow node ccls trash vim dropbox keepassxc
-	echo PATH=/opt/homebrew/bin/:$PATH >> ~/.zshrc
+	brew install symlinks stow node ccls trash vim keepassxc
+	# echo PATH=/opt/homebrew/bin/:$PATH >> ~/.zshrc
 	return
 }
 
