@@ -32,9 +32,16 @@ init_conf() {
 
 # Initialize Zsh
 init_zsh() {
+    ZSHRC_PATH="$HOME/.zshrc"
+    
+    # Ensure we're working with the actual file, not a symlink
+    if [[ -L "$ZSHRC_PATH" ]]; then
+        ZSHRC_PATH=$(realpath "$ZSHRC_PATH")
+    fi
+    
     rm -f "$HOME/.zshrc"
     stow -d "$conf_dir" -t "$HOME" -R zsh
-    sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}/omz_custom|g" "$HOME/.zshrc"
+    sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}/omz_custom|g" "$ZSHRC_PATH"
 
     custom_plugins="$HOME/.oh-my-zsh/custom/plugins"
     [[ -d "$custom_plugins" ]] || return
