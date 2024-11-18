@@ -101,4 +101,3 @@ export PATH=/opt/homerew/bin/:$PATH
 
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-PATH=/opt/homebrew/bin/:/opt/homerew/bin/:/usr/local/opt/binutils/bin:/opt/local/bin:/usr/local/sbin:/opt/homebrew/opt/llvm/bin:/Users/zhou/go/bin:/usr/local/bin:/usr/local/sbin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin:/Applications/Wireshark.app/Contents/MacOS:/opt/homebrew/bin:/opt/homebrew/sbin:/opt/homerew/bin/:/usr/local/opt/binutils/bin:/opt/local/bin:/usr/local/sbin:/opt/homebrew/opt/llvm/bin:/Users/zhou/go/bin:/Users/zhou/.fzf/bin:/Users/zhou/ios-cmake:/usr/local/opt/ccache/libexec
