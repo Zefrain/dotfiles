@@ -147,6 +147,25 @@ command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.org
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
+" " Use C-n and C-p to navigate through CocList items
+" augroup MyCocListMappings
+"   autocmd!
+"   autocmd FileType coc-list nnoremap <silent><buffer> <C-n> <down>
+"   autocmd FileType coc-list nnoremap <silent><buffer> <C-p> <up>
+"   autocmd FileType coc-list inoremap <silent><buffer> <C-n> <down>
+"   autocmd FileType coc-list inoremap <silent><buffer> <C-p> <up>
+" augroup END
+
+" " In your .vimrc or init.vim
+" " Map <C-n> and <C-p> to move down and up in CocList
+" augroup MyCocGroup
+"   autocmd!
+"   autocmd FileType coc-list nnoremap <silent><buffer> <C-n> <down>
+"   autocmd FileType coc-list nnoremap <silent><buffer> <C-p> <up>
+"   autocmd FileType coc-list inoremap <silent><buffer> <C-n> <C-o><down>
+"   autocmd FileType coc-list inoremap <silent><buffer> <C-p> <C-o><up>
+" augroup END
+
 " Show all diagnostics
 nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
 " Manage extensions
@@ -157,6 +176,8 @@ nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
 nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols
 nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" Mapping to show all functions in the project
+nnoremap <silent><nowait> <space>cf :<C-u>CocList -I symbols<CR>/function<CR>
 " Do default action for next item
 nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item
@@ -185,8 +206,6 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-
-
 nmap <Leader>f [fzf-p]
 xmap <Leader>f [fzf-p]
 
@@ -205,3 +224,26 @@ xnoremap          [fzf-p]gr    "sy:CocCommand   fzf-preview.ProjectGrep<Space>-F
 nnoremap <silent> [fzf-p]t     :<C-u>CocCommand fzf-preview.BufferTags<CR>
 nnoremap <silent> [fzf-p]q     :<C-u>CocCommand fzf-preview.QuickFix<CR>
 nnoremap <silent> [fzf-p]l     :<C-u>CocCommand fzf-preview.LocationList<CR>
+
+
+" Map <tab> for trigger completion, completion confirm, snippet expand and jump, jump outside closing bracket or other pairs of symbols like VSCode
+inoremap <silent><expr> <Tab>
+  \ coc#pum#visible() ? coc#_select_confirm() :
+  \ coc#expandableOrJumpable() ?
+  \ "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+  \ NextCharIsPair() ? "\<Right>" :
+  \ CheckBackspace() ? "\<Tab>" :
+  \ coc#refresh()
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+function! NextCharIsPair() abort
+  let col = col('.') - 1
+  let l:next_char = getline('.')[col]
+  return l:next_char =~# ')\|]\|}\|>\|''\|"\|`'
+endfunction
+
+let g:coc_snippet_next = '<tab>'

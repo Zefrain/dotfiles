@@ -47,6 +47,10 @@ else
 endif
 autocmd FileType go let g:deoplete#enable_at_startup = 1
 
+" Plug 'ilyachur/cmake4vim'
+
+Plug 'airblade/vim-gitgutter'
+
 call plug#end()
 
 " setup leader key
@@ -61,6 +65,9 @@ if executable('pylsp')
         \ 'allowlist': ['python'],
         \ })
 endif
+
+" set leo file as rust
+autocmd BufRead,BufNewFile *.leo set filetype=rust
 
 " function! s:on_lsp_buffer_enabled() abort
 "     setlocal omnifunc=lsp#complete
@@ -107,12 +114,12 @@ imap <c-space> <Plug>(asyncomplete_force_refresh)
 "       \ })
 " endif
 
-" Key bindings for vim-lsp.
-nn <silent> <M-d> :LspDefinition<cr>
-nn <silent> <M-r> :LspReferences<cr>
-nn <f2> :LspRename<cr>
-nn <silent> <M-a> :LspWorkspaceSymbol<cr>
-nn <silent> <M-l> :LspDocumentSymbol<cr>
+" " Key bindings for vim-lsp.
+" nn <silent> <M-d> :LspDefinition<cr>
+" nn <silent> <M-r> :LspReferences<cr>
+" nn <f2> :LspRename<cr>
+" nn <silent> <M-a> :LspWorkspaceSymbol<cr>
+" nn <silent> <M-l> :LspDocumentSymbol<cr>
 
 
 set fileencodings=utf-8,gbk,big5
@@ -165,6 +172,7 @@ let g:vim_markdown_folding_disabled = 1
 " folding
 set foldmethod=syntax
 set nofoldenable
+set ts=4 sw=4 expandtab
 
 " clipboard
 set clipboard^=unnamed,unnamedplus
@@ -176,12 +184,27 @@ set hlsearch
 set diffopt+=iwhiteall
 
 " clang-format
-map <C-K> :py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
-imap <C-K> <c-o>:py3f /usr/share/vim/addons/syntax/clang-format.py<cr>
+map <C-K> <Plug>(operator-clang-format)
+imap <C-K> <Plug>(operator-clang-format)
+" map to <Leader>cf in C++ code
+autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
+autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
+" if you install vim-operator-user
+autocmd FileType c,cpp,objc map <buffer><Leader>x <Plug>(operator-clang-format)
+" Toggle auto formatting:
+nmap <Leader>C :ClangFormatAutoToggle<CR>
+" autocmd FileType c ClangFormatAutoEnable
 
 let s:vimdir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 let s:cscope_path = s:vimdir . '/cscope_maps.vim'
 let s:coc_path = s:vimdir . '/coc.vim'
+
+" GitGutter
+highlight GitGutterAdd    guifg=#009900 ctermfg=2
+highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+highlight GitGutterDelete guifg=#ff2222 ctermfg=1
+
+let g:gitgutter_line_highlight = 1
 
 :execute "source " . s:cscope_path
 :execute "source " . s:coc_path
