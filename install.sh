@@ -14,6 +14,35 @@ PLATFORM=$(sh sh/systype.sh)
 # Load OS release information for Linux
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
+# Install macOS-specific packages
+darwin_specified() {
+    brew install symlinks stow ccls trash vim keepassxc node
+}
+
+# Install Linux-specific packages
+linux_specified() {
+    if [[ $NAME == "Ubuntu" ]]; then
+        sudo apt update && sudo apt install -y \
+            build-essential ccls clang-format cmake cscope curl \
+            exuberant-ctags git global gnutls-bin golang \
+            keepassxc mono-complete nodejs npm python3-dev ripgrep \
+            stow symlinks tmux vim-nox xclip xsel zsh
+    fi
+}
+
+# Platform-specific setup
+install_system_packages() {
+    case $PLATFORM in
+        linux) linux_specified ;;
+        macos) darwin_specified ;;
+    esac
+}
+
+# Fix broken symlinks
+cleanup_symlinks() {
+    symlinks -d "$HOME"
+}
+
 # Initialize shell scripts
 install_scripts() {
     sudo symlinks -d /usr/local/bin/
@@ -82,38 +111,9 @@ init_systemd() {
     done
 }
 
-# Install macOS-specific packages
-darwin_specified() {
-    brew install symlinks stow ccls trash vim keepassxc node
-}
-
-# Install Linux-specific packages
-linux_specified() {
-    if [[ $NAME == "Ubuntu" ]]; then
-        sudo apt update && sudo apt install -y \
-            build-essential ccls clang-format cmake cscope curl \
-            exuberant-ctags git global gnutls-bin golang \
-            keepassxc mono-complete nodejs npm python3-dev ripgrep \
-            stow symlinks tmux vim-nox xclip xsel zsh
-    fi
-}
-
-# Platform-specific setup
-system_specified_packages() {
-    case $PLATFORM in
-        linux) linux_specified ;;
-        macos) darwin_specified ;;
-    esac
-}
-
 # Initialize Git submodules
 init_git() {
     git submodule update --init --recursive --force --remote
-}
-
-# Fix broken symlinks
-cleanup_symlinks() {
-    symlinks -d "$HOME"
 }
 
 # Initialize clang-format configuration
@@ -123,7 +123,7 @@ init_clangformat() {
 
 # Main dotfiles initialization
 init_dotfiles() {
-    system_specified_packages
+    install_system_packages
     cleanup_symlinks
 
     case $1 in
