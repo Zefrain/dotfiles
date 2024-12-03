@@ -67,7 +67,8 @@ init_systemd() {
 
 # Install macOS-specific packages
 darwin_specified() {
-    brew install symlinks stow node ccls trash vim keepassxc
+    brew install symlinks stow ccls trash vim keepassxc
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 }
 
 # Install Linux-specific packages
