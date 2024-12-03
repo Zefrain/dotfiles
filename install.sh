@@ -11,12 +11,8 @@ systemd_dir="$dotfiles_dir/systemd"
 # Detect platform
 PLATFORM=$(sh sh/systype.sh)
 
-# Get OS release information
-get_os_release() {
-    if [[ $PLATFORM == "linux" ]]; then
-        source /etc/os-release
-    fi
-}
+# Load OS release information for Linux
+[[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
 # Initialize shell scripts
 init_sh() {
@@ -32,24 +28,47 @@ init_conf() {
 
 # Initialize Zsh
 init_zsh() {
+    stow -d "$conf_dir" -t "$HOME" -R zsh
     ZSHRC_PATH="$HOME/.zshrc"
-    
-    # Ensure we're working with the actual file, not a symlink
+
+    # Resolve the actual file if it's a symlink
     if [[ -L "$ZSHRC_PATH" ]]; then
         ZSHRC_PATH=$(realpath "$ZSHRC_PATH")
     fi
-    
-    rm -f "$HOME/.zshrc"
-    stow -d "$conf_dir" -t "$HOME" -R zsh
-    sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}/omz_custom|g" "$ZSHRC_PATH"
+
+    # Modify ZSHRC if it's a regular file
+    if [[ -f "$ZSHRC_PATH" ]]; then
+        sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}/omz_custom|g" "$ZSHRC_PATH"
+    else
+        echo "Error: $ZSHRC_PATH is not a regular file"
+    fi
 
     custom_plugins="$HOME/.oh-my-zsh/custom/plugins"
-    [[ -d "$custom_plugins" ]] || return
+    mkdir -p "$custom_plugins"
 
+    # Clone plugins if not already present
     for plugin in zsh-syntax-highlighting zsh-autosuggestions; do
         plugin_dir="$custom_plugins/$plugin"
-        [[ -d "$plugin_dir" ]] || git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
+        if [[ ! -d "$plugin_dir" ]]; then
+            git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
+        fi
     done
+}
+
+# Initialize Vim configuration
+init_vim() {
+    ln -snf "$(realpath "$conf_dir/vim/vimrc")" "$HOME/.vimrc"
+    ln -snf "$(realpath "$conf_dir/vim/custom")" "$HOME/.vim/custom"
+
+    # Install or update vim-plug
+    plug_path="$HOME/.vim/autoload/plug.vim"
+    plug_url="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+
+    if [[ ! -f "$plug_path" || "$(curl -fsL "$plug_url" | sha256sum)" != "$(sha256sum "$plug_path")" ]]; then
+        curl -fsLo "$plug_path" --create-dirs "$plug_url"
+    fi
+
+    vim +PlugClean! +PlugInstall +qall
 }
 
 # Initialize systemd services
@@ -60,8 +79,7 @@ init_systemd() {
     systemctl --user daemon-reload
 
     for service in "$systemd_dir"/*; do
-        service_name=$(basename "$service")
-        systemctl --user enable --now "$service_name"
+        systemctl --user enable --now "$(basename "$service")"
     done
 }
 
@@ -73,40 +91,17 @@ darwin_specified() {
 
 # Install Linux-specific packages
 linux_specified() {
-    git submodule deinit -f workflows/Ariafred
     if [[ $NAME == "Ubuntu" ]]; then
-		sudo apt update && sudo apt install -y \
-			build-essential \
-			ccls \
-			clang-format \
-			cmake \
-			cscope \
-			curl \
-			default-jdk \
-			exuberant-ctags \
-			git \
-			global \
-			gnutls-bin \
-			golang \
-			keepassxc \
-			mono-complete \
-			nodejs \
-			npm \
-			python3-dev \
-			ripgrep \
-			stow \
-			symlinks \
-			tmux \
-			vim-nox \
-			xclip \
-		       	xsel \
-			zsh
+        sudo apt update && sudo apt install -y \
+            build-essential ccls clang-format cmake cscope curl \
+            exuberant-ctags git global gnutls-bin golang \
+            keepassxc mono-complete nodejs npm python3-dev ripgrep \
+            stow symlinks tmux vim-nox xclip xsel zsh
     fi
-
 }
 
 # Platform-specific setup
-system_specified() {
+system_specified_packages() {
     case $PLATFORM in
         linux) linux_specified ;;
         macos) darwin_specified ;;
@@ -119,17 +114,8 @@ init_git() {
 }
 
 # Fix broken symlinks
-init_symlinks() {
+cleanup_symlinks() {
     symlinks -d "$HOME"
-}
-
-# Initialize Vim configuration
-init_vim() {
-    curl -fsLo "$HOME/.vim/autoload/plug.vim" --create-dirs \
-        https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    stow -d "$conf_dir" -t "$HOME" -R vim
-    vim +PlugUninstall +qall
-    vim +PlugInstall +qall
 }
 
 # Initialize clang-format configuration
@@ -139,19 +125,17 @@ init_clangformat() {
 
 # Main dotfiles initialization
 init_dotfiles() {
-    get_os_release
-    system_specified
-    init_symlinks
+    system_specified_packages
+    cleanup_symlinks
 
     case $1 in
-        init_sh) init_sh ;;
-        init_conf) init_conf ;;
-        init_zsh_custom_post) init_zsh ;;
+        sh) init_sh ;;
+        conf) init_conf ;;
+        zsh) init_zsh ;;
         vim) init_vim ;;
         clang_format) init_clangformat ;;
         *)  # Default setup
             init_git
-            init_symlinks
             init_sh
             init_conf
             init_zsh
@@ -160,4 +144,5 @@ init_dotfiles() {
     esac
 }
 
-init_dotfiles "$1"
+init_dotfiles "${1:-}"
+

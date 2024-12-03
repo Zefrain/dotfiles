@@ -37,12 +37,22 @@ if has("cscope")
     " if you want the reverse search order.
     set csto=0
 
-    " add any cscope database in current directory
-    if filereadable("cscope.out")
-        cs add cscope.out  
-    " else add the database pointed to by environment variable 
-    elseif $CSCOPE_DB != ""
+    " " add any cscope database in current directory
+    " if filereadable("cscope.out")
+    "     cs add cscope.out  
+    " " else add the database pointed to by environment variable 
+    " elseif $CSCOPE_DB != ""
+    "     cs add $CSCOPE_DB
+    " endif
+
+    " Check if cscope database is already added
+    if filereadable("cscope.out") && !exists("g:cscope_db_added")
+        cs add cscope.out
+        let g:cscope_db_added = 1
+    " Else add the database pointed to by the environment variable
+    elseif $CSCOPE_DB != "" && !exists("g:cscope_db_added")
         cs add $CSCOPE_DB
+        let g:cscope_db_added = 1
     endif
 
     " show msg when any other cscope db added
