@@ -15,7 +15,7 @@ PLATFORM=$(sh sh/systype.sh)
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
 # Initialize shell scripts
-init_sh() {
+install_scripts() {
     sudo symlinks -d /usr/local/bin/
     sudo stow -d "$dotfiles_dir" -t /usr/local/bin -R sh
 }
@@ -57,8 +57,7 @@ init_zsh() {
 
 # Initialize Vim configuration
 init_vim() {
-    ln -snf "$(realpath "$conf_dir/vim/vimrc")" "$HOME/.vimrc"
-    ln -snf "$(realpath "$conf_dir/vim/custom")" "$HOME/.vim/custom"
+    stow -d "$conf_dir" -t "$HOME" -R vim 
 
     # Install or update vim-plug
     plug_path="$HOME/.vim/autoload/plug.vim"
@@ -85,8 +84,7 @@ init_systemd() {
 
 # Install macOS-specific packages
 darwin_specified() {
-    brew install symlinks stow ccls trash vim keepassxc
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+    brew install symlinks stow ccls trash vim keepassxc node
 }
 
 # Install Linux-specific packages
@@ -129,14 +127,14 @@ init_dotfiles() {
     cleanup_symlinks
 
     case $1 in
-        sh) init_sh ;;
+        sh) install_scripts ;;
         conf) init_conf ;;
         zsh) init_zsh ;;
         vim) init_vim ;;
         clang_format) init_clangformat ;;
         *)  # Default setup
             init_git
-            init_sh
+            install_scripts
             init_conf
             init_zsh
             init_vim
