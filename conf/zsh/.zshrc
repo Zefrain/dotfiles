@@ -51,7 +51,7 @@ export UPDATE_ZSH_DAYS=1
 # HIST_STAMPS="mm/dd/yyyy"
 
 # Would you like to use another custom folder than $ZSH/custom?
-ZSH_CUSTOM=$HOME/Documents/dotfiles/conf/zsh/omz_custom
+ZSH_CUSTOM=/home/zefrain/Documents/dotfiles/conf/zsh/omz_custom
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -107,3 +107,7 @@ export PATH=/opt/homerew/bin/:$PATH
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
 # To apply the command to CTRL-T as well
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

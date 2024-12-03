@@ -21,11 +21,27 @@ darwin_specified() {
 
 # Install Linux-specific packages
 linux_specified() {
+    # installs nvm (Node Version Manager)
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+
+    # Source the NVM script to make it available in the current session
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+    # download and install Node.js (you may need to restart the terminal)
+    nvm install 22
+
+    # verifies the right Node.js version is in the environment
+    node -v # should print `v22.11.0`
+
+    # verifies the right npm version is in the environment
+    npm -v # should print `10.9.0`
+
     if [[ $NAME == "Ubuntu" ]]; then
         sudo apt update && sudo apt install -y \
             build-essential ccls clang-format cmake cscope curl \
             exuberant-ctags git global gnutls-bin golang \
-            keepassxc mono-complete nodejs npm python3-dev ripgrep \
+            keepassxc mono-complete python3-dev ripgrep \
             stow symlinks tmux vim-nox xclip xsel zsh
     fi
 }
@@ -127,6 +143,8 @@ init_dotfiles() {
     cleanup_symlinks
 
     case $1 in
+        packages) install_system_packages;;
+        cleanup) cleanup_symlinks;;
         sh) install_scripts ;;
         conf) init_conf ;;
         zsh) init_zsh ;;
