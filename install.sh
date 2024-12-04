@@ -14,13 +14,7 @@ PLATFORM=$(sh sh/systype.sh)
 # Load OS release information for Linux
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
-# Install macOS-specific packages
-darwin_specified() {
-    brew install symlinks stow ccls trash vim keepassxc node
-}
-
-# Install Linux-specific packages
-linux_specified() {
+install_nvm() {
     # installs nvm (Node Version Manager)
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
@@ -28,14 +22,19 @@ linux_specified() {
     export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
+    nvm ls-remote --lts
+
     # download and install Node.js (you may need to restart the terminal)
-    nvm install 22
+    nvm install --lts
+}
 
-    # verifies the right Node.js version is in the environment
-    node -v # should print `v22.11.0`
+# Install macOS-specific packages
+darwin_specified() {
+    brew install symlinks stow ccls trash vim keepassxc
+}
 
-    # verifies the right npm version is in the environment
-    npm -v # should print `10.9.0`
+# Install Linux-specific packages
+linux_specified() {
 
     if [[ $NAME == "Ubuntu" ]]; then
         sudo apt update && sudo apt install -y \
@@ -47,7 +46,8 @@ linux_specified() {
 }
 
 # Platform-specific setup
-install_system_packages() {
+install_packages() {
+    install_nvm
     case $PLATFORM in
         linux) linux_specified ;;
         macos) darwin_specified ;;
@@ -75,6 +75,7 @@ init_conf() {
 init_zsh() {
     stow -d "$conf_dir" -t "$HOME" -R zsh
 
+    ZSH_CUSTOM=$zsh_dir/.oh-my-zsh/custom
     mkdir -p "$ZSH_CUSTOM"
 
     # Clone plugins if not already present
@@ -154,11 +155,11 @@ init_clangformat() {
 
 # Main dotfiles initialization
 init_dotfiles() {
-    install_system_packages
+    install_packages
     cleanup_symlinks
 
     case $1 in
-        packages) install_system_packages;;
+        packages) install_packages;;
         cleanup) cleanup_symlinks;;
         sh) install_scripts ;;
         conf) init_conf ;;

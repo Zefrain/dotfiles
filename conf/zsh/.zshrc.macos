@@ -46,10 +46,6 @@ _flag_env() {
     # RVM
     [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
-    # NVM for Node.js
-    export NVM_DIR="$HOME/.nvm"
-    export NVM_NODEJS_ORG_MIRROR="http://npm.taobao.org/mirrors/node"
-    export NVM_IOJS_ORG_MIRROR="http://npm.taobao.org/mirrors/iojs"
 
     # VCPKG
     export VCPKG_ROOT="$HOME/vcpkg"
