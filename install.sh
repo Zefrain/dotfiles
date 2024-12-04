@@ -75,26 +75,11 @@ init_conf() {
 init_zsh() {
     stow -d "$conf_dir" -t "$HOME" -R zsh
 
-    ZSHRC_PATH="$HOME/.zshrc.$PLATFORM"
-
-    # Resolve the actual file if it's a symlink
-    if [[ -L "$ZSHRC_PATH" ]]; then
-        ZSHRC_PATH=$(realpath "$ZSHRC_PATH")
-    fi
-
-    # Modify ZSHRC if it's a regular file
-    if [[ -f "$ZSHRC_PATH" ]]; then
-        sed -i '' -E "s|^([[:space:]]*ZSH_CUSTOM=).*|\1${zsh_dir}/omz_custom|" "$ZSHRC_PATH"
-    else
-        echo "Error: $ZSHRC_PATH is not a regular file"
-    fi
-
-    custom_plugins="$HOME/.oh-my-zsh/custom/plugins"
-    mkdir -p "$custom_plugins"
+    mkdir -p "$ZSH_CUSTOM"
 
     # Clone plugins if not already present
     for plugin in zsh-syntax-highlighting zsh-autosuggestions; do
-        plugin_dir="$custom_plugins/$plugin"
+        plugin_dir="$ZSH_CUSTOM/$plugin"
         if [[ ! -d "$plugin_dir" ]]; then
             git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
         fi
