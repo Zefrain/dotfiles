@@ -56,12 +56,11 @@ install_packages() {
 
 # Fix broken symlinks
 cleanup_symlinks() {
-    symlinks -d "$HOME"
+    sudo symlinks -d /usr/local/bin/ $HOME
 }
 
 # Initialize shell scripts
 install_scripts() {
-    sudo symlinks -d /usr/local/bin/
     sudo stow -d "$dotfiles_dir" -t /usr/local/bin -R sh
 }
 
