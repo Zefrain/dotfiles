@@ -83,7 +83,7 @@ init_zsh() {
 
     # Modify ZSHRC if it's a regular file
     if [[ -f "$ZSHRC_PATH" ]]; then
-        sed -i -e "s|#\? \?ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}/omz_custom|g" "$ZSHRC_PATH"
+        sed -i -e "s|^ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}/omz_custom|" "$ZSHRC_PATH"
     else
         echo "Error: $ZSHRC_PATH is not a regular file"
     fi
