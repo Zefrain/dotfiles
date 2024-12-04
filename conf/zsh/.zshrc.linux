@@ -31,7 +31,12 @@ _nvm() {
 	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 }
 
+_env() {
+    ZSH_CUSTOM=
+}
+
 _init_linux() {
+    _env
     _startx
     # _xmodmap
     _tmux

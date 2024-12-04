@@ -74,7 +74,8 @@ init_conf() {
 # Initialize Zsh
 init_zsh() {
     stow -d "$conf_dir" -t "$HOME" -R zsh
-    ZSHRC_PATH="$HOME/.zshrc"
+
+    ZSHRC_PATH="$HOME/.zshrc.$PLATFORM"
 
     # Resolve the actual file if it's a symlink
     if [[ -L "$ZSHRC_PATH" ]]; then
@@ -83,7 +84,7 @@ init_zsh() {
 
     # Modify ZSHRC if it's a regular file
     if [[ -f "$ZSHRC_PATH" ]]; then
-        sed -i -e "s|^ZSH_CUSTOM=.*|ZSH_CUSTOM=${zsh_dir}/omz_custom|" "$ZSHRC_PATH"
+        sed -i '' -E "s|^([[:space:]]*ZSH_CUSTOM=).*|\1${zsh_dir}/omz_custom|" "$ZSHRC_PATH"
     else
         echo "Error: $ZSHRC_PATH is not a regular file"
     fi

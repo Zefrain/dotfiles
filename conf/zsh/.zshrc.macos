@@ -81,8 +81,13 @@ _tmux() {
     export ZSH_TMUX_AUTOSTART=false
 }
 
+_env() {
+    ZSH_CUSTOM=/Users/zhou/Documents/dotfiles/conf/zsh/omz_custom
+}
+
 # Initialize macOS-specific environment
 _init_osx() {
+    _env
     _alias
     _lib_path
     _incl_path
