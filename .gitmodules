@@ -36,45 +36,58 @@
 [submodule "conf/vim/.vim/plugged/coc.nvim"]
 	path = conf/vim/.vim/plugged/coc.nvim
 	url = https://github.com/neoclide/coc.nvim.git
+	branch = release
 [submodule "conf/vim/.vim/plugged/deoplete.nvim"]
 	path = conf/vim/.vim/plugged/deoplete.nvim
 	url = https://github.com/Shougo/deoplete.nvim.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/fzf.vim"]
 	path = conf/vim/.vim/plugged/fzf.vim
 	url = https://github.com/junegunn/fzf.vim.git
 [submodule "conf/vim/.vim/plugged/nerdtree"]
 	path = conf/vim/.vim/plugged/nerdtree
 	url = https://github.com/scrooloose/nerdtree.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/nvim-yarp"]
 	path = conf/vim/.vim/plugged/nvim-yarp
 	url = https://github.com/roxma/nvim-yarp.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/tabular"]
 	path = conf/vim/.vim/plugged/tabular
 	url = https://github.com/godlygeek/tabular.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/ultisnips"]
 	path = conf/vim/.vim/plugged/ultisnips
 	url = https://github.com/SirVer/ultisnips.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/vim-clang-format"]
 	path = conf/vim/.vim/plugged/vim-clang-format
 	url = https://github.com/rhysd/vim-clang-format.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/vim-commentary"]
 	path = conf/vim/.vim/plugged/vim-commentary
 	url = https://github.com/tpope/vim-commentary.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/vim-gitgutter"]
 	path = conf/vim/.vim/plugged/vim-gitgutter
 	url = https://github.com/airblade/vim-gitgutter.git
+	branch = main
 [submodule "conf/vim/.vim/plugged/vim-go"]
 	path = conf/vim/.vim/plugged/vim-go
 	url = https://github.com/fatih/vim-go.git
 [submodule "conf/vim/.vim/plugged/vim-hug-neovim-rpc"]
 	path = conf/vim/.vim/plugged/vim-hug-neovim-rpc
 	url = https://github.com/roxma/vim-hug-neovim-rpc.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/vim-markdown"]
 	path = conf/vim/.vim/plugged/vim-markdown
 	url = https://github.com/preservim/vim-markdown.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/vim-operator-user"]
 	path = conf/vim/.vim/plugged/vim-operator-user
 	url = https://github.com/kana/vim-operator-user.git
+	branch = master
 [submodule "conf/vim/.vim/plugged/vim-snippets"]
 	path = conf/vim/.vim/plugged/vim-snippets
 	url = https://github.com/honza/vim-snippets.git
+	branch = master
