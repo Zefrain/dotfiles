@@ -7,26 +7,25 @@ sources=(
 
 # Define target directories (indexed array, same order as sources)
 targets=(
-    "ubuntu@192.168.131.161:~/babycoin"         # macOS/Linux/OpenWrt target
+    ""               # macOS/Linux/OpenWrt target
 )
 
 # rsync options
 RSYNC_OPTS="-avh --progress"
+
+# Polling interval for OpenWrt (in seconds)
+POLL_INTERVAL=10
 
 # Function to check and install dependencies
 install_dependencies() {
     if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         if [ -f /etc/openwrt_release ]; then
             # OpenWrt-specific installation
-            echo "Checking for inotify-tools on OpenWrt..."
-            if ! opkg list-installed | grep -q inotify-tools; then
-                echo "Installing inotify-tools on OpenWrt..."
-                opkg update && opkg install inotify-tools || { echo "Error installing inotify-tools"; exit 1; }
-            fi
+            echo "No event-based tool available. Falling back to polling for OpenWrt."
         else
             # Generic Linux
             echo "Installing dependencies on Linux..."
-            sudo apt update && sudo apt install rsync inotify-tools -y || { echo "Error installing dependencies on Linux"; exit 1; }
+            sudo apt update && sudo apt install rsync fswatch -y || { echo "Error installing dependencies on Linux"; exit 1; }
         fi
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
@@ -80,12 +79,11 @@ monitor_pair() {
 
     # Start monitoring
     if [[ "$OSTYPE" == "linux-gnu"* && -f /etc/openwrt_release ]]; then
-        # Use inotifywait on OpenWrt
-        echo "Using inotifywait to monitor $source on OpenWrt..."
-        inotifywait -m -r -e modify,create,delete "$source" 2>/dev/null | while read -r path action file; do
-            full_path="${path}${file}"
-            echo "Detected $action in $full_path. Syncing..."
-            rsync $RSYNC_OPTS "$source/" "$target/" || { echo "Error during rsync from $source to $target"; return 1; }
+        # Use polling on OpenWrt
+        echo "Using polling to monitor $source on OpenWrt..."
+        while true; do
+            rsync $RSYNC_OPTS "$source/" "$target/" || { echo "Error during rsync from $source to $target"; }
+            sleep "$POLL_INTERVAL"
         done
     elif [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
         # Use fswatch on Linux or macOS
