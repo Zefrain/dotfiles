@@ -15,17 +15,41 @@ PLATFORM=$(sh sh/systype.sh)
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
 install_nvm() {
-    # installs nvm (Node Version Manager)
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+    # Check if nvm is already installed
+    if command -v nvm &>/dev/null; then
+        echo "nvm is already installed."
+    else
+        # Install nvm (Node Version Manager)
+        echo "Installing nvm..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
 
-    # Source the NVM script to make it available in the current session
-    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+        # Source the NVM script to make it available in the current session
+        export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
-    nvm ls-remote --lts
+        echo "nvm installation complete."
+    fi
 
-    # download and install Node.js (you may need to restart the terminal)
-    nvm install --lts
+    # Verify nvm is now available
+    if command -v nvm &>/dev/null; then
+        echo "nvm is available."
+
+        # Check if npm is installed
+        if command -v npm &>/dev/null; then
+            echo "npm is already installed."
+        else
+            echo "npm is not installed. Installing Node.js (LTS)..."
+
+            # List available LTS versions and install the latest one
+            nvm ls-remote --lts
+            nvm install --lts
+
+            echo "npm and Node.js (LTS) installation complete."
+        fi
+    else
+        echo "Error: nvm could not be installed. Please check your setup."
+        return 1
+    fi
 }
 
 # Install macOS-specific packages
@@ -41,7 +65,7 @@ linux_specified() {
             build-essential ccls clang-format cmake cscope curl \
             exuberant-ctags git global gnutls-bin golang \
             keepassxc mono-complete python3-dev ripgrep \
-            stow symlinks tmux vim-nox xclip xsel zsh
+            stow symlinks tmux xclip xsel zsh vim-gtk3
     fi
 }
 
