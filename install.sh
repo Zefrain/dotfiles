@@ -54,7 +54,7 @@ install_nvm() {
 
 # Install macOS-specific packages
 darwin_specified() {
-    brew install symlinks stow ccls trash vim keepassxc
+    brew install symlinks stow ccls trash keepassxc neovim
 }
 
 # Install Linux-specific packages
@@ -65,7 +65,7 @@ linux_specified() {
             build-essential ccls clang-format cmake cscope curl \
             exuberant-ctags git global gnutls-bin golang \
             keepassxc mono-complete python3-dev ripgrep \
-            stow symlinks tmux xclip xsel zsh vim-gtk3
+            stow symlinks tmux xclip xsel zsh neovim
     fi
 }
 
@@ -113,6 +113,7 @@ init_zsh() {
 # Initialize Vim configuration
 init_vim() {
     stow -d "$conf_dir" -t "$HOME" -R vim 
+    stow -d "$conf_dir" -t "$HOME/.config/nvim" -R nvim
 
     # Install or update vim-plug
     plug_path="$HOME/.vim/autoload/plug.vim"

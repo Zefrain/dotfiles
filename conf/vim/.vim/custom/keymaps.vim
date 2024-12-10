@@ -29,5 +29,5 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " Function to create a TOC for Markdown files
-autocmd FileType markdown nnoremap <buffer> <leader>toc :call GenerateMarkdownTOC()<CR>
+autocmd FileType markdown nnoremap <buffer> <leader>toc :CocCommand markdown-preview-enhanced.createTOC<CR>
 
