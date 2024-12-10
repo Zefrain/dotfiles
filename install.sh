@@ -55,6 +55,8 @@ install_nvm() {
 # Install macOS-specific packages
 darwin_specified() {
     brew install symlinks stow ccls trash keepassxc neovim
+
+    pip install --break-system-packages pynvim
 }
 
 # Install Linux-specific packages
@@ -67,6 +69,8 @@ linux_specified() {
             keepassxc mono-complete python3-dev ripgrep \
             stow symlinks tmux xclip xsel zsh neovim
     fi
+
+    pip install --break-system-packages pynvim
 }
 
 # Platform-specific setup
