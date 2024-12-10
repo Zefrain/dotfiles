@@ -65,7 +65,7 @@ linux_specified() {
             build-essential ccls clang-format cmake cscope curl \
             exuberant-ctags git global gnutls-bin golang \
             keepassxc mono-complete python3-dev ripgrep \
-            stow symlinks tmux xclip xsel zsh neovim
+            stow symlinks tmux xclip xsel zsh vim-gtk3
     fi
 }
 
