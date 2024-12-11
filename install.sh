@@ -117,7 +117,7 @@ init_zsh() {
 # Initialize Vim configuration
 init_vim() {
     stow -d "$conf_dir" -t "$HOME" -R vim 
-    stow -d "$conf_dir" -t "$HOME/.config/nvim" -R nvim
+    stow -d "$conf_dir" -t "$HOME/.config" -R .config
 
     # Install or update vim-plug
     plug_path="$HOME/.vim/autoload/plug.vim"
