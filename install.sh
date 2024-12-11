@@ -15,194 +15,193 @@ PLATFORM=$(sh sh/systype.sh)
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
 install_nvm() {
-    # Check if nvm is already installed
-    if command -v nvm &>/dev/null; then
-        echo "nvm is already installed."
+  # Check if nvm is already installed
+  if command -v nvm &>/dev/null; then
+    echo "nvm is already installed."
+  else
+    # Install nvm (Node Version Manager)
+    echo "Installing nvm..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+
+    # Source the NVM script to make it available in the current session
+    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+    echo "nvm installation complete."
+  fi
+
+  # Verify nvm is now available
+  if command -v nvm &>/dev/null; then
+    echo "nvm is available."
+
+    # Check if npm is installed
+    if command -v npm &>/dev/null; then
+      echo "npm is already installed."
     else
-        # Install nvm (Node Version Manager)
-        echo "Installing nvm..."
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+      echo "npm is not installed. Installing Node.js (LTS)..."
 
-        # Source the NVM script to make it available in the current session
-        export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+      # List available LTS versions and install the latest one
+      nvm ls-remote --lts
+      nvm install --lts
 
-        echo "nvm installation complete."
+      echo "npm and Node.js (LTS) installation complete."
     fi
-
-    # Verify nvm is now available
-    if command -v nvm &>/dev/null; then
-        echo "nvm is available."
-
-        # Check if npm is installed
-        if command -v npm &>/dev/null; then
-            echo "npm is already installed."
-        else
-            echo "npm is not installed. Installing Node.js (LTS)..."
-
-            # List available LTS versions and install the latest one
-            nvm ls-remote --lts
-            nvm install --lts
-
-            echo "npm and Node.js (LTS) installation complete."
-        fi
-    else
-        echo "Error: nvm could not be installed. Please check your setup."
-        return 1
-    fi
+  else
+    echo "Error: nvm could not be installed. Please check your setup."
+    return 1
+  fi
 }
 
 # Install macOS-specific packages
 darwin_specified() {
-    brew install symlinks stow ccls trash keepassxc neovim
+  brew install symlinks stow ccls trash keepassxc neovim
 
-    pip install --break-system-packages pynvim
+  pip install --break-system-packages pynvim
 }
 
 # Install Linux-specific packages
 linux_specified() {
 
-    if [[ $NAME == "Ubuntu" ]]; then
-        sudo apt update && sudo apt install -y \
-            build-essential ccls clang-format cmake cscope curl \
-            exuberant-ctags git global gnutls-bin golang \
-            keepassxc mono-complete python3-dev ripgrep \
-            stow symlinks tmux xclip xsel zsh neovim
-    fi
+  if [[ $NAME == "Ubuntu" ]]; then
+    sudo apt update && sudo apt install -y \
+      build-essential ccls clang-format cmake cscope curl \
+      exuberant-ctags git global gnutls-bin golang \
+      keepassxc mono-complete python3-dev ripgrep \
+      stow symlinks tmux xclip xsel zsh neovim
+  fi
 
-    pip install --break-system-packages pynvim
+  pip install --break-system-packages pynvim
 }
 
 # Platform-specific setup
 install_packages() {
-    install_nvm
-    case $PLATFORM in
-        linux) linux_specified ;;
-        macos) darwin_specified ;;
-    esac
+  install_nvm
+  case $PLATFORM in
+  linux) linux_specified ;;
+  macos) darwin_specified ;;
+  esac
 }
 
 # Fix broken symlinks
 cleanup_symlinks() {
-    sudo symlinks -d /usr/local/bin/ $HOME
+  sudo symlinks -d /usr/local/bin/ $HOME
 }
 
 # Initialize shell scripts
 install_scripts() {
-    sudo stow -d "$dotfiles_dir" -t /usr/local/bin -R sh
+  sudo stow -d "$dotfiles_dir" -t /usr/local/bin -R sh
 }
 
 # Initialize configuration files
 init_conf() {
-    mkdir -p "$HOME/.config/clash"
-    stow -d "$conf_dir" -t "$HOME" -R emacs aria2 tmux
+  mkdir -p "$HOME/.config/clash"
+  stow -d "$conf_dir" -t "$HOME" -R emacs aria2 tmux
 }
 
 # Initialize Zsh
 init_zsh() {
-    stow -d "$conf_dir" -t "$HOME" -R zsh
+  stow -d "$conf_dir" -t "$HOME" -R zsh
 
-    ZSH_CUSTOM=$zsh_dir/.oh-my-zsh/custom
-    mkdir -p "$ZSH_CUSTOM"
+  ZSH_CUSTOM=$zsh_dir/.oh-my-zsh/custom
+  mkdir -p "$ZSH_CUSTOM"
 
-    # Clone plugins if not already present
-    for plugin in zsh-syntax-highlighting zsh-autosuggestions; do
-        plugin_dir="$ZSH_CUSTOM/$plugin"
-        if [[ ! -d "$plugin_dir" ]]; then
-            git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
-        fi
-    done
+  # Clone plugins if not already present
+  for plugin in zsh-syntax-highlighting zsh-autosuggestions; do
+    plugin_dir="$ZSH_CUSTOM/$plugin"
+    if [[ ! -d "$plugin_dir" ]]; then
+      git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
+    fi
+  done
 }
 
 # Initialize Vim configuration
 init_vim() {
-    stow -d "$conf_dir" -t "$HOME" -R vim 
-    stow -d "$conf_dir" -t "$HOME/.config" -R .config
+  stow -d "$conf_dir" -t "$HOME" -R vim
+  stow -d "$conf_dir" -t "$HOME/.config/" -R .config
 
-    # Install or update vim-plug
-    plug_path="$HOME/.vim/autoload/plug.vim"
-    plug_url="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+  # Install or update vim-plug
+  plug_path="$HOME/.vim/autoload/plug.vim"
+  plug_url="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
 
-    if [[ ! -f "$plug_path" || "$(curl -fsL "$plug_url" | sha256sum)" != "$(sha256sum "$plug_path")" ]]; then
-        curl -fsLo "$plug_path" --create-dirs "$plug_url"
+  if [[ ! -f "$plug_path" || "$(curl -fsL "$plug_url" | sha256sum)" != "$(sha256sum "$plug_path")" ]]; then
+    curl -fsLo "$plug_path" --create-dirs "$plug_url"
+  fi
+
+  vim +PlugClean! +PlugInstall +qall
+
+  plugin_dir="$HOME/.vim/plugged"
+
+  # Loop through each plugin directory
+  for plugin in "$plugin_dir"/*; do
+    # Skip non-directories (just in case something unexpected is there)
+    if [ ! -d "$plugin" ]; then
+      continue
     fi
 
-    vim +PlugClean! +PlugInstall +qall
+    # Get the name of the plugin (e.g., "coc.nvim")
+    plugin_name=$(basename "$plugin")
 
-    plugin_dir="$HOME/.vim/plugged"
-    
-    # Loop through each plugin directory
-    for plugin in "$plugin_dir"/*; do
-        # Skip non-directories (just in case something unexpected is there)
-        if [ ! -d "$plugin" ]; then
-            continue
-        fi
+    # Check if the plugin is already a submodule
+    if git -C "$plugin" rev-parse --is-inside-work-tree &>/dev/null; then
+      echo "$plugin_name is already a git submodule."
+      continue
+    fi
 
-        # Get the name of the plugin (e.g., "coc.nvim")
-        plugin_name=$(basename "$plugin")
+    # Get the repository URL from the plugin directory (if available)
+    plugin_url=$(cd "$plugin" && git config --get remote.origin.url)
 
-        # Check if the plugin is already a submodule
-        if git -C "$plugin" rev-parse --is-inside-work-tree &>/dev/null; then
-            echo "$plugin_name is already a git submodule."
-            continue
-        fi
+    # Get the current branch name (default to 'master' if not available)
+    branch_name=$(cd "$plugin" && git symbolic-ref --short HEAD || echo "master")
 
-        # Get the repository URL from the plugin directory (if available)
-        plugin_url=$(cd "$plugin" && git config --get remote.origin.url)
-        
-        # Get the current branch name (default to 'master' if not available)
-        branch_name=$(cd "$plugin" && git symbolic-ref --short HEAD || echo "master")
-
-        # Add the plugin as a submodule if not already done
-        echo "Adding $plugin_name as a submodule..."
-        git submodule add -b "$branch_name" "$plugin_url" "$plugin"
-    done
+    # Add the plugin as a submodule if not already done
+    echo "Adding $plugin_name as a submodule..."
+    git submodule add -b "$branch_name" "$plugin_url" "$plugin"
+  done
 }
 
 # Initialize systemd services
 init_systemd() {
-    sudo apt install -y xsel
-    mkdir -p "$HOME/.config/systemd"
-    stow -d "$dotfiles_dir" -t "$HOME/.config/systemd" systemd
-    systemctl --user daemon-reload
+  sudo apt install -y xsel
+  mkdir -p "$HOME/.config/systemd"
+  stow -d "$dotfiles_dir" -t "$HOME/.config/systemd" systemd
+  systemctl --user daemon-reload
 
-    for service in "$systemd_dir"/*; do
-        systemctl --user enable --now "$(basename "$service")"
-    done
+  for service in "$systemd_dir"/*; do
+    systemctl --user enable --now "$(basename "$service")"
+  done
 }
 
 # Initialize Git submodules
 init_git() {
-    git submodule update --init --recursive --force --remote
+  git submodule update --init --recursive --force --remote
 }
 
 # Initialize clang-format configuration
 init_clangformat() {
-    stow -d "$conf_dir" -t "$HOME" -R clang-format
+  stow -d "$conf_dir" -t "$HOME" -R clang-format
 }
 
 # Main dotfiles initialization
 init_dotfiles() {
-    install_packages
-    cleanup_symlinks
+  install_packages
+  cleanup_symlinks
 
-    case $1 in
-        packages) install_packages;;
-        cleanup) cleanup_symlinks;;
-        sh) install_scripts ;;
-        conf) init_conf ;;
-        zsh) init_zsh ;;
-        vim) init_vim ;;
-        clang_format) init_clangformat ;;
-        *)  # Default setup
-            init_git
-            install_scripts
-            init_conf
-            init_zsh
-            init_vim
-            ;;
-    esac
+  case $1 in
+  packages) install_packages ;;
+  cleanup) cleanup_symlinks ;;
+  sh) install_scripts ;;
+  conf) init_conf ;;
+  zsh) init_zsh ;;
+  vim) init_vim ;;
+  clang_format) init_clangformat ;;
+  *) # Default setup
+    init_git
+    install_scripts
+    init_conf
+    init_zsh
+    init_vim
+    ;;
+  esac
 }
 
 init_dotfiles "${1:-}"
-

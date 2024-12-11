@@ -12,6 +12,7 @@ _alias() {
     alias ll="ls -alF"
     alias la="ls -A"
     alias l="ls -CF"
+    alias vim="nvim"
 
     # macOS: Show and hide hidden files
     alias showHiddenFiles='defaults write com.apple.finder AppleShowAllFiles YES && killall Finder'

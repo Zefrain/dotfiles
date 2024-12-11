@@ -1,9 +1,0 @@
-{
-  "markdown-preview-enhanced.liveUpdate": false,
-  "markdown-preview-enhanced.tocConfig": {
-    "cmd": "toc",
-    "depthFrom": 1,
-    "depthTo": 6,
-    "orderedList": false
-  }
-}
