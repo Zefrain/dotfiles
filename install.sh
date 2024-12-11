@@ -54,7 +54,7 @@ install_nvm() {
 
 # Install macOS-specific packages
 darwin_specified() {
-  brew install symlinks stow ccls trash keepassxc neovim
+  brew install symlinks stow ccls trash keepassxc neovim luarocks lazygit
 
   pip install --break-system-packages pynvim
 }
@@ -67,7 +67,13 @@ linux_specified() {
       build-essential ccls clang-format cmake cscope curl \
       exuberant-ctags git global gnutls-bin golang \
       keepassxc mono-complete python3-dev ripgrep \
-      stow symlinks tmux xclip xsel zsh neovim
+      stow symlinks tmux xclip xsel zsh neovim luarocks
+
+    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')
+    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+    tar xf lazygit.tar.gz lazygit
+
+    sudo install lazygit -D -t /usr/local/bin/
   fi
 
   pip install --break-system-packages pynvim

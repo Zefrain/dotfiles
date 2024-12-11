@@ -10,3 +10,4 @@ conf/tmux/.tmux/plugins
 *.txt
 
 .spacemacs.env
+conf/.config/nvim/lazy-lock.json
