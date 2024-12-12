@@ -90,7 +90,7 @@ install_packages() {
 
 # Fix broken symlinks
 cleanup_symlinks() {
-  sudo symlinks -d /usr/local/bin/ $HOME
+  sudo symlinks -d /usr/local/bin/ "$HOME"
 }
 
 # Initialize shell scripts
