@@ -54,7 +54,7 @@ install_nvm() {
 
 # Install macOS-specific packages
 darwin_specified() {
-  brew install symlinks stow ccls trash keepassxc neovim luarocks lazygit
+  brew install symlinks stow ccls trash keepassxc neovim luarocks lazygit font-awesome-terminal-fonts
 
   pip install --break-system-packages pynvim
 }
