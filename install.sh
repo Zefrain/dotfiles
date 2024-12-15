@@ -133,36 +133,36 @@ init_vim() {
     curl -fsLo "$plug_path" --create-dirs "$plug_url"
   fi
 
-  vim +PlugClean! +PlugInstall +qall
-
-  plugin_dir="$HOME/.vim/plugged"
-
-  # Loop through each plugin directory
-  for plugin in "$plugin_dir"/*; do
-    # Skip non-directories (just in case something unexpected is there)
-    if [ ! -d "$plugin" ]; then
-      continue
-    fi
-
-    # Get the name of the plugin (e.g., "coc.nvim")
-    plugin_name=$(basename "$plugin")
-
-    # Check if the plugin is already a submodule
-    if git -C "$plugin" rev-parse --is-inside-work-tree &>/dev/null; then
-      echo "$plugin_name is already a git submodule."
-      continue
-    fi
-
-    # Get the repository URL from the plugin directory (if available)
-    plugin_url=$(cd "$plugin" && git config --get remote.origin.url)
-
-    # Get the current branch name (default to 'master' if not available)
-    branch_name=$(cd "$plugin" && git symbolic-ref --short HEAD || echo "master")
-
-    # Add the plugin as a submodule if not already done
-    echo "Adding $plugin_name as a submodule..."
-    git submodule add -b "$branch_name" "$plugin_url" "$plugin"
-  done
+  # vim +PlugClean! +PlugInstall +qall
+  #
+  # plugin_dir="$HOME/.vim/plugged"
+  #
+  # # Loop through each plugin directory
+  # for plugin in "$plugin_dir"/*; do
+  #   # Skip non-directories (just in case something unexpected is there)
+  #   if [ ! -d "$plugin" ]; then
+  #     continue
+  #   fi
+  #
+  #   # Get the name of the plugin (e.g., "coc.nvim")
+  #   plugin_name=$(basename "$plugin")
+  #
+  #   # Check if the plugin is already a submodule
+  #   if git -C "$plugin" rev-parse --is-inside-work-tree &>/dev/null; then
+  #     echo "$plugin_name is already a git submodule."
+  #     continue
+  #   fi
+  #
+  #   # Get the repository URL from the plugin directory (if available)
+  #   plugin_url=$(cd "$plugin" && git config --get remote.origin.url)
+  #
+  #   # Get the current branch name (default to 'master' if not available)
+  #   branch_name=$(cd "$plugin" && git symbolic-ref --short HEAD || echo "master")
+  #
+  #   # Add the plugin as a submodule if not already done
+  #   echo "Adding $plugin_name as a submodule..."
+  #   git submodule add -b "$branch_name" "$plugin_url" "$plugin"
+  # done
 }
 
 # Initialize systemd services
