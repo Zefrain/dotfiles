@@ -82,6 +82,7 @@ linux_specified() {
 # Platform-specific setup
 install_packages() {
   install_nvm
+
   case $PLATFORM in
   linux) linux_specified ;;
   macos) darwin_specified ;;
@@ -118,6 +119,9 @@ init_zsh() {
       git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
     fi
   done
+
+  # install fzf
+  ~/.fzf/install --all
 }
 
 # Initialize Vim configuration
@@ -193,8 +197,8 @@ init_dotfiles() {
   cleanup_symlinks
 
   case $1 in
-  packages) install_packages ;;
-  cleanup) cleanup_symlinks ;;
+  packages) ;;
+  cleanup) ;;
   sh) install_scripts ;;
   conf) init_conf ;;
   zsh) init_zsh ;;

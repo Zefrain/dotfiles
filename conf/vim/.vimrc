@@ -6,7 +6,6 @@ call plug#begin('~/.vim/plugged')
 " Plugin declarations
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdtree', { 'on':  'NERDTreeToggle' }
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'rhysd/vim-clang-format'
 Plug 'kana/vim-operator-user'
