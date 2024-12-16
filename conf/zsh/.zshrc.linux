@@ -1,42 +1,48 @@
 _startx() {
-    if [ "$(uname -s)" = "Linux" ] && [ -z "$(echo $XDG_CURRENT_DESKTOP)" ]
-    then
-        startx
-    fi
+  if [ "$(uname -s)" = "Linux" ] && [ -z "$(echo $XDG_CURRENT_DESKTOP)" ]
+  then
+    startx
+  fi
 }
 
 _xmodmap() {
-    if [ -x "$(which xmodmap 2>/dev/null)" ] && [ -z "$(echo $XMODMAP_FLAG)" ]
-    then
-        export XMODMAP_FLAG=1
-        xmodmap ~/.xmodmap
-    fi
+  if [ -x "$(which xmodmap 2>/dev/null)" ] && [ -z "$(echo $XMODMAP_FLAG)" ]
+  then
+    export XMODMAP_FLAG=1
+    xmodmap ~/.xmodmap
+  fi
 }
 
 _tmux() {
-    if [ -z "$(echo $TMUX)" ]
-    then
-        tmux -2
-    fi
+  if [ -z "$(echo $TMUX)" ]
+  then
+    tmux -2
+  fi
 }
 
 _alias() {
-    alias open="xdg-open"
+  alias open="xdg-open"
+  alias vim="nvim" 
+}
+
+_path() {
+  export PATH="$PATH:/opt/nvim-linux64/bin"
 }
 
 
 _nvm() {
-	export NVM_DIR="$HOME/.nvm"
-	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 }
 
 _init_linux() {
-    _startx
-    # _xmodmap
-    _tmux
-    _alias
-    _nvm
+  _startx
+  # _xmodmap
+  _tmux
+  _path
+  _alias
+  _nvm
 }
 
 

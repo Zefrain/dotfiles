@@ -61,13 +61,12 @@ darwin_specified() {
 
 # Install Linux-specific packages
 linux_specified() {
-
   if [[ $NAME == "Ubuntu" ]]; then
     sudo apt update && sudo apt install -y \
       build-essential ccls clang-format cmake cscope curl \
       exuberant-ctags git global gnutls-bin golang \
       keepassxc mono-complete python3-dev ripgrep \
-      stow symlinks tmux xclip xsel zsh neovim luarocks
+      stow symlinks tmux xclip xsel zsh luarocks
 
     LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')
     curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
@@ -77,6 +76,12 @@ linux_specified() {
   fi
 
   pip install --break-system-packages pynvim
+
+  # install nvim
+  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+  sudo rm -rf /opt/nvim
+  sudo tar -C /opt -xzf nvim-linux64.tar.gz
+  rm -rf nvim-linux64.tar.gz
 }
 
 # Platform-specific setup
@@ -129,14 +134,14 @@ init_vim() {
   stow -d "$conf_dir" -t "$HOME" -R vim
   stow -d "$conf_dir" -t "$HOME/.config/" -R .config
 
-  # Install or update vim-plug
-  plug_path="$HOME/.vim/autoload/plug.vim"
-  plug_url="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-
-  if [[ ! -f "$plug_path" || "$(curl -fsL "$plug_url" | sha256sum)" != "$(sha256sum "$plug_path")" ]]; then
-    curl -fsLo "$plug_path" --create-dirs "$plug_url"
-  fi
-
+  # # Install or update vim-plug
+  # plug_path="$HOME/.vim/autoload/plug.vim"
+  # plug_url="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+  #
+  # if [[ ! -f "$plug_path" || "$(curl -fsL "$plug_url" | sha256sum)" != "$(sha256sum "$plug_path")" ]]; then
+  #   curl -fsLo "$plug_path" --create-dirs "$plug_url"
+  # fi
+  #
   # vim +PlugClean! +PlugInstall +qall
   #
   # plugin_dir="$HOME/.vim/plugged"
