@@ -54,9 +54,16 @@ install_nvm() {
 
 # Install macOS-specific packages
 darwin_specified() {
-  brew install symlinks stow ccls trash keepassxc neovim luarocks lazygit font-symbols-only-nerd-font font-awesome-terminal-fonts
+  brew install symlinks stow ccls trash keepassxc luarocks lazygit font-symbols-only-nerd-font font-awesome-terminal-fonts
 
   pip install --break-system-packages pynvim
+
+  # install nvim
+  curl -LO "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-$(uname -m).tar.gz"
+  sudo rm -rf /opt/nvim
+  sudo tar -C /opt xzf "nvim-macos-$(uname -m).tar.gz"
+  sudo tar -C /opt -xzf nvim-linux64.tar.gz
+  rm -rf "nvim-macos-$(uname -m).tar.gz"
 }
 
 # Install Linux-specific packages
