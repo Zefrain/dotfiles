@@ -80,6 +80,7 @@ linux_specified() {
     tar xf lazygit.tar.gz lazygit
 
     sudo install lazygit -D -t /usr/local/bin/
+    rm -rf lazygit.tar.gz
   fi
 
   pip install --break-system-packages pynvim
@@ -224,6 +225,8 @@ init_dotfiles() {
     init_vim
     ;;
   esac
+
+  source "$HOME/.zshrc"
 }
 
 init_dotfiles "${1:-}"
