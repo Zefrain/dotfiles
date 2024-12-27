@@ -25,10 +25,9 @@ end, { noremap = true, silent = true, desc = "Reload all configs" })
 vim.keymap.set("n", "<leader>si", function()
   local command = vim.fn.input("Bash command: ")
   if command ~= "" then
-    local output = vim.fn.system(command)
-    -- Strip leading/trailing whitespace
-    output = output:gsub("^%s+", ""):gsub("%s+$", "")
-    vim.api.nvim_put({ output }, "l", true, true)
+    local output = vim.fn.system(command):gsub("^%s+", ""):gsub("%s+$", "")
+    local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+    vim.api.nvim_buf_set_text(0, row - 1, col, row - 1, col, { output })
   end
 end, { noremap = true, silent = true, desc = "Insert inline Bash result without whitespace" })
 
