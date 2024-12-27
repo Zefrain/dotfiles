@@ -3,7 +3,9 @@
 -- Add any additional keymaps here
 
 -- Function to reload all configuration files in 'lua/config'
-function ReloadConfig()
+
+-- Map <leader>rc to reload all config files
+vim.keymap.set("n", "<leader>rc", function()
   vim.cmd("source $MYVIMRC")
 
   -- Get the path to your config directory
@@ -18,7 +20,23 @@ function ReloadConfig()
     end
   end
   print("All config files reloaded!")
-end
+end, { noremap = true, silent = true, desc = "Reload all configs" })
 
--- Map <leader>rc to reload all config files
-vim.keymap.set("n", "<leader>rc", ReloadConfig, { noremap = true, silent = true, desc = "Reload all configs" })
+vim.keymap.set("n", "<leader>si", function()
+  local command = vim.fn.input("Bash command: ")
+  if command ~= "" then
+    local output = vim.fn.system(command)
+    -- Strip leading/trailing whitespace
+    output = output:gsub("^%s+", ""):gsub("%s+$", "")
+    vim.api.nvim_put({ output }, "l", true, true)
+  end
+end, { noremap = true, silent = true, desc = "Insert inline Bash result without whitespace" })
+
+-- Keymap to apply quickfix-only code actions
+vim.keymap.set("n", "<leader>cF", function()
+  vim.lsp.buf.code_action({
+    context = {
+      only = { "quickfix" }, -- Only apply quickfixes
+    },
+  })
+end, { desc = "Fix Diagnostics" })
