@@ -1,5 +1,6 @@
 return {
   "Zefrain/cscope_maps.nvim",
+  branch = "dev",
   dependencies = {
     "nvim-telescope/telescope.nvim", -- optional [for picker="telescope"]
     -- "ibhagwan/fzf-lua", -- optional [for picker="fzf-lua"]
@@ -24,7 +25,7 @@ return {
         -- cscope executable
         exec = "cscope", -- "cscope" or "gtags-cscope"
         -- choose your fav picker
-        picker = "telescope", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
+        picker = "fzf-lua", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
         -- size of quickfix window
         qf_window_size = 5, -- any positive integer
         -- position of quickfix window
