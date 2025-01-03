@@ -60,9 +60,8 @@ darwin_specified() {
 
   # install nvim
   curl -LO "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-$(uname -m).tar.gz"
-  sudo rm -rf /opt/nvim
+  sudo rm -rf /opt/nvim-macos-$(uname -m)
   sudo tar -C /opt xzf "nvim-macos-$(uname -m).tar.gz"
-  sudo tar -C /opt -xzf nvim-linux64.tar.gz
   rm -rf "nvim-macos-$(uname -m).tar.gz"
 }
 
@@ -80,14 +79,14 @@ linux_specified() {
     tar xf lazygit.tar.gz lazygit
 
     sudo install lazygit -D -t /usr/local/bin/
-    rm -rf lazygit.tar.gz
+    rm -rf lazygit.tar.gz lazygit
   fi
 
   pip install --break-system-packages pynvim
 
   # install nvim
   curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-  sudo rm -rf /opt/nvim
+  sudo rm -rf /opt/nvim-linux64
   sudo tar -C /opt -xzf nvim-linux64.tar.gz
   rm -rf nvim-linux64.tar.gz
 }
@@ -187,7 +186,7 @@ init_dotfiles() {
     ;;
   esac
 
-  source "$HOME/.zshrc"
+  # source "$HOME/.zshrc"
 }
 
 init_dotfiles "${1:-}"
