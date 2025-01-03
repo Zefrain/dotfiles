@@ -37,7 +37,7 @@ _nvm() {
 }
 
 _init_linux() {
-  _startx
+  # _startx
   # _xmodmap
   _tmux
   _path
