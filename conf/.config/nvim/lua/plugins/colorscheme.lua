@@ -13,4 +13,6 @@ return {
     name = "github-theme",
     priority = 1000, -- Ensure it loads first
   },
+  -- add gruvbox
+  { "ellisonleao/gruvbox.nvim" },
 }

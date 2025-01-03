@@ -14,7 +14,8 @@ PLATFORM=$(sh sh/systype.sh)
 # Load OS release information for Linux
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
-install_nvm() {
+install_node() {
+
   # Check if nvm is already installed
   if command -v nvm &>/dev/null; then
     echo "nvm is already installed."
@@ -52,48 +53,54 @@ install_nvm() {
   fi
 }
 
+install_nvim() {
+  git clone --depth 1 https://github.com/neovim/neovim.git
+  cd neovim && make CMAKE_BUILD_TYPE=Release && sudo make install
+  cd .. && rm -rf nvim
+}
+
+install_spf() {
+  bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
+}
+
+install_fzf() {
+  # install fzf
+  ~/.fzf/install --all
+}
+
 # Install macOS-specific packages
 darwin_specified() {
-  brew install symlinks stow ccls trash keepassxc luarocks lazygit font-symbols-only-nerd-font font-awesome-terminal-fonts
+  brew install symlinks stow trash keepassxc luarocks lazygit font-symbols-only-nerd-font font-awesome-terminal-fonts
 
   pip install --break-system-packages pynvim
-
-  # install nvim
-  curl -LO "https://github.com/neovim/neovim/releases/download/nightly/nvim-macos-$(uname -m).tar.gz"
-  sudo rm -rf /opt/nvim-macos-$(uname -m)
-  sudo tar -C /opt xzf "nvim-macos-$(uname -m).tar.gz"
-  rm -rf "nvim-macos-$(uname -m).tar.gz"
 }
 
 # Install Linux-specific packages
 linux_specified() {
   if [[ $NAME == "Ubuntu" ]]; then
-    sudo apt update && sudo apt install -y \
-      build-essential ccls clang-format cmake cscope curl \
+    sudo apt-get update && sudo apt-get install -y \
+      build-essential clang-format cmake cscope curl \
       exuberant-ctags git global gnutls-bin golang \
       keepassxc mono-complete python3-dev ripgrep \
-      stow symlinks tmux xclip xsel zsh luarocks
+      stow symlinks tmux xclip xsel zsh luarocks alacritty shellcheck
 
+    sudo apt purge -y gnome-terminal
+
+    # Install lazygit_
     LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')
     curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
     tar xf lazygit.tar.gz lazygit
-
     sudo install lazygit -D -t /usr/local/bin/
     rm -rf lazygit.tar.gz lazygit
   fi
-
-  pip install --break-system-packages pynvim
-
-  # install nvim
-  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-  sudo rm -rf /opt/nvim-linux64
-  sudo tar -C /opt -xzf nvim-linux64.tar.gz
-  rm -rf nvim-linux64.tar.gz
 }
 
 # Platform-specific setup
 install_packages() {
-  install_nvm
+  install_node
+  install_nvim
+  install_spf
+  install_fzf
 
   case $PLATFORM in
   linux) linux_specified ;;
@@ -131,9 +138,6 @@ init_zsh() {
       git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
     fi
   done
-
-  # install fzf
-  ~/.fzf/install --all
 }
 
 # Initialize Vim configuration

@@ -14,3 +14,5 @@ local opt = vim.opt
 opt.relativenumber = false
 
 vim.g.autoformat = false
+vim.diagnostic.enable(false)
+vim.opt.termguicolors = true
