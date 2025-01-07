@@ -54,13 +54,15 @@ install_node() {
 }
 
 install_nvim() {
-  git clone --depth 1 https://github.com/neovim/neovim.git
+  if [[ ! -d "neovim" ]]; then
+    git clone --depth 1 https://github.com/neovim/neovim.git
+  fi
   cd neovim && make CMAKE_BUILD_TYPE=Release && sudo make install
-  cd .. && rm -rf nvim
+  cd .. && rm -rf neovim
 }
 
 install_spf() {
-  bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
+  sudo bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
 }
 
 install_fzf() {
