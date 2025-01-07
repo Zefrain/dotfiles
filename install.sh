@@ -14,8 +14,42 @@ PLATFORM=$(sh sh/systype.sh)
 # Load OS release information for Linux
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
-install_node() {
+# install speicified packages
+install_package_one() {
+  command_line_name="$1"
+  ubuntu_package_name="$2"
+  darwin_package_name="$3"
 
+  if command -v "$command_line_name" &>/dev/null; then
+    return
+  fi
+
+  case $PLATFORM in
+  linux)
+    if [[ "$NAME" == "Ubuntu" ]]; then
+      sudo apt-get update && sudo apt-get install -y "$ubuntu_package_name"
+    fi
+    ;;
+  macos) brew install "$darwin_package_name" ;;
+  esac
+}
+
+stow_dirs() {
+  source="$1"
+  target="$2"
+
+  shift 2
+  packages=("$@")
+
+  if [[ ! -d "$target" ]]; then
+    mkdir -p "$target"
+  fi
+
+  install_package_one stow stow stow
+  stow -d "$source" -t "$target" -R "${packages[@]}"
+}
+
+install_node() {
   # Check if nvm is already installed
   if command -v nvm &>/dev/null; then
     echo "nvm is already installed."
@@ -54,6 +88,10 @@ install_node() {
 }
 
 install_nvim() {
+  if command -v nvim &>/dev/null; then
+    return
+  fi
+
   if [[ ! -d "neovim" ]]; then
     git clone --depth 1 https://github.com/neovim/neovim.git
   fi
@@ -71,14 +109,14 @@ install_fzf() {
 }
 
 # Install macOS-specific packages
-darwin_specified() {
+darwin_packages() {
   brew install symlinks stow trash keepassxc luarocks lazygit font-symbols-only-nerd-font font-awesome-terminal-fonts
 
   pip install --break-system-packages pynvim
 }
 
 # Install Linux-specific packages
-linux_specified() {
+linux_packages() {
   if [[ $NAME == "Ubuntu" ]]; then
     sudo apt-get update && sudo apt-get install -y \
       build-essential clang-format cmake cscope curl \
@@ -99,37 +137,41 @@ linux_specified() {
 
 # Platform-specific setup
 install_packages() {
+  case $PLATFORM in
+  linux) linux_packages ;;
+  macos) darwin_packages ;;
+  esac
+
   install_node
   install_nvim
   install_spf
   install_fzf
-
-  case $PLATFORM in
-  linux) linux_specified ;;
-  macos) darwin_specified ;;
-  esac
 }
 
 # Fix broken symlinks
 cleanup_symlinks() {
+  install_package_one symlinks symlinks symlinks
   sudo symlinks -d /usr/local/bin/ "$HOME"
 }
 
 # Initialize shell scripts
 install_scripts() {
-  sudo stow -d "$dotfiles_dir" -t /usr/local/bin -R sh
+  stow_dirs "$dotfiles_dir" "/usr/local/bin/" sh
 }
 
 # Initialize configuration files
 init_conf() {
   mkdir -p "$HOME/.config/clash"
-  stow -d "$conf_dir" -t "$HOME" -R emacs aria2 tmux
+
+  stow_dirs "$conf_dir" "$HOME" emacs aria2 tmux
 }
 
 # Initialize Zsh
 init_zsh() {
-  stow -d "$conf_dir" -t "$HOME" -R zsh
+  stow_dirs "$conf_dir" "$HOME" zsh
 
+
+  install_package_one zsh zsh zsh
   ZSH_CUSTOM=$zsh_dir/.oh-my-zsh/custom
   mkdir -p "$ZSH_CUSTOM"
 
@@ -144,17 +186,15 @@ init_zsh() {
 
 # Initialize Vim configuration
 init_vim() {
-  # stow -d "$conf_dir" -t "$HOME" -R vim
-  stow -d "$conf_dir" -t "$HOME/.config/" -R .config
+  install_nvim
+  stow_dirs "$conf_dir" "$HOME/.config/" .config
 }
 
 # Initialize systemd services
 init_systemd() {
-  sudo apt install -y xsel
-  mkdir -p "$HOME/.config/systemd"
-  stow -d "$dotfiles_dir" -t "$HOME/.config/systemd" systemd
-  systemctl --user daemon-reload
+  stow_dirs "$dotfiles_dir" "$HOME/.config/systemd" systemd
 
+  systemctl --user daemon-reload
   for service in "$systemd_dir"/*; do
     systemctl --user enable --now "$(basename "$service")"
   done
@@ -162,22 +202,22 @@ init_systemd() {
 
 # Initialize Git submodules
 init_git() {
+  install_package_one git git git
   git submodule update --init --recursive --force --remote
 }
 
 # Initialize clang-format configuration
 init_clangformat() {
+  install_package_one stow stow stow
   stow -d "$conf_dir" -t "$HOME" -R clang-format
 }
 
 # Main dotfiles initialization
 init_dotfiles() {
-  install_packages
-  cleanup_symlinks
 
   case $1 in
-  packages) ;;
-  cleanup) ;;
+  packages) install_packages ;;
+  cleanup) cleanup_symlinks ;;
   sh) install_scripts ;;
   conf) init_conf ;;
   zsh) init_zsh ;;
@@ -191,8 +231,6 @@ init_dotfiles() {
     init_vim
     ;;
   esac
-
-  # source "$HOME/.zshrc"
 }
 
 init_dotfiles "${1:-}"
