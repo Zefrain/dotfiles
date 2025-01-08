@@ -5,14 +5,15 @@
 
 -- Override yanky.nvim settings
 vim.g.yanky = {
-  ring = {
-    history_length = 10000, -- Set desired history length (default is 100)
-  },
+    ring = {
+        history_length = 10000, -- Set desired history length (default is 100)
+    },
 }
 
 local opt = vim.opt
 opt.relativenumber = false
 
-vim.g.autoformat = false
 vim.diagnostic.enable(false)
 vim.opt.termguicolors = true
+vim.g.markdown_recommended_style = 1
+vim.g.autoformat = false

@@ -25,7 +25,7 @@ return {
         -- cscope executable
         exec = "cscope", -- "cscope" or "gtags-cscope"
         -- choose your fav picker
-        picker = "fzf-lua", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
+        picker = "telescope", -- "quickfix", "telescope", "fzf-lua" or "mini-pick"
         -- size of quickfix window
         qf_window_size = 5, -- any positive integer
         -- position of quickfix window
@@ -33,7 +33,7 @@ return {
         -- "true" does not open picker for single result, just JUMP
         skip_picker_for_single_result = true, -- "false" or "true"
         -- these args are directly passed to "cscope -f <db_file> <args>"
-        db_build_cmd_args = { "-bqkvC" },
+        db_build_cmd_args = { "-bqvC" },
         -- statusline indicator, default is cscope executable
         -- statusline_indicator = nil,
         -- try to locate db_file in parent dir(s)
