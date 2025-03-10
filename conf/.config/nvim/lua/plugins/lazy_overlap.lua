@@ -28,5 +28,6 @@ return {
         desc = "Search and Replace",
       },
     },
+    opts = { startCursorRow = 3 },
   },
 }
