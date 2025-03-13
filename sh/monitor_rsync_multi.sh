@@ -2,10 +2,10 @@
 set -euo pipefail
 
 # ================== 配置区 ==================
-declare -ga sources=() targets=()
+declare -a sources=() targets=()
 readonly DEFAULT_SRC="$PWD"
-readonly DEFAULT_DST="root@192.168.168.161:/home/ubuntu/dogecoin"
-readonly RSYNC_OPTS="-avhq --progress --exclude=".*" --exclude="*~""
+readonly DEFAULT_DST="root@192.168.168.161:/home/ubuntu/$(basename $(pwd))"
+readonly RSYNC_OPTS="-avhq --progress --exclude='.*' --exclude='*~'"
 readonly POLL_INTERVAL=10
 COLOR_RED='\033[0;31m'
 COLOR_GREEN='\033[0;32m'
@@ -66,6 +66,11 @@ prompt_custom_mappings() {
     local dst=$(trim "${dst_raw/>/}") # 处理残留的">"符号[2](@ref)
 
     if [[ -n "$src" && -n "$dst" ]]; then
+      if [[ $custom_mappings -eq 0 ]]; then
+        sources=()
+        targets=()
+        custom_mappings=1
+      fi
       sources+=("$src")
       targets+=("$dst")
       log info "已添加映射: $src => $dst"
@@ -109,7 +114,7 @@ start_sync() {
       done &
     else
       log info "实时监控同步: $src => $dst"
-      fswatch -0 "$src" | while read -d "" event; do
+      fswatch -0 "$src" | while read -r -d "" event; do
         rsync $RSYNC_OPTS "$src/" "$dst/" &&
           log info "已同步: $event" ||
           log error "同步失败: $event"
