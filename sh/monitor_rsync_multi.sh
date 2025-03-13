@@ -2,11 +2,12 @@
 set -euo pipefail
 
 # ================== 配置区 ==================
-declare -ga sources=() targets=()
+declare -a sources=() targets=()
 readonly DEFAULT_SRC="$PWD"
-readonly DEFAULT_DST="root@192.168.168.161:/home/ubuntu/dogecoin"
-readonly RSYNC_OPTS="-avhq --progress --exclude=".*" --exclude="*~""
+readonly DEFAULT_DST="root@38.80.81.120:/root/$(basename $(pwd))"
+readonly RSYNC_OPTS="-azq --progress --exclude='.*' --exclude='*~'"
 readonly POLL_INTERVAL=10
+declare PORT=22
 COLOR_RED='\033[0;31m'
 COLOR_GREEN='\033[0;32m'
 COLOR_RESET='\033[0m'
@@ -42,26 +43,45 @@ check_dependencies() {
   fi
 }
 
+# ================= 设置端口号 ==================
+prompt_ssh_port() {
+  read -r -p "请输入SSH端口号 (默认: $PORT): " input_port
+  if [[ -n "$input_port" ]]; then
+    PORT=$(trim "$input_port")
+    if ! [[ "$PORT" =~ ^[0-9]+$ ]]; then
+      log error "无效的端口号"
+      exit 1
+    fi
+  fi
+}
+
 # ================== 输入处理 ==================
 setup_default_mapping() {
   local default_src default_dst
   default_src=$(trim "${DEFAULT_SRC}") # 默认源目录[2](@ref)
   default_dst=$(trim "${DEFAULT_DST}") # 默认目标[2](@ref)
 
-  sources+=("$default_src")
-  targets+=("$default_dst")
-  log info "已设置默认同步路径: $default_src => $default_dst"
+  if [[ ${#sources[@]} -eq 0 ]]; then
+    sources+=("$default_src")
+    targets+=("$default_dst")
+    log info "已设置默认同步路径: $default_src => $default_dst"
+  fi
+
+  if [[ ${#sources[@]} -ne ${#targets[@]} ]]; then
+    log error "源和目标路径数量不匹配"
+    exit 1
+  fi
 }
 
 prompt_custom_mappings() {
   log info "输入自定义路径 (格式: /local/path => user@host:/remote/path)"
-  log info "直接回车使用默认路径"
+  log info "直接回车使用默认路径: $DEFAULT_SRC => $DEFAULT_DST"
 
   while read -r -p "> " mapping; do
-    mapping=$(trim "$mapping") # 清理输入空格[2](@ref)
-    [ -z "$mapping" ] && break
+    custom_mappings=$(trim "$mapping") # 清理输入空格[2](@ref)
+    [ -z "$custom_mappings" ] && break
 
-    IFS="=>" read -r src_raw dst_raw <<<"$mapping"
+    IFS="=>" read -r src_raw dst_raw <<<"$custom_mappings"
     local src=$(trim "$src_raw")
     local dst=$(trim "${dst_raw/>/}") # 处理残留的">"符号[2](@ref)
 
@@ -81,9 +101,18 @@ validate_path() {
   if [[ "$path" == *":"* ]]; then # 远程路径检查
     local host=${path%%:*}
     local dir=${path#*:}
-    if ! ssh "$host" "test -d '$dir'" &>/dev/null; then
-      log error "远程目录不可访问: $path"
+    local host_port="${path%%:*}"
+    if ! ssh -p "$PORT" "$host_port" echo &>/dev/null; then
+      log error "SSH 连接失败: $host_port"
       return 1
+    fi
+    if ! ssh -p "$PORT" "$host" "test -d '$dir'" &>/dev/null; then
+      log info "远程目录不存在，正在创建: ${path/#*:/}"
+      ssh -p "$PORT" "$host" "mkdir -p ${path/#*:/}" || {
+        log error "远程目录创建失败: $path"
+        return 1
+      }
+      return 0
     fi
   elif [ ! -d "$path" ]; then # 本地目录检查[2](@ref)
     log error "本地目录不存在: $path"
@@ -101,31 +130,34 @@ start_sync() {
       continue
     fi
 
+
     if [[ "$OSTYPE" == "linux-gnu"* && -f /etc/openwrt_release ]]; then
       log info "OpenWrt轮询同步: $src => $dst"
       while true; do
-        rsync $RSYNC_OPTS "$src/" "$dst/" || log error "同步失败"
+        rsync $RSYNC_OPTS -e "ssh -p $PORT" "$src/" "$dst/" || log error "同步失败"
         sleep $POLL_INTERVAL
-      done &
+      done 
     else
       log info "实时监控同步: $src => $dst"
-      fswatch -0 "$src" | while read -d "" event; do
-        rsync $RSYNC_OPTS "$src/" "$dst/" &&
+      fswatch -0 "$src" | while read -r -d "" event; do
+        rsync $RSYNC_OPTS -e "ssh -p $PORT" "$src/" "$dst/" &&
           log info "已同步: $event" ||
           log error "同步失败: $event"
-      done &
+      done 
     fi
   done
-  wait
 }
 
 # ================== 主流程 ==================
 main() {
   check_dependencies
-  setup_default_mapping
   prompt_custom_mappings
+  prompt_ssh_port
+  setup_default_mapping
   start_sync
 }
 
-trap 'pkill -P $$; exit' SIGINT
 main
+trap 'pkill -P $$; exit' SIGINT
+
+
