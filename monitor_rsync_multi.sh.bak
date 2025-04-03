@@ -5,7 +5,7 @@ set -euo pipefail
 declare -a sources=() targets=()
 readonly DEFAULT_SRC="$PWD"
 readonly DEFAULT_DST="root@38.80.81.120:/root/$(basename $(pwd))"
-readonly RSYNC_OPTS="-azq --progress --exclude='.*' --exclude='*~'"
+readonly RSYNC_OPTS="-azq --delete --progress --exclude='.*' --exclude='*~'"
 readonly POLL_INTERVAL=10
 declare PORT=22
 COLOR_RED='\033[0;31m'
@@ -86,11 +86,6 @@ prompt_custom_mappings() {
     local dst=$(trim "${dst_raw/>/}") # 处理残留的">"符号[2](@ref)
 
     if [[ -n "$src" && -n "$dst" ]]; then
-      if [[ $custom_mappings -eq 0 ]]; then
-        sources=()
-        targets=()
-        custom_mappings=1
-      fi
       sources+=("$src")
       targets+=("$dst")
       log info "已添加映射: $src => $dst"
@@ -163,6 +158,6 @@ main() {
 }
 
 main
-trap 'pkill -P $$; exit' SIGINT
+# trap 'pkill -P $$; exit' SIGINT
 
 
