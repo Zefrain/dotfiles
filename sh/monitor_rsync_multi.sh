@@ -76,21 +76,25 @@ setup_default_mapping() {
 prompt_custom_mappings() {
   log info "输入自定义路径 (格式: /local/path => user@host:/remote/path)"
   log info "直接回车使用默认路径: $DEFAULT_SRC => $DEFAULT_DST"
+  log info "输入 0 重置所有映射"
 
   while read -r -p "> " mapping; do
-    custom_mappings=$(trim "$mapping") # 清理输入空格[2](@ref)
+    custom_mappings=$(trim "$mapping")
     [ -z "$custom_mappings" ] && break
+
+    # 新增：处理重置逻辑
+    if [[ "$custom_mappings" = "0" ]]; then
+      sources=()
+      targets=()
+      log info "已重置所有映射"
+      continue # 跳过后续处理
+    fi
 
     IFS="=>" read -r src_raw dst_raw <<<"$custom_mappings"
     local src=$(trim "$src_raw")
-    local dst=$(trim "${dst_raw/>/}") # 处理残留的">"符号[2](@ref)
+    local dst=$(trim "${dst_raw/>/}")
 
     if [[ -n "$src" && -n "$dst" ]]; then
-      if [[ $custom_mappings -eq 0 ]]; then
-        sources=()
-        targets=()
-        custom_mappings=1
-      fi
       sources+=("$src")
       targets+=("$dst")
       log info "已添加映射: $src => $dst"
@@ -135,20 +139,19 @@ start_sync() {
       continue
     fi
 
-
     if [[ "$OSTYPE" == "linux-gnu"* && -f /etc/openwrt_release ]]; then
       log info "OpenWrt轮询同步: $src => $dst"
       while true; do
         rsync $RSYNC_OPTS -e "ssh -p $PORT" "$src/" "$dst/" || log error "同步失败"
         sleep $POLL_INTERVAL
-      done 
+      done
     else
       log info "实时监控同步: $src => $dst"
       fswatch -0 "$src" | while read -r -d "" event; do
         rsync $RSYNC_OPTS -e "ssh -p $PORT" "$src/" "$dst/" &&
           log info "已同步: $event" ||
           log error "同步失败: $event"
-      done 
+      done
     fi
   done
 }
@@ -164,5 +167,3 @@ main() {
 
 main
 trap 'pkill -P $$; exit' SIGINT
-
-
