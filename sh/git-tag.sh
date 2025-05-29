@@ -128,7 +128,7 @@ bump_version() {
 
   # Bump version using semver-tool if available
   if command -v semver &>/dev/null; then
-    NEXT_VERSION="v$(semver bump "$BUMP_TYPE" "${CURRENT_VERSION#v}")"
+    NEXT_VERSION="v$(semver -i "$BUMP_TYPE" "${CURRENT_VERSION#v}")"
   else
     # Fallback version bump logic
     IFS='.' read -ra PARTS <<<"${CURRENT_VERSION#v}"
