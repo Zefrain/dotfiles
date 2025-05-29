@@ -136,9 +136,6 @@ bump_version() {
   # Update version in package.json (example)
   # sed -i "s/\"version\": \".*\"/\"version\": \"${NEW_VERSION#v}\"/" package.json
 
-  # Create new git tag
-  # git tag -a "$NEW_VERSION" -m "Version $NEW_VERSION"
-
   echo "$NEW_VERSION"
 }
 
@@ -174,19 +171,21 @@ remove_old_version() {
 
 git_handle_version() {
   # Bump version and get new version number
-  NEXT_VERSION=$(bump_version)
+  NEW_VERSION=$(bump_version)
 
   remove_old_version || echo "Failed to remove old versions. Exiting."
-  git tag "$NEXT_VERSION" || {
-    echo "Failed to create new tag. Exiting."
-    return 1
-  }
-  git tag -f latest "$NEXT_VERSION" || {
+
+  # Create new git tag only if current commit is not already tagged
+  if ! git tag --points-at HEAD | grep -q "^$NEW_VERSION$"; then
+    git tag -a "$NEW_VERSION" -m "Version $NEW_VERSION"
+  fi
+
+  git tag -f latest "$NEW_VERSION" || {
     echo "Failed to update latest tag. Exiting."
     return 1
   }
 
-  if ! git push || ! git push --tags -f; then
+  if ! git push || ! git push --tags; then
     echo "Failed to push tags. Exiting."
     return 1
   fi
