@@ -20,6 +20,9 @@ get_os_type() {
 }
 
 install_dependencies() {
+
+  packages_to_install=(gh)
+
   if [ "$OSTYPE" == "Darwin" ]; then
     if ! command -v brew &>/dev/null; then
       echo "Homebrew is not installed. Please install it from https://brew.sh/."
@@ -32,24 +35,34 @@ install_dependencies() {
 
     if [[ "$ID" == "ubuntu" || "$ID" == "debian" ]]; then
       sudo apt-get update
-      sudo apt-get install -y gh
+      sudo apt-get install -y "${packages_to_install[@]}" || {
+        echo "Failed to install gh using apt. Trying snap..."
+        if ! command -v snap &>/dev/null; then
+          echo "Snap is not installed. Please install it first."
+          return 1
+        fi
+        sudo snap install gh
+      }
       if command -v dnf &>/dev/null; then
-        sudo dnf install -y gh
+        sudo dnf install -y "${packages_to_install[@]}"
       elif command -v yum &>/dev/null; then
-        sudo yum install -y gh
+        sudo yum install -y "${packages_to_install[@]}"
       else
         echo "Neither dnf nor yum found. Cannot install gh."
         return 1
       fi
     elif [[ "$ID" == "arch" ]]; then
-      sudo pacman -S --noconfirm gh
+      sudo pacman -S --noconfirm "${packages_to_install[@]}" || {
+        echo "Failed to install gh using pacman. Please install it manually."
+        return 1
+      }
     else
       echo "Unsupported Linux distribution: $ID"
       return 1
     fi
 
     if ! command -v gh &>/dev/null; then
-      echo "gh CLI is not installed. Please install it using your package manager."
+      echo "Packages installed failed. Please install it manually."
       return 1
     fi
   elif [ "$OSTYPE" == "Windows" ]; then
@@ -58,6 +71,13 @@ install_dependencies() {
   else
     echo "Unsupported OS type: $OSTYPE"
     return 1
+  fi
+
+  if command -v nvm &>/dev/null; then
+    nvm install semver || {
+      echo "Failed to install semver using nvm. Please install it manually."
+      return 1
+    }
   fi
 }
 
@@ -108,7 +128,7 @@ bump_version() {
 
   # Bump version using semver-tool if available
   if command -v semver &>/dev/null; then
-    NEW_VERSION=$(semver bump "$BUMP_TYPE" "${CURRENT_VERSION#v}")
+    NEXT_VERSION=$(semver bump "$BUMP_TYPE" "${CURRENT_VERSION#v}")
   else
     # Fallback version bump logic
     IFS='.' read -ra PARTS <<<"${CURRENT_VERSION#v}"
@@ -130,13 +150,13 @@ bump_version() {
       PATCH=$((PATCH + 1))
       ;;
     esac
-    NEW_VERSION="v$MAJOR.$MINOR.$PATCH"
+    NEXT_VERSION="v$MAJOR.$MINOR.$PATCH"
   fi
 
   # Update version in package.json (example)
-  # sed -i "s/\"version\": \".*\"/\"version\": \"${NEW_VERSION#v}\"/" package.json
+  # sed -i "s/\"version\": \".*\"/\"version\": \"${NEXT_VERSION#v}\"/" package.json
 
-  echo "$NEW_VERSION"
+  echo "$NEXT_VERSION"
 }
 
 remove_old_version() {
@@ -171,16 +191,16 @@ remove_old_version() {
 
 git_handle_version() {
   # Bump version and get new version number
-  NEW_VERSION=$(bump_version)
+  NEXT_VERSION=$(bump_version)
 
   remove_old_version || echo "Failed to remove old versions. Exiting."
 
   # Create new git tag only if current commit is not already tagged
-  if ! git tag --points-at HEAD | grep -q "^$NEW_VERSION$"; then
-    git tag -a "$NEW_VERSION" -m "Version $NEW_VERSION"
+  if ! git tag --points-at HEAD | grep -q "^$NEXT_VERSION$"; then
+    git tag -a "$NEXT_VERSION" -m "Version $NEXT_VERSION"
   fi
 
-  git tag -f latest "$NEW_VERSION" || {
+  git tag -f latest "$NEXT_VERSION" || {
     echo "Failed to update latest tag. Exiting."
     return 1
   }
