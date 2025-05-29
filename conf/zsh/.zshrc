@@ -129,3 +129,7 @@ if [ ! -S ~/.ssh/ssh_auth_sock ]; then
   find ~/.ssh -type f -not -name '*.pub' -not -name 'known_hosts' -not -name 'config' -exec ssh-add {} + 2> /dev/null
 fi
 export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

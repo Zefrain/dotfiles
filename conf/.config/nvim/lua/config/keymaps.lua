@@ -31,15 +31,6 @@ vim.keymap.set("n", "<leader>si", function()
   end
 end, { noremap = true, silent = true, desc = "Insert inline Bash result without whitespace" })
 
--- Keymap to apply quickfix-only code actions
-vim.keymap.set("n", "<leader>cD", function()
-  vim.lsp.buf.code_action({
-    context = {
-      only = { "quickfix" }, -- Only apply quickfixes
-    },
-  })
-end, { desc = "Fix Diagnostics" })
-
 vim.keymap.set("n", "<leader>fo", function()
   local file_path = vim.fn.expand("%:p")
   vim.fn.jobstart({"open", file_path}, {detach = true})

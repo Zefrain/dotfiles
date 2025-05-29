@@ -6,32 +6,44 @@ declare OSTYPE="Unknown"
 declare RELEASE_CAN_DELETE=1 # 是否可以删除旧版本的 tag 和 release
 
 get_os_type() {
-  uNames=$(uname -s)
-  osName=${uNames:0:4}
-  if [ "$osName" = "Darw" ]; then # Darwin
-    OSTYPE="Darwin"
-  elif [ "$osName" = "Linu" ]; then # Linux
-    OSTYPE="Linux"
-  elif [ "$osName" = "MING" ]; then # MINGW, windows, git-bash
-    OSTYPE="Windows"
-  else
-    OSTYPE="Unknown"
-  fi
+  local uname_s
+  uname_s=$(uname -s)
+  case "$uname_s" in
+    Darwin*)
+      OSTYPE="Darwin"
+      ;;
+    Linux*)
+      OSTYPE="Linux"
+      [ -f /etc/os-release ] && source /etc/os-release
+      ;;
+    MING*|MSYS*|CYGW*)
+      OSTYPE="Windows"
+      ;;
+    *)
+      OSTYPE="Unknown"
+      ;;
+  esac
+  echo "$OSTYPE"
 }
 
 install_dependencies() {
 
   packages_to_install=(gh)
 
-  if [ "$OSTYPE" == "Darwin" ]; then
+  if [[ "$OSTYPE" == "darwin"* ]]; then
     if ! command -v brew &>/dev/null; then
       echo "Homebrew is not installed. Please install it from https://brew.sh/."
       exit 1
     fi
-    brew install gh || true
-  elif [ "$OSTYPE" == "Linux" ]; then
+    brew install gh || {
+      echo "Failed to install gh using Homebrew. Please install it manually."
+      exit 1
+    }
+  elif [[ "$OSTYPE" == "linux"* ]]; then
 
-    source /etc/os-release
+    if [ -f /etc/os-release ]; then
+      . /etc/os-release
+    fi
 
     if [[ "$ID" == "ubuntu" || "$ID" == "debian" ]]; then
       sudo apt-get update
@@ -39,45 +51,57 @@ install_dependencies() {
         echo "Failed to install gh using apt. Trying snap..."
         if ! command -v snap &>/dev/null; then
           echo "Snap is not installed. Please install it first."
-          return 1
+          exit 1
         fi
-        sudo snap install gh
+        sudo snap install gh || {
+          echo "Failed to install gh using snap. Please install it manually."
+          exit 1
+        }
       }
+    elif [[ "$ID" == "fedora" || "$ID" == "rhel" || "$ID" == "centos" ]]; then
       if command -v dnf &>/dev/null; then
-        sudo dnf install -y "${packages_to_install[@]}"
+        sudo dnf install -y "${packages_to_install[@]}" || {
+          echo "Failed to install gh using dnf. Please install it manually."
+          exit 1
+        }
       elif command -v yum &>/dev/null; then
-        sudo yum install -y "${packages_to_install[@]}"
+        sudo yum install -y "${packages_to_install[@]}" || {
+          echo "Failed to install gh using yum. Please install it manually."
+          exit 1
+        }
       else
         echo "Neither dnf nor yum found. Cannot install gh."
-        return 1
+        exit 1
       fi
     elif [[ "$ID" == "arch" ]]; then
       sudo pacman -S --noconfirm "${packages_to_install[@]}" || {
         echo "Failed to install gh using pacman. Please install it manually."
-        return 1
+        exit 1
       }
     else
       echo "Unsupported Linux distribution: $ID"
-      return 1
+      exit 1
     fi
 
     if ! command -v gh &>/dev/null; then
-      echo "Packages installed failed. Please install it manually."
-      return 1
+      echo "Package installation failed. Please install gh manually."
+      exit 1
     fi
-  elif [ "$OSTYPE" == "Windows" ]; then
+  elif [[ "$OSTYPE" == "msys"* || "$OSTYPE" == "cygwin"* || "$OSTYPE" == "win"* ]]; then
     echo "Please install GitHub CLI from https://cli.github.com/."
-    return 1
+    exit 1
   else
     echo "Unsupported OS type: $OSTYPE"
-    return 1
+    exit 1
   fi
 
   if command -v npm &>/dev/null; then
-    npm install -g semver || {
-      echo "Failed to install semver using nvm. Please install it manually."
-      return 1
-    }
+    if ! npm list -g semver &>/dev/null; then
+      npm install -g semver || {
+        echo "Failed to install semver using npm. Please install it manually."
+        exit 1
+      }
+    fi
   fi
 }
 
@@ -118,7 +142,7 @@ bump_version() {
   COMMITS_SINCE_TAG=$(git log --pretty=format:"%s" "$CURRENT_VERSION"..HEAD)
   if [[ -z "$COMMITS_SINCE_TAG" ]]; then
     echo "$CURRENT_VERSION"
-    return 
+    return
   fi
 
   # Determine version bump type
@@ -214,10 +238,12 @@ git_handle_version() {
     return 1
   }
 
-  git push && git push --tags -f || {
+  if git push && git push --tags -f; then
+    :
+  else
     echo "Failed to push tags to remote. Exiting."
-    return 1
-  }
+    exit 1
+  fi
 }
 
 main() {

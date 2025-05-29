@@ -32,7 +32,9 @@ log_error() {
 PLATFORM=$(sh sh/systype.sh)
 
 # Load OS release information for Linux
-[[ $PLATFORM == "linux" ]] && source /etc/os-release || true
+if [[ $PLATFORM == "linux" ]]; then
+    source /etc/os-release
+fi
 
 # Stow directories helper
 stow_dirs() {
@@ -191,6 +193,22 @@ install_fzf() {
   fi
 }
 
+# Install tabby.sh
+install_tabby() {
+  if command -v tabby &>/dev/null; then
+    log_info "Tabby is already installed"
+    return
+  elif [[ $PLATFORM == "linux" ]]; then
+    log_warn "Tabby installation is only supported on Linux "
+    return
+  fi
+
+  log_info "Installing Tabby..."
+  curl -s https://packagecloud.io/install/repositories/eugeny/tabby/script.deb.sh | sudo bash && sudo apt install -y tabby-terminal
+  install_package tabby tabby-terminal tabby
+  return
+}
+
 # macOS package installation
 install_darwin_packages() {
   # Check if Homebrew is installed
@@ -243,6 +261,7 @@ install_packages() {
   install_nvim
   install_spf
   install_fzf
+  install_tabby
 }
 
 # Cleanup symlinks
@@ -268,7 +287,7 @@ init_zsh() {
   install_package zsh
   stow_dirs "$conf_dir" "$HOME" zsh
 
-  ZSH_CUSTOM="$zsh_dir/.oh-my-zsh/custom"
+  ZSH_CUSTOM="$zsh_dir/.oh-my-zsh/custom/plugins"
   mkdir -p "$ZSH_CUSTOM"
 
   # Define plugins and their repositories (compatible with older Bash)
@@ -326,8 +345,11 @@ init_dotfiles() {
   conf) init_conf ;;
   zsh) init_zsh ;;
   vim) init_vim ;;
-  systemd) init_systemd ;;
+  # systemd) init_systemd ;;
   git) init_git ;;
+  spf) install_spf ;;
+  fzf) install_fzf ;;
+  tabby) install_tabby ;;
   *)
     install_packages
     cleanup_symlinks
@@ -336,7 +358,7 @@ init_dotfiles() {
     init_conf
     init_zsh
     init_vim
-    [[ $PLATFORM == "linux" ]] && init_systemd
+    # [[ $PLATFORM == "linux" ]] && init_systemd
     ;;
   esac
 }
