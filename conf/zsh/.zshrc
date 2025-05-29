@@ -57,8 +57,24 @@ export UPDATE_ZSH_DAYS=1
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup..
-plugins=(extract command-not-found macos zsh-syntax-highlighting zsh-autosuggestions
-         emacs web-search colored-man-pages z git git-auto-fetch tmux)
+plugins=(
+  colored-man-pages
+  command-not-found
+  emacs
+  extract
+  fzf
+  git
+  git-auto-fetch
+  git-commit
+  git-prompt
+  macos
+  nvm
+  tmux
+  web-search
+  z
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -100,12 +116,6 @@ export LANG=en_US.UTF-8
 export PATH=/opt/homerew/bin/:$PATH
 
 [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 # pnpm
 export PNPM_HOME="/home/zefrain/.local/share/pnpm"

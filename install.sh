@@ -15,25 +15,6 @@ PLATFORM=$(sh sh/systype.sh)
 [[ $PLATFORM == "linux" ]] && source /etc/os-release || true
 
 # install speicified packages
-install_package_one() {
-  command_line_name="$1"
-  ubuntu_package_name="$2"
-  darwin_package_name="$3"
-
-  if command -v "$command_line_name" &>/dev/null; then
-    return
-  fi
-
-  case $PLATFORM in
-  linux)
-    if [[ "$NAME" == "Ubuntu" ]]; then
-      sudo apt-get update && sudo apt-get install -y "$ubuntu_package_name"
-    fi
-    ;;
-  macos) brew install "$darwin_package_name" ;;
-  esac
-}
-
 stow_dirs() {
   source="$1"
   target="$2"
@@ -49,8 +30,42 @@ stow_dirs() {
   stow -d "$source" -t "$target" -R "${packages[@]}"
 }
 
+install_package_one() {
+  local command_line_name="$1"
+  local ubuntu_package_name="$2"
+  local darwin_package_name="$3"
+
+  # Check if the command or package is already installed
+  if command -v "$command_line_name" &>/dev/null; then
+    echo "$command_line_name is already installed. Skipping."
+    return
+  fi
+
+  case $PLATFORM in
+  linux)
+    if [[ "$NAME" == "Ubuntu" ]]; then
+      if dpkg -s "$ubuntu_package_name" &>/dev/null; then
+        echo "$ubuntu_package_name is already installed (dpkg). Skipping."
+        return
+      fi
+      sudo apt-get update && sudo apt-get install -y "$ubuntu_package_name"
+    fi
+    ;;
+  macos)
+    if brew list --formula | grep -q "^$darwin_package_name\$"; then
+      echo "$darwin_package_name is already installed (brew). Skipping."
+      return
+    fi
+    brew install "$darwin_package_name"
+    ;;
+  esac
+}
+
 install_node() {
   # Check if nvm is already installed
+  if [ -s "$HOME/.nvm/nvm.sh" ]; then
+    . "$HOME/.nvm/nvm.sh"
+  fi
   if command -v nvm &>/dev/null; then
     echo "nvm is already installed."
     return
@@ -101,6 +116,10 @@ install_nvim() {
 }
 
 install_spf() {
+  if command -v spf &>/dev/null; then
+    echo "spf is already installed. Skipping."
+    return
+  fi
   sudo bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
 }
 
@@ -110,14 +129,14 @@ install_fzf() {
 }
 
 # Install macOS-specific packages
-darwin_packages() {
+install_darwin_packages() {
   brew install symlinks stow trash keepassxc luarocks lazygit font-symbols-only-nerd-font font-awesome-terminal-fonts
 
   pip install --break-system-packages pynvim
 }
 
 # Install Linux-specific packages
-linux_packages() {
+install_linux_packages() {
   if [[ $NAME == "Ubuntu" ]]; then
     sudo apt-get update && sudo apt-get install -y \
       build-essential clang-format cmake cscope curl \
@@ -139,8 +158,8 @@ linux_packages() {
 # Platform-specific setup
 install_packages() {
   case $PLATFORM in
-  linux) linux_packages ;;
-  macos) darwin_packages ;;
+  linux) install_linux_packages ;;
+  macos) install_darwin_packages ;;
   esac
 
   install_node
@@ -170,7 +189,6 @@ init_conf() {
 # Initialize Zsh
 init_zsh() {
   stow_dirs "$conf_dir" "$HOME" zsh
-
 
   install_package_one zsh zsh zsh
   ZSH_CUSTOM=$zsh_dir/.oh-my-zsh/custom
