@@ -97,8 +97,7 @@ setup_github_cli() {
     gh auth login
   fi
   # Ensure the repository is set up correctly
-  if ! gh repo view &>/dev/null; then
-    echo "This script must be run in a valid GitHub repository."
+  if ! gh repo view; then
     RELEASE_CAN_DELETE=0
   fi
 }
@@ -117,6 +116,10 @@ bump_version() {
 
   # Analyze commit messages since last tag
   COMMITS_SINCE_TAG=$(git log --pretty=format:"%s" "$CURRENT_VERSION"..HEAD)
+  if [[ -z "$COMMITS_SINCE_TAG" ]]; then
+    echo "$CURRENT_VERSION"
+    return 
+  fi
 
   # Determine version bump type
   BUMP_TYPE="patch"
@@ -128,6 +131,8 @@ bump_version() {
       BUMP_TYPE="minor"
     elif [[ "$commit_msg" =~ ^(fix|docs|style|refactor|perf|test|chore): ]] && [ "$BUMP_TYPE" != "minor" ]; then
       BUMP_TYPE="patch"
+    else
+      continue
     fi
   done <<<"$COMMITS_SINCE_TAG"
 
@@ -165,10 +170,6 @@ bump_version() {
 }
 
 remove_old_version() {
-  if [ $RELEASE_CAN_DELETE -eq 0 ]; then
-    echo "Skipping old version deletion due to previous errors."
-    return
-  fi
 
   TAGS_TO_DELETE=$(git tag --sort=-v:refname | tail -n +$((REMAIN_VERSION)) | tr '\n' ' ')
   echo "Tags to delete: ${TAGS_TO_DELETE// /, }"
@@ -179,9 +180,9 @@ remove_old_version() {
     # 删除本地 tag
     git tag -d "$TAG"
 
-    # 删除远程 tag
-    git push origin ":refs/tags/$TAG"
-
+    # # 删除远程 tag
+    # git push origin ":refs/tags/$TAG"
+    #
     if [[ $RELEASE_CAN_DELETE -eq 0 ]]; then
       echo "Skipping release deletion for tag: $TAG"
       continue
@@ -191,10 +192,8 @@ remove_old_version() {
     fi
 
   done
-
-  echo "Deleting remote latest tag"
-  git tag -d latest
-  git push origin ":refs/tags/latest"
+  # 删除远程 tag
+  git push origin --prune --tags
 
   echo "Old versions deleted successfully."
 }
@@ -215,10 +214,10 @@ git_handle_version() {
     return 1
   }
 
-  if ! git push || ! git push --tags; then
-    echo "Failed to push tags. Exiting."
+  git push && git push --tags -f || {
+    echo "Failed to push tags to remote. Exiting."
     return 1
-  fi
+  }
 }
 
 main() {
