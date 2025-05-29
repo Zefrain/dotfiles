@@ -170,7 +170,7 @@ remove_old_version() {
     return
   fi
 
-  TAGS_TO_DELETE=$(git tag --sort=-v:refname | tail -n +$((REMAIN_VERSION + 1)) | tr '\n' ' ')
+  TAGS_TO_DELETE=$(git tag --sort=-v:refname | tail -n +$((REMAIN_VERSION)) | tr '\n' ' ')
   echo "Tags to delete: ${TAGS_TO_DELETE// /, }"
 
   for TAG in $TAGS_TO_DELETE; do
