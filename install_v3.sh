@@ -47,7 +47,7 @@ stow_dirs() {
     install_package stow
   fi
 
-  stow -d "$source" -t "$target" -R "${packages[@]}"
+  sudo stow -d "$source" -t "$target" -R "${packages[@]}"
   log_info "Stowed packages: ${packages[*]}"
 }
 
@@ -199,7 +199,7 @@ install_darwin_packages() {
   fi
 
   brew install symlinks stow trash keepassxc luarocks lazygit \
-    font-symbols-only-nerd-font font-awesome-terminal-fonts
+    font-symbols-only-nerd-font font-awesome-terminal-fonts tabby
 
   # Install pynvim for Neovim Python support
   python3 -m pip install pynvim --break-system-packages
@@ -216,7 +216,7 @@ install_linux_packages() {
     exuberant-ctags git global gnutls-bin golang \
     keepassxc mono-complete python3-dev ripgrep \
     stow symlinks tmux xclip xsel zsh luarocks \
-    alacritty shellcheck
+    shellcheck
 
   sudo apt purge -y gnome-terminal
 
