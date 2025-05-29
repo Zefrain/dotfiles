@@ -73,7 +73,7 @@ install_dependencies() {
     return 1
   fi
 
-  if command -v nvm &>/dev/null; then
+  if command -v npm &>/dev/null; then
     npm install -g semver || {
       echo "Failed to install semver using nvm. Please install it manually."
       return 1
