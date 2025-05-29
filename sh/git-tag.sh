@@ -186,6 +186,9 @@ remove_old_version() {
     fi
 
   done
+  # 删除远程 tag
+  git push origin ":refs/tags/latest"
+
   echo "Old versions deleted successfully."
 }
 
