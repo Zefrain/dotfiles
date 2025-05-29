@@ -53,6 +53,7 @@ install_node() {
   # Check if nvm is already installed
   if command -v nvm &>/dev/null; then
     echo "nvm is already installed."
+    return
   else
     # Install nvm (Node Version Manager)
     echo "Installing nvm..."
