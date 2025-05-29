@@ -114,3 +114,11 @@ case ":$PATH:" in
   *) export PATH="$PNPM_HOME:$PATH" ;;
 esac
 # pnpm end
+
+# 启动ssh-agent并加载所有私钥
+if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+  eval "$(ssh-agent -s -a ~/.ssh/ssh_auth_sock)" > /dev/null
+  # 加载~/.ssh目录下所有非公钥文件
+  find ~/.ssh -type f -not -name '*.pub' -not -name 'known_hosts' -not -name 'config' -exec ssh-add {} + 2> /dev/null
+fi
+export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock

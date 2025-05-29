@@ -5,7 +5,7 @@ set -euo pipefail
 readonly DEFAULT_PORT=22
 readonly DEFAULT_DST="root@38.80.81.120:/root/$(basename "$PWD")"
 readonly DEFAULT_LOCAL_DIR="$PWD"
-readonly RSYNC_OPTS="-azq --progress --exclude='.*' --exclude='*~'"
+readonly RSYNC_OPTS="-azq --progress --exclude='.*' --exclude='*~' --exclude='.git' --exclude='.svn' --exclude='.DS_Store' --exclude='*.swp' "
 readonly POLL_INTERVAL=10
 declare -a SYNC_MAPPINGS=()
 
@@ -21,7 +21,7 @@ log() {
   case "$level" in
   info) echo -e "${COLOR_GREEN}[INFO] $msg${COLOR_RESET}" ;;
   error) echo -e "${COLOR_RED}[ERROR] $msg${COLOR_RESET}" >&2 ;;
-  stone) echo -e "${COLOR_YELLOW}[STONE] $msg${COLOR_RESET}" ;;
+  tips) echo -e "${COLOR_YELLOW}[TIPS] $msg${COLOR_RESET}" ;;
   esac
 }
 
@@ -48,11 +48,11 @@ check_dependencies() {
 # ========= 输入与验证 =========
 prompt_for_local_dirs() {
   while true; do
-    log info "输入本地目录（回车使用当前目录: ${DEFAULT_LOCAL_DIR}，输入 'exit' 结束）"
+    log info "输入本地目录（回车使用当前目录: ${DEFAULT_LOCAL_DIR}，输入 'f' 结束）"
     read -r -p "> " local_dir
     local_dir=$(trim "$local_dir")
 
-    [[ "$local_dir" == "exit" ]] && break
+    [[ "$local_dir" == "f" ]] && break
     [[ -z "$local_dir" ]] && local_dir="$DEFAULT_LOCAL_DIR"
 
     if [ ! -d "$local_dir" ]; then
@@ -68,11 +68,11 @@ prompt_for_remote_targets() {
   local local_dir="$1"
   while true; do
     log info "为本地目录 $local_dir 添加远程目标，格式: user@host:/remote/path"
-    log info "回车使用默认目标: $DEFAULT_DST, 输入 'exit' 结束添加"
+    log info "回车使用默认目标: $DEFAULT_DST, 输入 'f' 结束添加"
     read -r -p "> " dst
     dst=$(trim "$dst")
 
-    [[ "$dst" == "exit" ]] && break
+    [[ "$dst" == "f" ]] && break
     [[ -z "$dst" ]] && dst="$DEFAULT_DST"
 
     if [[ "$dst" != *:* ]]; then
@@ -86,7 +86,7 @@ prompt_for_remote_targets() {
     log info "为 $user_host 设置SSH端口 (默认: $DEFAULT_PORT)"
     read -r -p "> " port
     port=$(trim "$port")
-    [[ "$port" == "exit" ]] && break
+    [[ "$port" == "f" ]] && break
     [[ -z "$port" ]] && port="$DEFAULT_PORT"
 
     if ! [[ "$port" =~ ^[0-9]+$ ]]; then
@@ -103,7 +103,7 @@ prompt_for_remote_targets() {
     fi
 
     SYNC_MAPPINGS+=("$mapping")
-    log stone "添加映射: $local_dir => $user_host:$remote_path (port $port)"
+    log tips "添加映射: $local_dir => $user_host:$remote_path (port $port)"
   done
 }
 
@@ -123,6 +123,11 @@ validate_remote_path() {
 
 # ========= 同步逻辑 =========
 sync_loop() {
+  if [[ "${#SYNC_MAPPINGS[@]}" -eq 0 ]]; then
+    log error "没有设置任何同步映射"
+    exit 1
+  fi
+
   for mapping in "${SYNC_MAPPINGS[@]}"; do
     IFS="|" read -r local_dir user_host remote_path port <<<"$mapping"
 
@@ -138,6 +143,7 @@ sync_loop() {
       done
     else
       log info "启动实时同步: $local_dir => $user_host:$remote_path, $port"
+      rsync $RSYNC_OPTS -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/"
       fswatch -0 "$local_dir" | while read -r -d "" event; do
         rsync $RSYNC_OPTS -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/" &&
           log info "$(date '+%m-%d %H:%M:%S') 已同步: $event" ||

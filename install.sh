@@ -224,6 +224,8 @@ init_dotfiles() {
   vim) init_vim ;;
   clang_format) init_clangformat ;;
   *) # Default setup
+    install_packages
+    cleanup_symlinks
     init_git
     install_scripts
     init_conf

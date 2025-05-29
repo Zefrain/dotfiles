@@ -57,6 +57,10 @@ _flag_env() {
 
     # Pyenv
     export PYENV_ROOT="$HOME/.pyenv"
+
+    # Musl-cross 环境
+    export MUSL_CROSS_ROOT=$(brew --prefix musl-cross)
+    export PATH=$MUSL_CROSS_ROOT/bin:$PATH
 }
 
 # Include paths for compilation
