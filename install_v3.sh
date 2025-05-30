@@ -33,7 +33,7 @@ PLATFORM=$(sh sh/systype.sh)
 
 # Load OS release information for Linux
 if [[ $PLATFORM == "linux" ]]; then
-    source /etc/os-release
+  source /etc/os-release
 fi
 
 # Stow directories helper
@@ -195,18 +195,12 @@ install_fzf() {
 
 # Install tabby.sh
 install_tabby() {
-  if command -v tabby &>/dev/null; then
-    log_info "Tabby is already installed"
-    return
-  elif [[ $PLATFORM == "linux" ]]; then
-    log_warn "Tabby installation is only supported on Linux "
+  if [[ $PLATFORM == "linux" ]]; then
+    log_info "Installing Tabby..."
+    curl -s https://packagecloud.io/install/repositories/eugeny/tabby/script.deb.sh | sudo bash && sudo apt install -y tabby-terminal
+    install_package tabby tabby-terminal tabby
     return
   fi
-
-  log_info "Installing Tabby..."
-  curl -s https://packagecloud.io/install/repositories/eugeny/tabby/script.deb.sh | sudo bash && sudo apt install -y tabby-terminal
-  install_package tabby tabby-terminal tabby
-  return
 }
 
 # macOS package installation
