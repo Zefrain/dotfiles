@@ -21,6 +21,7 @@
 [submodule "workflows/Ariafred"]
 	path = workflows/Ariafred
 	url = https://github.com/Wildog/Ariafred.git
+	branch = master
 [submodule "conf/zsh/.fzf"]
 	path = conf/zsh/.fzf
 	url = https://github.com/junegunn/fzf.git
