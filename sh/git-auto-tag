@@ -6,26 +6,24 @@ declare OSTYPE="Unknown"
 declare RELEASE_CAN_DELETE=1 # 是否可以删除旧版本的 tag 和 release
 declare TAGS_EXCLUDE_LIST
 
-
 get_os_type() {
   local uname_s
   uname_s=$(uname -s)
   case "$uname_s" in
-    Darwin*)
-      OSTYPE="Darwin"
-      ;;
-    Linux*)
-      OSTYPE="Linux"
-      [ -f /etc/os-release ] && source /etc/os-release
-      ;;
-    MING*|MSYS*|CYGW*)
-      OSTYPE="Windows"
-      ;;
-    *)
-      OSTYPE="Unknown"
-      ;;
+  Darwin*)
+    OSTYPE="Darwin"
+    ;;
+  Linux*)
+    OSTYPE="Linux"
+    [ -f /etc/os-release ] && source /etc/os-release
+    ;;
+  MING* | MSYS* | CYGW*)
+    OSTYPE="Windows"
+    ;;
+  *)
+    OSTYPE="Unknown"
+    ;;
   esac
-  echo "$OSTYPE"
 }
 
 install_dependencies() {
@@ -256,15 +254,7 @@ git_handle_version() {
 }
 
 prompt_for_excluding() {
-  echo "Do you want to exclude any tags from deletion? (y/n)"
-  read -r exclude_choice
-  if [[ "$exclude_choice" == "y" || "$exclude_choice" == "Y" ]]; then
-    echo "Enter tags to exclude (space-separated):"
-    read -r TAGS_EXCLUDE_LIST
-    TAGS_EXCLUDE_LIST=($TAGS_EXCLUDE_LIST)
-  else
-    TAGS_EXCLUDE_LIST=()
-  fi
+  read -p "Enter tags to exclude from deletion (space-separated): " -a TAGS_EXCLUDE_LIST
 }
 
 main() {
@@ -273,7 +263,6 @@ main() {
   setup_github_cli || { echo "Failed to set up GitHub CLI. Exiting."; }
   git_handle_version || { echo "Failed to handle versioning. Exiting."; }
 }
-
 
 trap '' SIGINT SIGTERM SIGQUIT
 
