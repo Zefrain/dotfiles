@@ -6,18 +6,6 @@
 	path = conf/emacs/.spacemacs.d/layer/journal
 	url = https://github.com/borgnix/spacemacs-journal
 	branch = master
-[submodule "conf/tmux/.tmux/plugins/tpm"]
-	path = conf/tmux/.tmux/plugins/tpm
-	url = https://github.com/tmux-plugins/tpm
-	branch = master
-[submodule "conf/tmux/.tmux/plugins/tmux-sensible"]
-	path = conf/tmux/.tmux/plugins/tmux-sensible
-	url = https://github.com/tmux-plugins/tmux-sensible
-	branch = master
-[submodule "conf/tmux/.tmux/plugins/tmux-themepack"]
-	path = conf/tmux/.tmux/plugins/tmux-themepack
-	url = https://github.com/jimeh/tmux-themepack
-	branch = master
 [submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs
