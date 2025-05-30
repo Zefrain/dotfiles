@@ -1,27 +1,27 @@
 [submodule "conf/zsh/oh-my-zsh"]
 	path = conf/zsh/.oh-my-zsh
 	url = https://github.com/robbyrussell/oh-my-zsh
-	master = master
+	branch = master
 [submodule "conf/emacs/.spacemacs.d/layer/journal"]
 	path = conf/emacs/.spacemacs.d/layer/journal
 	url = https://github.com/borgnix/spacemacs-journal
-	master = master
+	branch = master
 [submodule "conf/tmux/.tmux/plugins/tpm"]
 	path = conf/tmux/.tmux/plugins/tpm
 	url = https://github.com/tmux-plugins/tpm
-	master = master
+	branch = master
 [submodule "conf/tmux/.tmux/plugins/tmux-sensible"]
 	path = conf/tmux/.tmux/plugins/tmux-sensible
 	url = https://github.com/tmux-plugins/tmux-sensible
-	master = master
+	branch = master
 [submodule "conf/tmux/.tmux/plugins/tmux-themepack"]
 	path = conf/tmux/.tmux/plugins/tmux-themepack
 	url = https://github.com/jimeh/tmux-themepack
-	master = master
+	branch = master
 [submodule "conf/emacs/.emacs.d"]
 	path = conf/emacs/.emacs.d
 	url = https://github.com/syl20bnr/spacemacs
-	develop = upstream/develop
+	branch = develop
 [submodule "conf/zsh/omz_custom/plugins/zsh-autosuggestions"]
 	path = conf/zsh/omz_custom/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions
