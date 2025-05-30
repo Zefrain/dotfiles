@@ -3,10 +3,10 @@ set -euo pipefail
 
 # ========= 配置 =========
 readonly DEFAULT_PORT=22
-readonly DEFAULT_DST="root@38.80.81.120:/root/$(basename "$PWD")"
-readonly DEFAULT_LOCAL_DIR="$PWD"
-readonly RSYNC_OPTS="-azq --progress --exclude='.*' --exclude='*~' --exclude='.git' --exclude='.svn' --exclude='.DS_Store' --exclude='*.swp' "
+readonly DEFAULT_DST="root@38.80.81.120:/root/$(basename "$PWD")/"
+readonly DEFAULT_LOCAL_DIR="$PWD/"
 readonly POLL_INTERVAL=10
+declare RSYNC_OPTS="-azq --progress --exclude='.*/' --exclude='*~' --exclude='.git/' --exclude='.svn/' --exclude='.DS_Store' --exclude='*.swp' "
 declare -a SYNC_MAPPINGS=()
 
 # ========= 日志 =========
@@ -48,7 +48,8 @@ check_dependencies() {
 # ========= 输入与验证 =========
 prompt_for_local_dirs() {
   while true; do
-    log info "输入本地目录（回车使用当前目录: ${DEFAULT_LOCAL_DIR}，输入 'f' 结束）"
+    log info "输入本地目录，'f' 结束添加"
+    log tips "默认: $DEFAULT_LOCAL_DIR"
     read -r -p "> " local_dir
     local_dir=$(trim "$local_dir")
 
@@ -67,8 +68,8 @@ prompt_for_local_dirs() {
 prompt_for_remote_targets() {
   local local_dir="$1"
   while true; do
-    log info "为本地目录 $local_dir 添加远程目标，格式: user@host:/remote/path"
-    log info "回车使用默认目标: $DEFAULT_DST, 输入 'f' 结束添加"
+    log info "为本地目录 $local_dir 添加远程目标，格式: user@host:/remote/path, 'f' 结束添加"
+    log tips "默认: $DEFAULT_DST"
     read -r -p "> " dst
     dst=$(trim "$dst")
 
@@ -83,7 +84,8 @@ prompt_for_remote_targets() {
     local user_host="${dst%%:*}"
     local remote_path="${dst#*:}"
 
-    log info "为 $user_host 设置SSH端口 (默认: $DEFAULT_PORT)"
+    log info "为 $user_host 设置SSH端口"
+    log tips "默认: 22"
     read -r -p "> " port
     port=$(trim "$port")
     [[ "$port" == "f" ]] && break
@@ -105,6 +107,8 @@ prompt_for_remote_targets() {
     SYNC_MAPPINGS+=("$mapping")
     log tips "添加映射: $local_dir => $user_host:$remote_path (port $port)"
   done
+
+  prompt_for_rsync_opts
 }
 
 validate_remote_path() {
@@ -153,6 +157,19 @@ sync_loop() {
   done
 }
 
+prompt_for_rsync_opts() {
+  log info "输入rsync选项: "
+  log tips "默认: ${RSYNC_OPTS}"
+  read -r -p "> " input_opts
+  input_opts=$(trim "$input_opts")
+  if [[ -n "$input_opts" ]]; then
+    RSYNC_OPTS="$input_opts"
+    log info "已设置rsync选项: $RSYNC_OPTS"
+  else
+    log info "使用默认rsync选项: $RSYNC_OPTS"
+  fi
+}
+
 # ========= 主程序 =========
 main() {
   check_dependencies
@@ -160,5 +177,4 @@ main() {
   sync_loop
 }
 
-trap 'pkill -P $$; exit' SIGINT
 main
