@@ -4,6 +4,8 @@ readonly REMAIN_VERSION=3 # 保留最新的版本数
 
 declare OSTYPE="Unknown"
 declare RELEASE_CAN_DELETE=1 # 是否可以删除旧版本的 tag 和 release
+declare TAGS_EXCLUDE_LIST
+
 
 get_os_type() {
   local uname_s
@@ -199,6 +201,13 @@ remove_old_version() {
   echo "Tags to delete: ${TAGS_TO_DELETE// /, }"
 
   for TAG in $TAGS_TO_DELETE; do
+
+    # Check if tag is in the exclude list
+    if [[ " ${TAGS_EXCLUDE_LIST[@]} " =~ " $TAG " ]]; then
+      echo "Skipping tag: $TAG (excluded)"
+      continue
+    fi
+
     echo "Deleting tag: $TAG"
 
     # 删除本地 tag
@@ -246,8 +255,21 @@ git_handle_version() {
   fi
 }
 
+prompt_for_excluding() {
+  echo "Do you want to exclude any tags from deletion? (y/n)"
+  read -r exclude_choice
+  if [[ "$exclude_choice" == "y" || "$exclude_choice" == "Y" ]]; then
+    echo "Enter tags to exclude (space-separated):"
+    read -r TAGS_EXCLUDE_LIST
+    TAGS_EXCLUDE_LIST=($TAGS_EXCLUDE_LIST)
+  else
+    TAGS_EXCLUDE_LIST=()
+  fi
+}
+
 main() {
   get_os_type
+  prompt_for_excluding || { echo "Failed to get tags to exclude. Exiting."; }
   setup_github_cli || { echo "Failed to set up GitHub CLI. Exiting."; }
   git_handle_version || { echo "Failed to handle versioning. Exiting."; }
 }
