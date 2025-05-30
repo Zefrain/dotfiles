@@ -121,7 +121,7 @@ setup_github_cli() {
     gh auth login
   fi
   # Ensure the repository is set up correctly
-  if ! gh repo view; then
+  if ! gh repo view &>/dev/null; then
     RELEASE_CAN_DELETE=0
   fi
 }
@@ -251,5 +251,8 @@ main() {
   setup_github_cli || { echo "Failed to set up GitHub CLI. Exiting."; }
   git_handle_version || { echo "Failed to handle versioning. Exiting."; }
 }
+
+
+trap '' SIGINT SIGTERM SIGQUIT
 
 main
