@@ -259,7 +259,7 @@ git_handle_version() {
 }
 
 prompt_for_excluding() {
-  read -p "Enter tags to exclude from deletion (space-separated): " -a TAGS_EXCLUDE_LIST
+  read -p "Enter tags to exclude from deletion (space-separated), 'all' to skip deletion: " -a TAGS_EXCLUDE_LIST
 }
 
 main() {
