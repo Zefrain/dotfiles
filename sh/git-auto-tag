@@ -195,6 +195,11 @@ bump_version() {
 
 remove_old_version() {
 
+  if [[ "${TAGS_EXCLUDE_LIST}" == "all" ]]; then
+    echo "Excluding all tags from deletion."
+    return 0
+  fi
+
   TAGS_TO_DELETE=$(git tag --sort=-v:refname | tail -n +$((REMAIN_VERSION)) | tr '\n' ' ')
   echo "Tags to delete: ${TAGS_TO_DELETE// /, }"
 
