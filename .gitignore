@@ -12,3 +12,5 @@ conf/tmux/.tmux/plugins
 .spacemacs.env
 conf/.config/nvim/lazy-lock.json
 conf/.config/nvim/lazy-lock.json
+
+workflows/Ariafred
