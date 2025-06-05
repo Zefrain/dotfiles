@@ -284,7 +284,28 @@ init_git() {
   log_info "Git submodules initialized"
 }
 
-init_dotfiles() {
+create_sudo_askpass() {
+  # Prompt once for sudo -A -E password
+  read -rs -p "Enter your sudo -A -E password (will be used temporarily): " PASSWORD
+  echo
+  export SUDO_PASSWORD="$PASSWORD"
+
+  # Setup SUDO_ASKPASS script
+  ASKPASS_SCRIPT="$(mktemp)"
+  cat >"$ASKPASS_SCRIPT" <<EOF
+#!/bin/bash
+echo "\$SUDO_PASSWORD"
+EOF
+  chmod +x "$ASKPASS_SCRIPT"
+  export SUDO_ASKPASS="$ASKPASS_SCRIPT"
+
+  # Ensure cleanup
+  trap 'rm -f "$ASKPASS_SCRIPT"' EXIT
+}
+
+
+main() {
+  create_sudo_askpass
   case "${1:-}" in
   packages) install_packages ;;
   cleanup) cleanup_symlinks ;;
@@ -307,20 +328,4 @@ init_dotfiles() {
   esac
 }
 
-# Prompt once for sudo -A -E password
-read -rs -p "Enter your sudo -A -E password (will be used temporarily): " PASSWORD
-echo
-export SUDO_PASSWORD="$PASSWORD"
-
-# Setup SUDO_ASKPASS script
-ASKPASS_SCRIPT="$(mktemp)"
-cat >"$ASKPASS_SCRIPT" <<EOF
-#!/bin/bash
-echo "\$SUDO_PASSWORD"
-EOF
-chmod +x "$ASKPASS_SCRIPT"
-export SUDO_ASKPASS="$ASKPASS_SCRIPT"
-
-# Ensure cleanup
-trap 'rm -f "$ASKPASS_SCRIPT"' EXIT
-init_dotfiles "${1:-}"
+main "${1:-}"
