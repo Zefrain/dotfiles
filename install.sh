@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
 # Define directories
 dotfiles_dir="$(dirname "$(realpath "$0")")"
@@ -8,158 +8,225 @@ conf_dir="$dotfiles_dir/conf"
 zsh_dir="$conf_dir/zsh"
 systemd_dir="$dotfiles_dir/systemd"
 
+# Color codes for logging
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Logging functions
+log_info() { printf "${GREEN}[INFO]${NC} %s\n" "$1"; }
+log_warn() { printf "${YELLOW}[WARN]${NC} %s\n" "$1"; }
+log_error() {
+  printf "${RED}[ERROR]${NC} %s\n" "$1" >&2
+  exit 1
+}
+
 # Detect platform
 PLATFORM=$(sh sh/systype.sh)
 
 # Load OS release information for Linux
-[[ $PLATFORM == "linux" ]] && source /etc/os-release || true
+[[ $PLATFORM == "linux" ]] && source /etc/os-release
 
-# install speicified packages
+# Stow directories helper
 stow_dirs() {
-  source="$1"
-  target="$2"
-
+  local source="$1"
+  local target="$2"
   shift 2
-  packages=("$@")
+  local packages=("$@")
 
-  if [[ ! -d "$target" ]]; then
-    mkdir -p "$target"
-  fi
+  [[ ! -d "$target" ]] && mkdir -p "$target"
 
-  install_package_one stow stow stow
-  stow -d "$source" -t "$target" -R "${packages[@]}"
+  install_packages_entry stow
+  sudo -A -E stow -d "$source" -t "$target" -R "${packages[@]}"
+  log_info "Stowed packages: ${packages[*]}"
 }
 
-install_package_one() {
-  local command_line_name="$1"
-  local ubuntu_package_name="$2"
-  local darwin_package_name="$3"
+# Package installation handler
+install_packages_entry() {
 
-  # Check if the command or package is already installed
-  if command -v "$command_line_name" &>/dev/null; then
-    echo "$command_line_name is already installed. Skipping."
-    return
-  fi
+  local packages=("$@")
+  local to_install=()
+  [[ ${#packages[@]} -eq 0 ]] && return
 
   case $PLATFORM in
   linux)
-    if [[ "$NAME" == "Ubuntu" ]]; then
-      if dpkg -s "$ubuntu_package_name" &>/dev/null; then
-        echo "$ubuntu_package_name is already installed (dpkg). Skipping."
-        return
+    [[ "$NAME" != "Ubuntu" ]] && return
+
+    for pkg in "${packages[@]}"; do
+      if dpkg -s "$pkg" &>/dev/null; then
+        log_info "$pkg is already installed"
+      else
+        to_install+=("$pkg")
       fi
-      sudo apt-get update && sudo apt-get install -y "$ubuntu_package_name"
+    done
+
+    if [[ ${#to_install[@]} -gt 0 ]]; then
+      sudo -A -E apt update
+      sudo -A -E apt-get install -y "${to_install[@]}"
     fi
     ;;
   macos)
-    if brew list --formula | grep -q "^$darwin_package_name\$"; then
-      echo "$darwin_package_name is already installed (brew). Skipping."
-      return
+    for pkg in "${packages[@]}"; do
+      if ! brew info --json=v2 "$pkg" 2>/dev/null | jq -e '(.formulae + .casks)[]?.installed | length > 0' >/dev/null; then
+        to_install+=("$pkg")
+      else
+        log_info "$pkg is already installed"
+      fi
+    done
+
+    if [[ ${#to_install[@]} -gt 0 ]]; then
+      brew update
+      brew install "${to_install[@]}"
     fi
-    brew install "$darwin_package_name"
+    ;;
+  *)
+    log_warn "Unsupported platform for $pkg installation"
+    return 1
     ;;
   esac
 }
 
 install_node() {
-  # Check if nvm is already installed
-  if [ -s "$HOME/.nvm/nvm.sh" ]; then
-    . "$HOME/.nvm/nvm.sh"
-  fi
-  if command -v nvm &>/dev/null; then
-    echo "nvm is already installed."
+  if command -v node &>/dev/null; then
+    log_info "Node.js is already installed"
     return
-  else
-    # Install nvm (Node Version Manager)
-    echo "Installing nvm..."
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
-
-    # Source the NVM script to make it available in the current session
-    export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
-
-    echo "nvm installation complete."
   fi
 
-  # Verify nvm is now available
-  if command -v nvm &>/dev/null; then
-    echo "nvm is available."
+  export NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+  if [[ ! -d "$NVM_DIR" ]]; then
+    log_info "Installing nvm..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.0/install.sh | bash
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  fi
 
-    # Check if npm is installed
-    if command -v npm &>/dev/null; then
-      echo "npm is already installed."
-    else
-      echo "npm is not installed. Installing Node.js (LTS)..."
+  if ! command -v nvm &>/dev/null; then
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+  fi
 
-      # List available LTS versions and install the latest one
-      nvm ls-remote --lts
-      nvm install --lts
+  if ! command -v node &>/dev/null; then
+    log_info "Installing Node.js LTS..."
+    nvm install --lts
+  fi
 
-      echo "npm and Node.js (LTS) installation complete."
-    fi
-  else
-    echo "Error: nvm could not be installed. Please check your setup."
-    return 1
+  if ! command -v node &>/dev/null; then
+    log_error "Node.js installation failed"
   fi
 }
 
 install_nvim() {
   if command -v nvim &>/dev/null; then
+    log_info "Neovim is already installed"
     return
   fi
 
-  if [[ ! -d "neovim" ]]; then
+  case $PLATFORM in
+  macos)
+    brew install neovim
+    ;;
+  linux)
+    local build_dir="/tmp/neovim_build"
+    mkdir -p "$build_dir" && cd "$build_dir"
+    log_info "Building Neovim from source..."
     git clone --depth 1 https://github.com/neovim/neovim.git
-  fi
-  cd neovim && make CMAKE_BUILD_TYPE=Release && sudo make install
-  cd .. && rm -rf neovim
+    cd neovim && make CMAKE_BUILD_TYPE=Release && sudo -A -E make install
+    cd "$dotfiles_dir"
+    rm -rf "$build_dir"
+    ;;
+  esac
 }
 
 install_spf() {
   if command -v spf &>/dev/null; then
-    echo "spf is already installed. Skipping."
+    log_info "Superfile is already installed"
     return
   fi
-  sudo bash -c "$(curl -sLo- https://superfile.netlify.app/install.sh)"
+
+  log_info "Installing Superfile..."
+  curl -sLo /tmp/install_spf.sh https://superfile.netlify.app/install.sh
+  chmod +x /tmp/install_spf.sh
+  sudo -A -E /tmp/install_spf.sh
+  rm -f /tmp/install_spf.sh
 }
 
 install_fzf() {
-  # install fzf
-  ~/.fzf/install --all
-}
+  if command -v fzf &>/dev/null; then
+    log_info "fzf is already installed"
+    return
+  fi
 
-# Install macOS-specific packages
-install_darwin_packages() {
-  brew install symlinks stow trash keepassxc luarocks lazygit font-symbols-only-nerd-font font-awesome-terminal-fonts
+  case $PLATFORM in
+  macos)
+    brew install fzf
+    ;;
+  linux)
+    if [[ "$NAME" == "Ubuntu" ]]; then
+      sudo -A -E apt-get install -y fzf
+    else
+      log_info "Installing fzf manually..."
+      local fzf_dir="/tmp/fzf_install"
+      git clone --depth 1 https://github.com/junegunn/fzf.git "$fzf_dir"
+      "$fzf_dir/install" --all
+      rm -rf "$fzf_dir"
+    fi
+    ;;
+  *)
+    log_warn "fzf installation not supported on this platform"
+    return
+    ;;
+  esac
 
-  pip install --break-system-packages pynvim
-}
-
-# Install Linux-specific packages
-install_linux_packages() {
-  if [[ $NAME == "Ubuntu" ]]; then
-    sudo apt-get update && sudo apt-get install -y \
-      build-essential clang-format cmake cscope curl \
-      exuberant-ctags git global gnutls-bin golang \
-      keepassxc mono-complete python3-dev ripgrep \
-      stow symlinks tmux xclip xsel zsh luarocks alacritty shellcheck
-
-    sudo apt purge -y gnome-terminal
-
-    # Install lazygit_
-    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | \grep -Po '"tag_name": *"v\K[^"]*')
-    curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-    tar xf lazygit.tar.gz lazygit
-    sudo install lazygit -D -t /usr/local/bin/
-    rm -rf lazygit.tar.gz lazygit
+  if command -v fzf &>/dev/null; then
+    log_info "Configuring fzf shell integration..."
+    "$(command -v fzf)" --install --zsh
   fi
 }
 
-# Platform-specific setup
+install_darwin_packages() {
+  if ! command -v brew &>/dev/null; then
+    log_error "Homebrew not found. Please install it first: https://brew.sh"
+  fi
+
+  install_packages_entry symlinks stow trash keepassxc luarocks lazygit \
+    font-symbols-only-nerd-font font-awesome-terminal-fonts tabby
+
+  python3 -m pip install pynvim --break-system-packages
+}
+
+install_linux_packages() {
+  source /etc/os-release || true
+  [[ "$NAME" != "Ubuntu" ]] && return
+
+  curl -s https://packagecloud.io/install/repositories/eugeny/tabby/script.deb.sh |
+    sudo -A -E bash
+  sudo -A -E apt install -y tabby-terminal
+
+  install_packages_entry \
+    build-essential clang-format cmake cscope curl \
+    exuberant-ctags git global gnutls-bin golang \
+    keepassxc mono-complete python3-dev ripgrep \
+    stow symlinks tmux xclip xsel zsh luarocks \
+    shellcheck tabby-terminal
+
+  sudo -A -E apt purge -y gnome-terminal
+
+  if ! command -v lazygit &>/dev/null; then
+    log_info "Installing lazygit..."
+    LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" |
+      grep -Po '"tag_name": *"v\K[^"]*')
+    curl -Lo lazygit.tar.gz \
+      "https://github.com/jesseduffield/lazygit/releases/download/v${LAZYGIT_VERSION}/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+    tar xf lazygit.tar.gz lazygit
+    sudo -A -E install lazygit /usr/local/bin/
+    rm lazygit.tar.gz lazygit
+  fi
+}
+
 install_packages() {
   case $PLATFORM in
   linux) install_linux_packages ;;
   macos) install_darwin_packages ;;
+  *) log_warn "Unsupported platform: $PLATFORM" ;;
   esac
 
   install_node
@@ -168,81 +235,67 @@ install_packages() {
   install_fzf
 }
 
-# Fix broken symlinks
 cleanup_symlinks() {
-  install_package_one symlinks symlinks symlinks
-  sudo symlinks -d /usr/local/bin/ "$HOME"
+  install_packages_entry symlinks
+  sudo -A -E symlinks -d /usr/local/bin/ "$HOME"
+  log_info "Broken symlinks cleaned"
 }
 
-# Initialize shell scripts
 install_scripts() {
   stow_dirs "$dotfiles_dir" "/usr/local/bin/" sh
 }
 
-# Initialize configuration files
 init_conf() {
   mkdir -p "$HOME/.config/clash"
-
   stow_dirs "$conf_dir" "$HOME" emacs aria2 tmux
 }
 
-# Initialize Zsh
 init_zsh() {
+  install_packages_entry zsh
   stow_dirs "$conf_dir" "$HOME" zsh
 
-  install_package_one zsh zsh zsh
-  ZSH_CUSTOM=$zsh_dir/.oh-my-zsh/custom
+  ZSH_CUSTOM="$zsh_dir/.oh-my-zsh/custom/plugins"
   mkdir -p "$ZSH_CUSTOM"
 
-  # Clone plugins if not already present
-  for plugin in zsh-syntax-highlighting zsh-autosuggestions; do
+  plugins=(
+    "zsh-syntax-highlighting:https://github.com/zsh-users/zsh-syntax-highlighting"
+    "zsh-autosuggestions:https://github.com/zsh-users/zsh-autosuggestions"
+  )
+
+  for plugin_spec in "${plugins[@]}"; do
+    plugin="${plugin_spec%%:*}"
+    url="${plugin_spec#*:}"
     plugin_dir="$ZSH_CUSTOM/$plugin"
     if [[ ! -d "$plugin_dir" ]]; then
-      git clone "https://github.com/zsh-users/$plugin.git" "$plugin_dir"
+      log_info "Cloning $plugin plugin..."
+      git clone "$url" "$plugin_dir"
     fi
   done
 }
 
-# Initialize Vim configuration
 init_vim() {
   install_nvim
-  stow_dirs "$conf_dir" "$HOME/.config/" .config
+  stow_dirs "$conf_dir/." "$HOME/.config/" .config
 }
 
-# Initialize systemd services
-init_systemd() {
-  stow_dirs "$dotfiles_dir" "$HOME/.config/systemd" systemd
-
-  systemctl --user daemon-reload
-  for service in "$systemd_dir"/*; do
-    systemctl --user enable --now "$(basename "$service")"
-  done
-}
-
-# Initialize Git submodules
 init_git() {
-  install_package_one git git git
+  install_packages_entry git
   git submodule update --init --recursive --force --remote
+  log_info "Git submodules initialized"
 }
 
-# Initialize clang-format configuration
-init_clangformat() {
-  install_package_one stow stow stow
-  stow -d "$conf_dir" -t "$HOME" -R clang-format
-}
-
-# Main dotfiles initialization
 init_dotfiles() {
-
-  case $1 in
+  case "${1:-}" in
   packages) install_packages ;;
   cleanup) cleanup_symlinks ;;
   sh) install_scripts ;;
   conf) init_conf ;;
   zsh) init_zsh ;;
   vim) init_vim ;;
-  clang_format) init_clangformat ;;
-  *) # Default setup
+  git) init_git ;;
+  spf) install_spf ;;
+  fzf) install_fzf ;;
+  *)
     install_packages
     cleanup_symlinks
     init_git
@@ -254,4 +307,20 @@ init_dotfiles() {
   esac
 }
 
+# Prompt once for sudo -A -E password
+read -rs -p "Enter your sudo -A -E password (will be used temporarily): " PASSWORD
+echo
+export SUDO_PASSWORD="$PASSWORD"
+
+# Setup SUDO_ASKPASS script
+ASKPASS_SCRIPT="$(mktemp)"
+cat >"$ASKPASS_SCRIPT" <<EOF
+#!/bin/bash
+echo "\$SUDO_PASSWORD"
+EOF
+chmod +x "$ASKPASS_SCRIPT"
+export SUDO_ASKPASS="$ASKPASS_SCRIPT"
+
+# Ensure cleanup
+trap 'rm -f "$ASKPASS_SCRIPT"' EXIT
 init_dotfiles "${1:-}"
