@@ -6,7 +6,7 @@ readonly DEFAULT_PORT=22
 readonly DEFAULT_DST="root@38.80.81.120:/root/$(basename "$PWD")/"
 readonly DEFAULT_LOCAL_DIR="$PWD/"
 readonly POLL_INTERVAL=10
-declare RSYNC_OPTS="-azq --progress --exclude='.*/' --exclude='*~' --exclude='.git/' --exclude='.svn/' --exclude='.DS_Store' --exclude='*.swp' "
+declare -a RSYNC_OPTS=(-azq --progress --exclude='.*/' --exclude='*~' --exclude='.git/' --exclude='.svn/' --exclude='.DS_Store' --exclude='*.swp')
 declare -a SYNC_MAPPINGS=()
 
 # ========= 日志 =========
@@ -62,6 +62,7 @@ prompt_for_local_dirs() {
     fi
 
     prompt_for_remote_targets "$local_dir"
+    prompt_for_rsync_opts
   done
 }
 
@@ -108,7 +109,6 @@ prompt_for_remote_targets() {
     log tips "添加映射: $local_dir => $user_host:$remote_path (port $port)"
   done
 
-  prompt_for_rsync_opts
 }
 
 validate_remote_path() {
@@ -141,15 +141,15 @@ sync_loop() {
     if [[ "$OSTYPE" == "linux-gnu"* && -f /etc/openwrt_release ]]; then
       log info "OpenWrt轮询模式: $local_dir => $user_host:$remote_path, $port"
       while true; do
-        rsync $RSYNC_OPTS -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/" ||
+        rsync ${RSYNC_OPTS[@]} -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/" ||
           log error "同步失败"
         sleep "$POLL_INTERVAL"
       done
     else
       log info "启动实时同步: $local_dir => $user_host:$remote_path, $port"
-      rsync $RSYNC_OPTS -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/"
+      rsync ${RSYNC_OPTS[@]} -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/"
       fswatch -0 "$local_dir" | while read -r -d "" event; do
-        rsync $RSYNC_OPTS -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/" &&
+        rsync ${RSYNC_OPTS[@]} -e "ssh -p $port" "$local_dir/" "$user_host:$remote_path/" &&
           log info "$(date '+%m-%d %H:%M:%S') 已同步: $event" ||
           log error "同步失败: $event"
       done
@@ -159,14 +159,15 @@ sync_loop() {
 
 prompt_for_rsync_opts() {
   log info "输入rsync选项: "
-  log tips "默认: ${RSYNC_OPTS}"
+  log tips "默认: ${RSYNC_OPTS[*]}"
   read -r -p "> " input_opts
   input_opts=$(trim "$input_opts")
   if [[ -n "$input_opts" ]]; then
-    RSYNC_OPTS="$input_opts"
-    log info "已设置rsync选项: $RSYNC_OPTS"
+    # Split input into array
+    read -ra RSYNC_OPTS <<< "$input_opts"
+    log info "已设置rsync选项: ${RSYNC_OPTS[*]}"
   else
-    log info "使用默认rsync选项: $RSYNC_OPTS"
+    log info "使用默认rsync选项: ${RSYNC_OPTS[*]}"
   fi
 }
 
