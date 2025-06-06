@@ -120,20 +120,13 @@ install_nvim() {
     return
   fi
 
-  case $PLATFORM in
-  macos)
-    brew install neovim
-    ;;
-  linux)
-    local build_dir="/tmp/neovim_build"
-    mkdir -p "$build_dir" && cd "$build_dir"
-    log_info "Building Neovim from source..."
-    git clone --depth 1 https://github.com/neovim/neovim.git
-    cd neovim && make CMAKE_BUILD_TYPE=Release && sudo -A -E make install
-    cd "$dotfiles_dir"
-    rm -rf "$build_dir"
-    ;;
-  esac
+  local build_dir=$(mktemp -d)
+  mkdir -p "$build_dir" && cd "$build_dir"
+  log_info "Building Neovim from source..."
+  git clone --depth 1 https://github.com/neovim/neovim.git
+  cd neovim && make CMAKE_BUILD_TYPE=Release && sudo -A -E make -j$(nproc) install
+  cd "$dotfiles_dir"
+  rm -rf "$build_dir"
 }
 
 install_spf() {
@@ -302,7 +295,6 @@ EOF
   # Ensure cleanup
   trap 'rm -f "$ASKPASS_SCRIPT"' EXIT
 }
-
 
 main() {
   create_sudo_askpass
