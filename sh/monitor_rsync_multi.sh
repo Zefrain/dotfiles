@@ -3,8 +3,14 @@ set -euo pipefail
 
 # ========= 配置 =========
 readonly DEFAULT_PORT=22
-readonly DEFAULT_REMOTE="root@38.80.81.120:/root/$(basename "$PWD")"
-readonly POLL_INTERVAL=1
+readonly DEFAULT_REMOTE="root@38.80.81.120:/root/$(
+  if [[ $(basename "$PWD") == .* ]]; then
+    echo "$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
+  else
+    echo "$(basename "$PWD")"
+  fi
+)"
+readonly POLL_INTERVAL=10
 readonly DEFAULT_EXCLUDES=".* *~ .git .svn .DS_Store *.swp __pycache__ node_modules venv .venv"
 declare -a SYNC_MAPPINGS=()
 declare -a CHILD_PIDS=()
