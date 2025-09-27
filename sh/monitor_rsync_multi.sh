@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euom pipefail
 
 # ========= 配置 =========
 readonly DEFAULT_PORT=22
@@ -40,10 +40,16 @@ cleanup() {
   fi
 
   for pid in "${CHILD_PIDS[@]}"; do
-    if kill -0 "$pid" 2>/dev/null; then
-      # 向整个进程组发送SIGKILL
-      kill -KILL -- -$pid 2>/dev/null &&
-        log info "已终止进程组 $pid"
+    log info "正在终止子进程: ${pid}"
+    if kill -TERM -- -"${pid}" 2>/dev/null; then
+      log info "已向进程组 ${pid} 发送 SIGTERM"
+    # else
+    #   log warn "无法终止进程组 ${pid}，尝试强制终止"
+    #   if kill -KILL -- -"${pid}" 2>/dev/null; then
+    #     log info "已强制终止进程组 ${pid}"
+    #   else
+    #     log error "强制终止失败: ${pid}"
+    #   fi
     fi
   done
 
@@ -223,7 +229,7 @@ sync_remote_to_local() {
     kill -KILL 0 2>/dev/null
     exit 0
   }
-  trap 'child_cleanup' SIGTERM SIGINT EXIT
+  trap 'child_cleanup' SIGTERM SIGINT SIGKILL EXIT
 
   while true; do
     rsync $rsync_opts -e "ssh -p $port" "$user_host:$remote_path/" "$local_target/" &&
@@ -251,7 +257,7 @@ sync_local_to_remote() {
     kill -KILL 0 2>/dev/null
     exit 0
   }
-  trap 'child_cleanup' SIGTERM SIGINT EXIT
+  trap 'child_cleanup' SIGTERM SIGINT SIGKILL EXIT
 
   if [[ "$OSTYPE" == "linux-gnu"* && -f /etc/openwrt_release ]]; then
     log info "轮询模式: $source_dir → $user_host:$remote_path (每${POLL_INTERVAL}秒)"
