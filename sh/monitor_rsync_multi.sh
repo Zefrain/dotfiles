@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
+set -m
 
 # ========= 配置 =========
 readonly DEFAULT_PORT=22
-DEFAULT_REMOTE="root@38.80.81.120:/root/$(basename "$PWD")"
+pwd_basename="$(basename "$PWD")"
+if [[ "$pwd_basename" == .* ]]; then
+  DEFAULT_REMOTE="root@38.80.81.120:/root/$(basename "$(dirname "$PWD")")/$pwd_basename"
+else
+  DEFAULT_REMOTE="root@38.80.81.120:/root/$pwd_basename"
+fi
 readonly DEFAULT_REMOTE
 readonly POLL_INTERVAL=10
 readonly DEFAULT_EXCLUDES=".* *~ .git .svn .DS_Store *.swp __pycache__ node_modules venv .venv"
@@ -30,15 +36,22 @@ log() {
 # ========= 清理函数 =========
 cleanup() {
   log info "收到退出信号，清理子进程..."
+  if [[ ${#CHILD_PIDS[@]} -eq 0 ]]; then
+    log info "没有子进程需要清理"
+    exit 0
+  fi
+
   for pid in "${CHILD_PIDS[@]}"; do
-    if kill -0 "$pid" 2>/dev/null; then
-      # 向整个进程组发送SIGKILL
-      kill -KILL -- "-$pid" 2>/dev/null &&
-        log info "已终止进程组 $pid"
+    log info "正在终止子进程: ${pid}"
+    if kill -TERM -- -"${pid}" 2>/dev/null; then
+      log info "已向进程组 ${pid} 发送 SIGTERM"
+    elif kill -KILL -- -"${pid}" 2>/dev/null; then
+      log info "已强制终止进程组 ${pid}"
+    else
+      log error "终止失败: ${pid}"
     fi
   done
 
-  # 确保所有子进程真正退出
   wait "${CHILD_PIDS[@]}" 2>/dev/null
   log info "所有子进程已终止"
   exit 0
@@ -82,15 +95,15 @@ prompt_with_default() {
 prompt_sync_direction() {
   while true; do
     log info "选择同步方向:"
+    log info "  0) 完成配置"
     log info "  1) 推送 (本地 → 远程)"
     log info "  2) 拉取 (远程 → 本地)"
-    log info "  输入 'f' 完成配置"
     read -r -p "> " choice
 
     case "$choice" in
+    0) return ;;
     1) prompt_push_mapping ;;
     2) prompt_pull_mapping ;;
-    f) return ;;
     *) log error "无效选择" ;;
     esac
   done
