@@ -1,1 +1,12 @@
-export http_proxy=http://127.0.0.1:7890;export https_proxy=http://127.0.0.1:7890; $@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export http_proxy="${http_proxy:-http://192.168.168.168:7893}"
+export https_proxy="${https_proxy:-$http_proxy}"
+
+if (($# == 0)); then
+  env | grep -E '^(http|https)_proxy='
+  exit 0
+fi
+
+exec "$@"

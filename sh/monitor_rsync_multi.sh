@@ -3,11 +3,13 @@ set -euo pipefail
 
 # ========= 配置 =========
 readonly DEFAULT_PORT=22
-readonly DEFAULT_REMOTE="root@38.80.81.120:/root/$(basename "$PWD")"
-readonly POLL_INTERVAL=1
+DEFAULT_REMOTE="root@38.80.81.120:/root/$(basename "$PWD")"
+readonly DEFAULT_REMOTE
+readonly POLL_INTERVAL=10
 readonly DEFAULT_EXCLUDES=".* *~ .git .svn .DS_Store *.swp __pycache__ node_modules venv .venv"
 declare -a SYNC_MAPPINGS=()
 declare -a CHILD_PIDS=()
+declare -a RSYNC_OPTS=()
 
 # ========= 日志 =========
 COLOR_RED='\033[0;31m'
@@ -31,7 +33,7 @@ cleanup() {
   for pid in "${CHILD_PIDS[@]}"; do
     if kill -0 "$pid" 2>/dev/null; then
       # 向整个进程组发送SIGKILL
-      kill -KILL -- -$pid 2>/dev/null &&
+      kill -KILL -- "-$pid" 2>/dev/null &&
         log info "已终止进程组 $pid"
     fi
   done
@@ -188,26 +190,24 @@ prompt_pull_mapping() {
 # ========= 同步逻辑 =========
 build_rsync_opts() {
   local exclude_rules="$1"
-  local -a opts=(-azq --progress --compress-level=9)
+  RSYNC_OPTS=(-azq --progress --compress-level=9)
 
   [[ -n "$exclude_rules" ]] && {
     IFS=' ' read -ra rules <<<"$exclude_rules"
     for pattern in "${rules[@]}"; do
-      opts+=(--exclude="$pattern")
+      RSYNC_OPTS+=(--exclude="$pattern")
     done
   }
-
-  echo "${opts[@]}"
 }
 
 sync_remote_to_local() {
   local user_host="$1" remote_path="$2" port="$3" local_target="$4" exclude_rules="$5"
 
   log info "启动远程到本地同步: $user_host:$remote_path → $local_target (每${POLL_INTERVAL}秒轮询)"
-  local rsync_opts
-  rsync_opts=$(build_rsync_opts "$exclude_rules")
+  build_rsync_opts "$exclude_rules"
 
   # 子进程自己的清理函数
+  # shellcheck disable=SC2317
   child_cleanup() {
     log info "子进程 $$ 收到终止信号，结束同步任务"
     kill -KILL 0 2>/dev/null
@@ -216,9 +216,11 @@ sync_remote_to_local() {
   trap 'child_cleanup' SIGTERM SIGINT EXIT
 
   while true; do
-    rsync $rsync_opts -e "ssh -p $port" "$user_host:$remote_path/" "$local_target/" &&
-      log info "$(date '+%m-%d %H:%M:%S') 同步完成: 远程 → 本地" ||
+    if rsync "${RSYNC_OPTS[@]}" -e "ssh -p $port" "$user_host:$remote_path/" "$local_target/"; then
+      log info "$(date '+%m-%d %H:%M:%S') 同步完成: 远程 → 本地"
+    else
       log error "同步失败: $user_host:$remote_path → $local_target"
+    fi
     sleep "$POLL_INTERVAL"
   done
 }
@@ -232,10 +234,10 @@ sync_local_to_remote() {
     return
   fi
 
-  local rsync_opts
-  rsync_opts=$(build_rsync_opts "$exclude_rules")
+  build_rsync_opts "$exclude_rules"
 
   # 子进程自己的清理函数
+  # shellcheck disable=SC2317
   child_cleanup() {
     log info "子进程 $$ 收到终止信号，结束同步任务"
     kill -KILL 0 2>/dev/null
@@ -246,17 +248,19 @@ sync_local_to_remote() {
   if [[ "$OSTYPE" == "linux-gnu"* && -f /etc/openwrt_release ]]; then
     log info "轮询模式: $source_dir → $user_host:$remote_path (每${POLL_INTERVAL}秒)"
     while true; do
-      rsync $rsync_opts -e "ssh -p $port" "$source_dir/" "$user_host:$remote_path/" ||
+      rsync "${RSYNC_OPTS[@]}" -e "ssh -p $port" "$source_dir/" "$user_host:$remote_path/" ||
         log error "同步失败"
       sleep "$POLL_INTERVAL"
     done
   else
     log info "启动实时同步: $source_dir → $user_host:$remote_path"
-    rsync $rsync_opts -e "ssh -p $port" "$source_dir/" "$user_host:$remote_path/"
+    rsync "${RSYNC_OPTS[@]}" -e "ssh -p $port" "$source_dir/" "$user_host:$remote_path/"
     fswatch -0 "$source_dir" | while read -r -d "" event; do
-      rsync $rsync_opts -e "ssh -p $port" "$source_dir/" "$user_host:$remote_path/" &&
-        log info "$(date '+%m-%d %H:%M:%S') 已同步: $event" ||
+      if rsync "${RSYNC_OPTS[@]}" -e "ssh -p $port" "$source_dir/" "$user_host:$remote_path/"; then
+        log info "$(date '+%m-%d %H:%M:%S') 已同步: $event"
+      else
         log error "同步失败: $event"
+      fi
     done
   fi
 }

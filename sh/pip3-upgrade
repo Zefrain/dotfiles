@@ -1,1 +1,5 @@
-pip3 freeze  | awk -F= 'NR>2 {print $1}' | xargs pip3 install -U
+#!/bin/sh
+
+pip3 freeze | cut -d= -f1 | while IFS= read -r package; do
+  [ -n "$package" ] && pip3 install -U "$package"
+done

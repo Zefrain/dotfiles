@@ -1,16 +1,17 @@
 #!/bin/bash
 
 err() {
-  echo "[$(date +'%Y-%m-%d %H:%M:%S')]: $@" >&2
+  echo "[$(date +'%Y-%m-%d %H:%M:%S')]: $*" >&2
 }
 fmt() {
-  OLD=$IFS
-  IFS=$'\n'
-  for fname in $@; do
-    clang-format -i -style=google $fname
+  for fname in "$@"; do
+    clang-format -i -style=google "$fname"
   done
-  IFS=$OLD
 }
-flist=$(find ! -name '.*' | egrep -v '\.\w+\/' | egrep '\.(c|cpp|h)$')
 
-fmt $flist
+mapfile -t flist < <(find . -type f ! -path '*/.*/*' \( -name '*.c' -o -name '*.cpp' -o -name '*.h' \))
+if ((${#flist[@]} > 0)); then
+  fmt "${flist[@]}"
+else
+  err "no C/C++ files found"
+fi

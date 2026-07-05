@@ -5,7 +5,7 @@
 # the term of the GNU General Public License as published by the Free Software
 # Foundation; either version 2 of the License, or any later version.
 
-if [ ! -b "$1" -o -z "$2" -o -z "$3" ]; then
+if [[ $# -lt 3 || ! -b "$1" || -z "$2" || -z "$3" ]]; then
   echo "Usage: $0 <dev> <file/dir> <dest>" 1>&2
   echo
   echo "This program tries to recover the most recent version of the"
@@ -54,34 +54,44 @@ regex="^/(|${regex//\//(|/}(|/.*${slashes//?/)}))\$"
 
 roots="$(mktemp --tmpdir btrfs-undelete.roots.XXXXX)"
 out="$(mktemp --tmpdir="$3" -d btrfs-undelete.XXXXX)"
-cd $out
+cd "$out" || exit 1
 
-trap "rm $roots" EXIT
-trap "rm -r $out &> /dev/null; exit 1" SIGINT
+# shellcheck disable=SC2317
+cleanup_roots() {
+  rm -f "$roots"
+}
+
+# shellcheck disable=SC2317
+cleanup_interrupt() {
+  rm -rf "$out" &>/dev/null
+  exit 1
+}
+
+trap cleanup_roots EXIT
+trap cleanup_interrupt SIGINT
 
 echo -ne "Searching roots..."
 btrfs-find-root "$dev" 2>&1 \
   | grep ^Well \
   | sed -r -e 's/Well block ([0-9]+).*/\1/' \
-  | sort -rn >$roots || exit 1
+  | sort -rn >"$roots" || exit 1
 echo
 
 i=0
-max="$(wc -l <$roots)"
+max="$(wc -l <"$roots")"
 
-while read id; do
+while IFS= read -r id; do
   ((i+=1))
   echo -e "Trying root $id... ($i/$max)"
-  btrfs restore -t $id --path-regex "$regex" "$dev" . &>/dev/null
-  if [ "$?" = 0 ]; then
+  if btrfs restore -t "$id" --path-regex "$regex" "$dev" . &>/dev/null; then
     found=$(find . -type f ! -size 0c | wc -l)
-    if [ $found -gt 0 ]; then
+    if [ "$found" -gt 0 ]; then
       echo "Recovered $found non-empty file(s) into $out"
       exit 0
     fi
     find . -type f -size 0c -exec echo "Found {} but it's empty" \; -delete
   fi
-done <$roots
-rm -r $out
+done <"$roots"
+rm -rf "$out"
 echo "Didn't find '$file'"
 exit 1

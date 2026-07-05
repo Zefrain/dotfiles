@@ -382,7 +382,7 @@ install_dependencies() {
             autoconf automake make curl curl-devel zlib-devel perl perl-devel cpio expat-devel gettext-devel asciidoc
             udns-devel libev-devel mbedtls-devel
         )
-        for depend in ${yum_depends[@]}; do
+        for depend in "${yum_depends[@]}"; do
             error_detect_depends "yum -y install ${depend}"
         done
     elif check_sys packageManager apt; then
@@ -399,7 +399,7 @@ install_dependencies() {
             fi
         fi
         apt-get -y update
-        for depend in ${apt_depends[@]}; do
+        for depend in "${apt_depends[@]}"; do
             error_detect_depends "apt-get -y install ${depend}"
         done
     fi

@@ -206,7 +206,7 @@ remove_old_version() {
   for TAG in $TAGS_TO_DELETE; do
 
     # Check if tag is in the exclude list
-    if [[ " ${TAGS_EXCLUDE_LIST[@]} " =~ " $TAG " ]]; then
+    if [[ " ${TAGS_EXCLUDE_LIST[*]} " == *" $TAG "* ]]; then
       echo "Skipping tag: $TAG (excluded)"
       continue
     fi

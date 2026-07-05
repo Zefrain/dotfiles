@@ -1,8 +1,9 @@
 #!/bin/env bash
 
-for inter in $(ls /sys/class/net); do
+for netdev in /sys/class/net/*; do
+inter=${netdev##*/}
 if [[ $inter != 'lo' ]] && [[ ! -e /etc/netplan/99-$inter.yaml ]]; then
-cat << EOF > /etc/netplan/99-$inter.yaml
+cat << EOF > "/etc/netplan/99-$inter.yaml"
 network:
   ethernets:
     $inter:
@@ -10,7 +11,7 @@ network:
   version: 2
   renderer: networkd
 EOF
-ip link set dev $inter up
+ip link set dev "$inter" up
 fi
 done
 netplan apply

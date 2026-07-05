@@ -1,1 +1,12 @@
-git log --all --decorate --oneline | grep -A 1 $(git rev-parse --short HEAD) | awk '{print $1}' | tail -1 | xargs -I {} git checkout {}
+#!/usr/bin/env bash
+set -euo pipefail
+
+current="$(git rev-parse --short HEAD)"
+target="$(git log --all --decorate --oneline | grep -A 1 -- "$current" | awk '{print $1}' | tail -1)"
+
+if [[ -z "$target" ]]; then
+  echo "No previous commit found" >&2
+  exit 1
+fi
+
+git checkout "$target"

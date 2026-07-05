@@ -55,7 +55,7 @@ parse_arguments() {
     esac
   done
 
-  : ${host_lst:=$DEFAULT_HOSTS_FILE}
+  : "${host_lst:=$DEFAULT_HOSTS_FILE}"
 }
 
 #######################################
@@ -75,7 +75,7 @@ precheck() {
 clear_authorized_keys() {
   local host=$1
   local port=$2
-  ssh -p "$port" -i "$root_key" -o ConnectTimeout=5 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$host "
+  ssh -p "$port" -i "$root_key" -o ConnectTimeout=5 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@"$host" "
     for user_home in /home/*; do
       user=\$(basename \$user_home)
       auth_file=\"\$user_home/.ssh/authorized_keys\"
@@ -99,7 +99,7 @@ verify_connection() {
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
     -o PasswordAuthentication=no \
-    $test_user@$host "echo '探测连接'" 2>&1)
+    "$test_user"@"$host" "echo '探测连接'" 2>&1)
   exit_code=$?
 
   if [ $exit_code -eq 0 ]; then
@@ -127,7 +127,7 @@ process_line() {
 
   # 解析主机和端口
   local host port
-  IFS=: read host port <<< "$line"
+  IFS=: read -r host port <<<"$line"
   port=${port:-$DEFAULT_SSH_PORT}
 
   log "${COLOR_WARN}>> 处理主机: ${host}:${port}${COLOR_RESET}"
@@ -153,8 +153,9 @@ process_line() {
 # 主执行流程（优化并发处理）
 #######################################
 main() {
-  export SUCCESS_FILE=$(mktemp)
-  export FAILURE_FILE=$(mktemp)
+  SUCCESS_FILE=$(mktemp)
+  FAILURE_FILE=$(mktemp)
+  export SUCCESS_FILE FAILURE_FILE
   trap cleanup EXIT
 
   parse_arguments "$@"
@@ -174,11 +175,56 @@ main() {
       continue
     fi
     process_line "$line" &
-    [ $(jobs -r | wc -l) -ge 4 ] && wait -n
+    [ "$(jobs -r | wc -l)" -ge 4 ] && wait -n
   done < "$host_lst"  # 移除过滤注释的grep
   wait
 
   show_summary
 }
 
-# 其余函数保持不变（略）
+#######################################
+# 日志系统
+#######################################
+init_logger() {
+  if [ -n "$log_file" ]; then
+    : >"$log_file" || fail "无法写入日志文件: $log_file"
+  fi
+}
+
+log() {
+  local timestamp
+  timestamp=$(date '+%Y-%m-%d %T')
+  local message="[$timestamp] $*"
+
+  if [ -n "$log_file" ]; then
+    echo -e "$message" | sed -E "s/\\\033\[([0-9]{1,2}(;[0-9]{1,2})?)?m//g" >>"$log_file"
+  else
+    echo -e "$message"
+  fi
+}
+
+#######################################
+# 结果统计
+#######################################
+show_summary() {
+  local total success_count failure_count
+  total=$(grep -cve '^[[:space:]]*#' -e '^$' "$host_lst")
+  success_count=$(wc -l <"$SUCCESS_FILE" 2>/dev/null | awk '{print $1}')
+  failure_count=$(wc -l <"$FAILURE_FILE" 2>/dev/null | awk '{print $1}')
+
+  log "\n==== 测试结果汇总 ===="
+  log "总有效主机数: $total"
+  log "${COLOR_SUCC}成功数:     $success_count${COLOR_RESET}"
+  log "${COLOR_FAIL}失败数:     $failure_count${COLOR_RESET}"
+}
+
+fail() {
+  echo -e "${COLOR_FAIL}错误: $*${COLOR_RESET}" >&2
+  exit 1
+}
+
+cleanup() {
+  rm -f "$SUCCESS_FILE" "$FAILURE_FILE"
+}
+
+main "$@"

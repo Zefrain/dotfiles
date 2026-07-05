@@ -1,4 +1,5 @@
- # (leading space required for Xenix /bin/sh)
+#!/bin/sh
+# (leading space required for Xenix /bin/sh)
 
 #
 # Determine the type of *ix operating system that we're
@@ -7,7 +8,7 @@
 # (This is a kludge.  Gotta be a better way.)
 #
 
-case `uname -s` in
+case $(uname -s) in
 "FreeBSD")
 	PLATFORM="freebsd"
 	;;
@@ -24,5 +25,5 @@ case `uname -s` in
 	echo "Unknown platform" >&2
 	exit 1
 esac
-echo $PLATFORM
+echo "$PLATFORM"
 exit 0

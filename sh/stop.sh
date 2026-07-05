@@ -1,15 +1,22 @@
-if [ ! -z $# ]; then
-    pkill $* \
-        || pgrep $* | xargs -n 1 kill -9 \
-        || ps -ef | grep $* | grep -v "grep" | awk '{system("kill -9 " $2)}' \
-        || lsof -nPi | grep $* | awk '{print "kill -9", $2}' | sh
-else
-    echo "please give argument to kill";
-fi
+#!/usr/bin/env bash
+set -euo pipefail
 
-
-if [ $? -eq 0 ]; then
+if (($# > 0)); then
+  pattern="$*"
+  if pkill -- "$pattern"; then
     echo "success"
+    exit 0
+  fi
+
+  mapfile -t pids < <(pgrep -- "$pattern" || true)
+  if ((${#pids[@]} > 0)) && kill -9 "${pids[@]}"; then
+    echo "success"
+    exit 0
+  fi
 else
-    echo "failed"
+  echo "please give argument to kill" >&2
+  exit 2
 fi
+
+echo "failed" >&2
+exit 1

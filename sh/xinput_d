@@ -1,2 +1,4 @@
-xinput disable FSPPS/2\ Sentelic\ FingerSensingPad
-xinput disable AT\ Translated\ Set\ 2\ keyboard 
+#!/bin/sh
+
+xinput disable 'FSPPS/2 Sentelic FingerSensingPad'
+xinput disable 'AT Translated Set 2 keyboard'
